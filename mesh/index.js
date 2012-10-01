@@ -2,7 +2,6 @@
 // The big mesh allows big to communicate with other big instances
 //
 var resource = require('resource'),
-    big = require('big'),
     mesh = resource.define('mesh');
 
 mesh.schema.description = "distributed p2p event emitter mesh resource";
@@ -71,14 +70,14 @@ function connect (options, callback) {
     //
     mesh.client.on('message', function(data){
       var msg = JSON.parse(data);
-      big.emit(msg.event, msg.payload, false)
+      resource.emit(msg.event, msg.payload, false)
     })
 
     //
     // Any local events, should be re-broadcasted back to mesh,
     // unless reemit === false
     //
-    big.onAny(function(data, reemit) {
+    resource.onAny(function(data, reemit) {
       if(reemit !== false) {
         var msg = {
           event: this.event,
@@ -92,7 +91,7 @@ function connect (options, callback) {
     // Send a friendly phone-home method
     // Feel free to comment this line out at any time
     //
-    big.emit('node::ohai', resource.system.info());
+    resource.emit('node::ohai', resource.system.info());
 
   });
 
@@ -106,7 +105,7 @@ function listen (options, callback) {
 
   mesh.server.on('connection', function (socket) {
 
-    big.emit('mesh::incoming::connection', socket.id);
+    resource.emit('mesh::incoming::connection', socket.id);
 
     socket.on('message', function(data){
       var msg = JSON.parse(data);
@@ -116,14 +115,14 @@ function listen (options, callback) {
       //
       //msg.payload.host = socket.remoteAddress.host;
       //msg.payload.port = socket.remoteAddress.port;
-      big.emit(msg.event, msg.payload, false)
+      resource.emit(msg.event, msg.payload, false)
     });
 
     //
     // Any local events, should be re-broadcasted back to mesh,
     // unless reemit === false
     //
-    big.onAny(function(data, reemit) {
+    resource.onAny(function(data, reemit) {
       var msg = {
         event: this.event,
         payload: data
