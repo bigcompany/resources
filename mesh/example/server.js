@@ -1,16 +1,14 @@
-var big = require('big');
+var resource = require('resource');
 
-big.use('mesh');
+resource.use('mesh');
+resource.listen();
 
-big.listen();
-big.start();
-
-big.emit('server');
+resource.emit('server');
 
 setInterval(function(){
-  big.emit('server-foo', { bar: "foo" });
+  resource.emit('server-foo', { bar: "foo" });
 }, 2000);
 
-big.onAny(function(data){
+resource.onAny(function(data){
   console.log(this.event, data)
 })
