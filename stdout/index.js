@@ -1,10 +1,10 @@
 var resource   = require('resource'),
     stdout = resource.define('stdout'),
-    big = require('big');
+    resource = require('resource');
 
 stdout.schema.description = "outputs all big events as new-line delimited JSON fragments";
 
-big.onAny(function(data){
+resource.onAny(function(data){
   data = data || {};
   var obj = {
     "event": this.event,
