@@ -1,7 +1,7 @@
 var resource = require('resource'),
     docs = resource.define('docs'),
     fs = require('fs'),
-    viewModule = require('view');
+    viewModule = require('viewful');
 
 docs.schema.description = "generates documentation";
 
@@ -47,10 +47,10 @@ function generate (resource, template) {
 
   var view = new viewModule.View({
     template: template, 
-    input:"swig"
+    input: "swig"
   });
 
-  view.engines.swig.init({
+  viewModule.engines.swig.init({
       autoescape: false
   });
 
@@ -61,6 +61,7 @@ function generate (resource, template) {
     usage: resourceUsage(resource),
     properties: resourceProperties(resource),
     methods: resourceMethods(resource),
+    dependencies: JSON.stringify(resource.dependencies),
     footer: generateFooter()
   };
 
@@ -128,10 +129,21 @@ function resourceMethods (resource) {
   return str;
 }
 
+var schemaToHTML = docs.schemaToHTML = function (schema) {
+
+  var str = schemaToTable(schema)
+  var view = new viewModule.View({
+    template: str,
+    input: "markdown"
+  });
+  return view.render();
+
+}
+
 //
 // Converts a schema into a nested markdown ul / li
 //
-function schemaToTable (schema) {
+var schemaToTable = docs.schemaToTable = function (schema) {
 
   var str = '';
 
@@ -274,46 +286,6 @@ function build () {
   });
   fs.writeFileSync('./resources/README.md', str);
   console.log('wrote to core resource README.md file'.green);
-}
-
-
-docs.method('start', start, {
-  "description": "add a /docs route to the http server for viewing documentation"
-});
-
-function start (options, callback) {
-
-  if (resource.http) {
-
-    resource.http.app.get('/docs', function (req, res, next) {
-      res.end('TODO: docs root');
-    });
-
-    resource.http.app.get('/docs/resources', function (req, res, next) {
-      // TODO: resource.toJSON for array of resources
-      var r = resource.resources;
-      var str = docs.all(r)
-      var view = new view.View({
-        template: str, 
-        input: "html"
-      });
-      str = '<link href="/style.css" rel="stylesheet"/> \n' + view.render();
-      res.end(str);
-    });
-
-    resource.http.app.get('/docs/resources/:resource', function (req, res, next) {
-      var r = resource.resources[req.param('resource')];
-      var str = docs.generate(r)
-      var view = new view.View({
-        template: str, 
-        input:"markdown"
-      });
-      str = '<link href="/style.css" rel="stylesheet"/> \n' + view.render();
-      res.end(str);
-    });
-
-  }
-
 }
 
 exports.docs = docs;
