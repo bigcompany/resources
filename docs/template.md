@@ -10,4 +10,6 @@
 
 {{methods}}
 
+{{dependencies}}
+
 {{footer}}

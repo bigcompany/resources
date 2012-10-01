@@ -3,13 +3,6 @@ var resource = require('resource'),
 
 datasource.schema.description = "perists resources to data storage engines";
 
-datasource.property('name', {
-  type: "string",
-  description: "The name of the new datasource",
-  minLength: 1,
-  default: "the-datasource"
-});
-
 datasource.property('status', {
   type: "string",
   description: "the status of the datasource",

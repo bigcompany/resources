@@ -33,6 +33,54 @@ function start (options, callback) {
     res.end(str);
   });
 
+  resource.http.app.get('/admin/ssh', auth, function (req, res, next) {
+   view.ssh.render({});
+   str = view.ssh.present({});
+   res.end(str);
+  });
+
+  resource.http.app.get('/admin/docs', auth, function (req, res, next) {
+   view.docs.render({});
+   str = view.docs.present({});
+   res.end(str);
+  });
+
+  resource.http.app.get('/admin/replicator', auth, function (req, res, next) {
+   view.replicator.render({});
+   str = view.replicator.present({});
+   res.end(str);
+  });
+
+  resource.http.app.get('/admin/datasources', auth, function (req, res, next) {
+   view.datasources.render({});
+   resource.datasource.all(function(err, results){
+     str = view.datasources.present({ datasources: results });
+     res.end(str);
+   });
+  });
+
+  resource.http.app.get('/admin/datasources/:datasource', auth, function (req, res, next) {
+   resource.datasource.get(req.param('datasource'), function(err, result){
+     console.log(err, result)
+     view.datasource.render({});
+     str = view.datasource.present({ datasource: result });
+     res.end(str);
+   });
+  });
+
+  resource.http.app.get('/admin/docs/resources/:resource', function (req, res, next) {
+    var r = resource.resources[req.param('resource')];
+    var str = resource.docs.generate(r);
+    var view = resource.view.create({
+      template: str,
+      input: "markdown"
+    });
+    console.log(view.template);
+    str = '<link href="/style.css" rel="stylesheet"/> \n' + view.render();
+    res.end(str);
+  });
+
+
   resource.http.app.get('/admin/resources/:resource', auth, function (req, res, next) {
     var r = resource.resources[req.param('resource')];
     var obj = resource.toJSON(r);
