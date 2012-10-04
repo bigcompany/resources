@@ -31,11 +31,22 @@ view.method('create', create, {
 function create (options, callback) {
   var viewful = require('viewful');
   options = options || {};
-  var view = new viewful.View({
-    path: options.path,
-    input: options.input,
-    output: options.ouput
-  });
+  //
+  // TODO: move this delegation / conditional logic to inside view engine
+  //
+  if(typeof options.template !== 'undefined') {
+    var view = new viewful.View({
+      template: options.template,
+      input: options.input,
+      output: options.ouput
+    });
+  } else {
+    var view = new viewful.View({
+      path: options.path,
+      input: options.input,
+      output: options.ouput
+    });
+  }
   return view;
 }
 

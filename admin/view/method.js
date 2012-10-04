@@ -10,8 +10,14 @@ module['exports'] = function (options, callback) {
   $('.description').html(options.method.schema.description);
   $('.methods').html(layout.controls.list.present({ items: methods, root: '/admin/resources/foo/' }));
 
-  //$('.schema').html(resource.docs.schemaToHTML(options.resource.schema));
+  var form = resource.forms.generate(options)
+  form.render();
 
-  return $.html();
+  form.present(options, function(err, str){
+    $('.form').html(str);
+    callback(null, $.html())
+  });
+
+  //$('.schema').html(resource.docs.schemaToHTML(options.resource.schema));
 
 }
