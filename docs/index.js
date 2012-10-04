@@ -284,7 +284,7 @@ function build () {
   Object.keys(_resources).forEach(function(r){
     str += ' - [' + r + '](https://github.com/bigcompany/resources/tree/master/' + r +') ' + resource.resources[r].schema.description + '\n';
   });
-  fs.writeFileSync('../README.md', str);
+  fs.writeFileSync(__dirname + '/../README.md', str);
   console.log('wrote to core resource README.md file'.green);
 }
 
