@@ -1,6 +1,6 @@
 # view
 
-View engine
+templating / markup engine with 22+ supported languages
 
 ## API
 
@@ -25,7 +25,7 @@ View engine
 <a name="view-properties"></a>
 
 ## properties 
-View engine
+templating / markup engine with 22+ supported languages
 
 - **id** 
 
@@ -95,4 +95,5 @@ creates a new view
   - **type** : string
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{"viewful":"*"}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

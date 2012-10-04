@@ -43,7 +43,7 @@ generates markdown documentation from a resource
 
   - **type** : string
 
-  - **required** : true
+  - **required** : false
 
 <a name="docs-methods-build"></a> 
 
@@ -53,7 +53,7 @@ generates markdown documentation from a resource
 
 ### docs.view(resource)
 
-views the Markdown documentation for any resource
+view the documentation for a resource
 
 - **resource** 
 
@@ -64,4 +64,5 @@ views the Markdown documentation for any resource
   - **required** : true
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{"view":"*"}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

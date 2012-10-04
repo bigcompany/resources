@@ -1,6 +1,6 @@
 # admin
 
-web based admin panel for big
+web based admin panel
 
 ## API
 
@@ -14,7 +14,7 @@ web based admin panel for big
   - [start](#admin-methods-start) ()
 
 
-web based admin panel for big
+web based admin panel
 
 - **id** 
 
@@ -30,4 +30,5 @@ web based admin panel for big
 ### admin.start()
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{"connect":"*"}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -1,6 +1,6 @@
 # mesh
 
-distributed p2p event emitter mesh resource
+distributed p2p event emitter mesh
 
 ## API
 
@@ -11,14 +11,12 @@ distributed p2p event emitter mesh resource
 
 #### [methods](#mesh-methods)
 
-  - [start](#mesh-methods-start) ()
-
   - [connect](#mesh-methods-connect) (options, callback)
 
   - [listen](#mesh-methods-listen) (options, callback)
 
 
-distributed p2p event emitter mesh resource
+distributed p2p event emitter mesh
 
 - **id** 
 
@@ -28,10 +26,6 @@ distributed p2p event emitter mesh resource
 <a name="mesh-methods"></a> 
 
 ## methods 
-
-<a name="mesh-methods-start"></a> 
-
-### mesh.start()
 
 <a name="mesh-methods-connect"></a> 
 
@@ -106,4 +100,5 @@ Listens for incoming big instances
   - **required** : false
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{"engine.io":"*","engine.io-client":"*"}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

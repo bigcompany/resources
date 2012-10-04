@@ -1,7 +1,7 @@
 var resource = require('resource'),
     cli = resource.define('cli');
 
-cli.schema.description = "provides a command line interface to big";
+cli.schema.description = "provides a command line interface";
 
 cli.started = false;
 

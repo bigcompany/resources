@@ -1,10 +1,10 @@
 //
-// The big mesh allows big to communicate with other big instances
+// The mesh allows big to communicate with other big instances
 //
 var resource = require('resource'),
     mesh = resource.define('mesh');
 
-mesh.schema.description = "distributed p2p event emitter mesh resource";
+mesh.schema.description = "distributed p2p event emitter mesh";
 
 //
 // Use the node resource for looking up node schemas

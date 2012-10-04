@@ -1,6 +1,6 @@
 # cli
 
-provides a command line interface to big
+provides a command line interface
 
 ## API
 
@@ -14,7 +14,7 @@ provides a command line interface to big
   - [start](#cli-methods-start) ()
 
 
-provides a command line interface to big
+provides a command line interface
 
 - **id** 
 
@@ -30,4 +30,5 @@ provides a command line interface to big
 ### cli.start()
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

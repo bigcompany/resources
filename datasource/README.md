@@ -8,8 +8,6 @@ perists resources to data storage engines
 
   - [id](#datasource-properties-id)
 
-  - [name](#datasource-properties-name)
-
   - [status](#datasource-properties-status)
 
   - [type](#datasource-properties-type)
@@ -27,6 +25,8 @@ perists resources to data storage engines
 
 #### [methods](#datasource-methods)
 
+  - [test](#datasource-methods-test) (datasource)
+
 
 <a name="datasource-properties"></a>
 
@@ -36,16 +36,6 @@ perists resources to data storage engines
 - **id** 
 
   - **type** : any
-
-- **name** 
-
-  - **type** : string
-
-  - **description** : The name of the new datasource
-
-  - **minLength** : 1
-
-  - **default** : the-datasource
 
 - **status** 
 
@@ -138,5 +128,18 @@ perists resources to data storage engines
 
 ## methods 
 
+<a name="datasource-methods-test"></a> 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+### datasource.test(datasource)
+
+tests the datasource connection
+
+- **datasource** 
+
+  - **description** : the name of the datasource to test
+
+  - **type** : string
+
+
+{}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
