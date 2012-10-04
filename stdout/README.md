@@ -1,6 +1,6 @@
 # stdout
 
-outputs all big events as new-line delimited JSON fragments
+outputs all events as new-line delimited JSON fragments
 
 ## API
 
@@ -12,7 +12,7 @@ outputs all big events as new-line delimited JSON fragments
 #### [methods](#stdout-methods)
 
 
-outputs all big events as new-line delimited JSON fragments
+outputs all events as new-line delimited JSON fragments
 
 - **id** 
 
@@ -24,4 +24,5 @@ outputs all big events as new-line delimited JSON fragments
 ## methods 
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

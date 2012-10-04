@@ -8,6 +8,8 @@ replicator service for big instances
 
   - [id](#replicator-properties-id)
 
+  - [replication](#replicator-properties-replication)
+
 
 #### [methods](#replicator-methods)
 
@@ -18,11 +20,40 @@ replicator service for big instances
   - [listen](#replicator-methods-listen) ()
 
 
+<a name="replicator-properties"></a>
+
+## properties 
 replicator service for big instances
 
 - **id** 
 
   - **type** : any
+
+- **replication** 
+
+  - **decription** : a replication event
+
+  - **properties**
+
+    - **time** 
+
+      - **description** : the date and time of the replication
+
+      - **type** : string
+
+      - **default** : Thu Oct 04 2012 16:25:00 GMT-0700 (PDT)
+
+    - **source** 
+
+      - **description** : the source of the replication ( where the code is coming from )
+
+      - **type** : string
+
+    - **target** 
+
+      - **description** : the target of the replication ( where the code is going )
+
+      - **type** : string
 
 
 <a name="replicator-methods"></a> 
@@ -106,4 +137,5 @@ pulls a big instance from a remote big instance
 ### replicator.listen()
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{"fstream":"*","fstream-npm":"*","tar":"*","request":"*","ncp":"*"}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

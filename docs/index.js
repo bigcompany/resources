@@ -194,7 +194,7 @@ var schemaToTable = docs.schemaToTable = function (schema) {
 
 function resourceUsage (resource) {
   var str = '';
-  str += ('    ' + 'var big = require("big");\n');
+  str += ('    ' + 'var resource = require("resource");\n');
   str += ('    ' + 'resource.use("' + resource.name + '");\n');
   return str;
 }
@@ -232,7 +232,7 @@ function tableOfContents (resource) {
 
 function generateFooter() {
   var str = '';
-  str += ('*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*');
+  str += ('*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*');
   return str;
 }
 
@@ -280,11 +280,11 @@ function build () {
   // Then generate a README file for the core project
   //
   var str = '# resources \n\n';
-  str += 'big resources for any occasion \n\n'
+  str += 'resources for any occasion \n\n'
   Object.keys(_resources).forEach(function(r){
-    str += ' - [' + r + '](https://github.com/bigcompany/big/tree/master/resources/' + r +') ' + resource.resources[r].schema.description + '\n';
+    str += ' - [' + r + '](https://github.com/bigcompany/resources/tree/master/' + r +') ' + resource.resources[r].schema.description + '\n';
   });
-  fs.writeFileSync('./resources/README.md', str);
+  fs.writeFileSync('../README.md', str);
   console.log('wrote to core resource README.md file'.green);
 }
 

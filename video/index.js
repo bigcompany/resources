@@ -20,8 +20,14 @@ video.property("description", {
   "description": "a brief description of the video"
 });
 
+video.property("tagID", {
+  "type":"string",
+  "description": "the immediate parent tag of the video"
+});
+
 video.method("play", function () {
 }, {});
+
 video.method("stop", function () {
 }, {});
 

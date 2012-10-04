@@ -14,6 +14,8 @@ for managing online digital videos
 
   - [description](#video-properties-description)
 
+  - [tagID](#video-properties-tagID)
+
 
 #### [methods](#video-methods)
 
@@ -53,6 +55,12 @@ for managing online digital videos
 
   - **description** : a brief description of the video
 
+- **tagID** 
+
+  - **type** : string
+
+  - **description** : the immediate parent tag of the video
+
 
 <a name="video-methods"></a> 
 
@@ -67,4 +75,5 @@ for managing online digital videos
 ### video.stop()
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -2,7 +2,7 @@ var resource   = require('resource'),
     stdout = resource.define('stdout'),
     resource = require('resource');
 
-stdout.schema.description = "outputs all big events as new-line delimited JSON fragments";
+stdout.schema.description = "outputs all events as new-line delimited JSON fragments";
 
 resource.onAny(function(data){
   data = data || {};

@@ -25,6 +25,8 @@ for managing nodes
 
 #### [methods](#node-methods)
 
+  - [sh](#node-methods-sh) (options, callback)
+
 
 <a name="node-properties"></a>
 
@@ -92,5 +94,36 @@ for managing nodes
 
 ## methods 
 
+<a name="node-methods-sh"></a> 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+### node.sh(options, callback)
+
+execute shell scripts on a remote node via SSH
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **host** 
+
+      - **type** : string
+
+      - **default** : 0.0.0.0
+
+    - **recipe** 
+
+      - **description** : path to the shell script to run remotely
+
+      - **type** : string
+
+      - **default** : /Users/maraksquires/dev/bigcompany/resources/node/recipes/ls-test
+
+- **callback** 
+
+  - **type** : function
+
+
+{}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -194,4 +194,5 @@ lists members of a group
   - **type** : function
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -1,7 +1,7 @@
 var resource  = require('resource'),
     admin = resource.define('admin');
 
-admin.schema.description = "web based admin panel for big";
+admin.schema.description = "web based admin panel";
 
 resource.use('system');
 resource.use('view');
@@ -277,7 +277,6 @@ function dashboard () {
   var os  = require('os'),
       obj = {};
 
-  obj.name     = "big";
   obj.version  = "v0.0.0";
 
   obj.system = resource.system.info();

@@ -86,6 +86,12 @@ starts an http server
 
       - **type** : string
 
+    - **enableUploads** 
+
+      - **type** : boolean
+
+      - **default** : true
+
 - **callback** 
 
   - **description** : the callback executed after server listen
@@ -95,4 +101,5 @@ starts an http server
   - **required** : false
 
 
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+{"connect":"*","express":"*"}
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
