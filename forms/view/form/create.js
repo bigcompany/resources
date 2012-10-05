@@ -14,14 +14,19 @@ module['exports'] = function (options, callback) {
     resource.create(options.data, function(err, result){
       if (err) {
         $('.message').html(err.message);
+        output = $.html();
+        return callback(null, output);
       } else {
-        $('.message').html('created!');
+        $('.message').html('Created!');
+        $('form').remove();
+        self.parent.get.present({ resource: options.resource, id: result.id }, function(err, re){
+          console.log(err, re)
+          return callback(null, re);
+        });
       }
-      $('form').remove();
-      output = $.html();
-      return callback(null, output);
     });
   } else {
+
     Object.keys(resource.schema.properties).forEach(function (property) {
       var input = resource.schema.properties[property];
       input.name = property;

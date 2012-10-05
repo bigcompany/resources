@@ -9,8 +9,8 @@ module['exports'] = function (options, callback) {
   $('h1').html(options.resource.name + ' ' + options.name);
   $('.description').html(options.method.schema.description);
   $('.methods').html(layout.controls.list.present({ items: methods, root: '/admin/resources/foo/' }));
-
-  var form = resource.forms.generate(options)
+  $('.method').html(options.method.unwrapped.toString());
+  var form = resource.forms.generate(options);
   form.render();
 
   form.present(options, function(err, str){

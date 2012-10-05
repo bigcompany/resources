@@ -5,6 +5,7 @@ module['exports'] = function (options, callback) {
   var resource = options.resource;
   var output = '',
      $ = this.$,
+     self = this,
      inflect = 'foos',
      record = options.data || {},
      entity  = 'foo',
@@ -14,12 +15,17 @@ module['exports'] = function (options, callback) {
     resource.update(options.data, function(err, result){
       if (err) {
         $('.message').html(err.message);
+        $('form').remove();
+        output = $.html();
+        return callback(null, output);
       } else {
-        $('.message').html('updated!');
+        //$('.message').html('Updated!');
+        //$('form').remove();
+        self.parent.get.present({ resource: options.resource, id: result.id }, function(err, re){
+          console.log(err, re);
+          return callback(null, re);
+        });
       }
-      $('form').remove();
-      output = $.html();
-      return callback(null, output);
     });
   }
   else if (typeof options.id !== 'undefined') {
