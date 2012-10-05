@@ -2,19 +2,28 @@ var layout = require('./layout'),
 resource = require('resource');
 
 module['exports'] = function (options, callback) {
-
   var $ = this.$;
-  var output = '';
-  resource.node.find({ role: 'server' }, function(err, results){
+  resource.node.all(function(err, results){
+    $('.nodes').html('');
     results.forEach(function(record){
-      output += ('<tr>'
-             +     '<td><a href="http://' + record.id +'">' + record.id + '</a></td>'
-             +     '<td>' + record.status + '</td>'
-             +     '<td>' + record.lastSeen + '</td>'
-             +   '</tr>');
+      var output;
+      if(record.role === "server") {
+        output = ('<tr>'
+               +     '<td><a href="http://' + record.id +'">' + record.id + '</a></td>'
+               +     '<td>' + record.status + '</td>'
+               +     '<td>' + record.lastSeen + '</td>'
+               +   '</tr>');
+        $('.servers .nodes').append(output);
+      } else if(record.status === "connected") {
+        output = ('<tr>'
+               +     '<td><a href="/admin/resources/node/get/' + record.id +'">' + record.id + '</a></td>'
+               +     '<td>' + record.status + '</td>'
+               +     '<td>' + record.lastSeen + '</td>'
+               +   '</tr>');
+
+        $('.clients .nodes').append(output);
+      }
     });
-    $('.records').html(output);
     callback(null, $.html())
   });
-
 }
