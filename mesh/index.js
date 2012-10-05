@@ -65,6 +65,21 @@ function connect (options, callback) {
   mesh.client.on('open', function () {
 
     //
+    // If a successful connection to a mesh has been made,
+    // store that information locally as a node
+    //
+    resource.node.create({
+      id: options.host + ":" + options.port,
+      port: options.port,
+      host: options.host,
+      status: "connected",
+      lastSeen: new Date().toString(),
+      role: "server"
+    }, function(err, result){
+      // console.log(err, result)
+    });
+
+    //
     // Any mesh client events should be rebroadcasted locally,
     // but they should not be re-emitted
     //
