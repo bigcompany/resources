@@ -101,7 +101,7 @@ function listen (options, callback) {
 
   var engine = require('engine.io');
 
-  mesh.server = engine.listen(options.port)
+  mesh.server = engine.attach(resource.http.server);
 
   mesh.server.on('connection', function (socket) {
 
