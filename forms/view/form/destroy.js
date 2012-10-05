@@ -13,7 +13,7 @@ module['exports'] = function (options, callback) {
 
     if(options.action === "post") {
       resource.destroy(options.id, function(err, result){
-        $('.message').html('deleted!');
+        $('.message').html('Destroyed!');
         $('form').remove();
         output = $.html();
         return callback(null, output);

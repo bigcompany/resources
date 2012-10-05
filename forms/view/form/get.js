@@ -48,13 +48,10 @@ module['exports'] = function(options, callback) {
       //
       // Check to see if there are any remote methods to show
       //
-
-      for(var m in resource) {
-        var _found = false;
-        if (typeof resource[m] === 'function' && resource[m].remote === true) {
-          // Bad string concat man!
+      for(var m in resource.methods) {
+        if(["all", "find", "create", "get"].indexOf(m) === -1) {
           output += ('<tr>'
-                 +     '<td colspan = "2">' + layout.controls.buttons.remote.present({ value: m, id: result.id }) + '</td>'
+                 +     '<td colspan = "2"><a href="../' + m + '/' + options.id  + '">' + m + '</a></td>'
                  +   '</tr>');
         }
       }

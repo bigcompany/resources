@@ -46,8 +46,9 @@ function start (options, callback) {
 
   resource.http.app.get('/admin/mesh', auth, function (req, res, next) {
    view.mesh.render({});
-   str = view.mesh.present({});
-   res.end(str);
+   view.mesh.present({}, function(err, str){
+     res.end(str);
+   });
   });
 
   resource.http.app.get('/admin/docs', auth, function (req, res, next) {
