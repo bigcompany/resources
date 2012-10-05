@@ -27,12 +27,25 @@ node.property('username', {
   "required": false
 });
 
+node.property('role', {
+  "description": "the role of the node",
+  "type": "string",
+  "enum": ["server", "client"],
+  "default": "client"
+});
+
+node.property('status', {
+  "description": "the status of the node",
+  "type": "string",
+  "enum": ["connected", "disconnected"],
+  "default": "disconnected"
+});
+
 node.property('password', {
   "description": "the password used to log into the node",
   "type": "string",
   "required": false
 });
-
 
 node.property('system', {
   "description": "a dump of the node's system information ( from node.process and require('os') module )",
