@@ -5,21 +5,35 @@ var resource  = require('resource'),
 
 replicator.schema.description = "replicator service for big instances";
 
+replicator.property('replication', {
+  "decription": "a replication event",
+  "properties": {
+    "time": {
+      "description": "the date and time of the replication",
+      "type": "string",
+      "default": new Date().toString()
+    },
+    "source": {
+      "description": "the source of the replication ( where the code is coming from )",
+      "type": "string"
+    },
+    "target": {
+      "description": "the target of the replication ( where the code is going )",
+      "type": "string"
+    }
+  }
+});
+
 replicator.method('push', push, {
   "description": "pushes current big instance to a remote big instance",
   "properties": {
     "options": {
       "type": "object",
       "properties": {
-        "path": {
-          "description": "the path of the big instance to push",
+        "host": {
+          "description": "the host to push to",
           "type": "string",
-          "default": "."
-        },
-        "location": {
-          "description": "the location to push the big instance",
-          "type": "string",
-          "default": "localhost"
+          "default": "biginternetcompany.net"
         }
       }
     },
@@ -62,18 +76,9 @@ replicator.method('listen', listen, {
 
 function listen () {
 
-  resource.http.app.get('/replicator', function(req, res) {
-    // TODO: build replicator status page
-    //       - list of snapshots
-    //       - replication log
-    //       - replication sources
-    res.send('<form method="post" enctype="multipart/form-data">'
-        + '<p>snapshot: <input type="file" name="snapshot" /></p>'
-        + '<p><input type="submit" value="Upload" /></p>'
-        + '</form>');
-  });
+  resource.http.app.post('/admin/replicator', function(req, res, next){
 
-  resource.http.app.post('/replicator', function(req, res, next){
+    // TODO: move routes to admin resource, handlers to methods here
 
     //
     // Get the temporary upload location of the file
@@ -216,6 +221,8 @@ function push (options, callback) {
   var request = require('request');
 
   options.name = tarName();
+
+  options.path = process.cwd();
   options.targetPath = process.env.HOME + '/.big/snapshots/local/' + options.name;
 
   // create tarball of local instance
@@ -224,7 +231,8 @@ function push (options, callback) {
     //
     // Connect to remote server
     //
-    var r = request.post('http://localhost:8888/replicator');
+    // TODO: add username:password basic auth info as options
+    var r = request.post('http://admin:admin@' + options.host + '/admin/replicator');
     var form = r.form();
 
     //
