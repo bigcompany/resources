@@ -34,6 +34,11 @@ replicator.method('push', push, {
           "description": "the host to push to",
           "type": "string",
           "default": "biginternetcompany.net"
+        },
+        "port": {
+          "description": "the port to push to",
+          "type": "string",
+          "default": "8888"
         }
       }
     },
@@ -85,16 +90,19 @@ function listen () {
       console.log('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
       console.log('checking out latest commit...');
       var exec = require('child_process').exec;
-      var _command = "export GIT_WORK_TREE=~/.big/ && git checkout -f";
+      var _command = "export GIT_WORK_TREE=/root/big/ && git checkout -f";
       var checkout = exec(_command,
         function (error, stdout, stderr) {
           if (error !== null) {
             // TODO: do something meaningful with the error
             console.log('exec error: ' + error);
           } else {
-            console.log('checkout complete');
+            console.log('checked out lastest commit to: /root/big/');
           }
           push.accept();
+          console.log('restart needed to update');
+          console.log('exiting process... ( there should be a process monitor watching this )')
+          process.exit();
       });
   });
 
@@ -125,7 +133,7 @@ function push (options, callback) {
   console.log('-----------------');
   console.log('DROPPING INTO GIT\n');
 
-  var git  = spawn('git', ['push', 'http://localhost:8888/big', 'master']);
+  var git  = spawn('git', ['push', 'http://' + options.host + ':' + options.port + '/big', 'master']);
 
   git.stdout.on('data', function (data) {
     data = data.toString();
