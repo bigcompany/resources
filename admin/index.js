@@ -7,12 +7,31 @@ resource.use('system');
 resource.use('view');
 resource.use('datasource');
 resource.use('forms');
+resource.use('http');
 
-admin.method('start', start);
+admin.method('listen', listen, {
+  "description": "start a listening admin web server",
+  "properties": {
+    "options": {
+      "type": "object",
+      "properties": {
+        "port": resource.http.schema.properties['port'],
+        "host": resource.http.schema.properties['host']
+      }
+    },
+    "callback": {
+      "type": "function"
+    }
+  }
+});
 
-function start (options, callback) {
+function listen (options, callback) {
   var connect = require('connect');
   var auth = connect.basicAuth('admin', 'admin');
+
+  if(!resource.http.app) {
+    resource.http.listen(options, function(){}); // TODO: figure out if ignoring this callback is a race condition or not
+  }
 
   resource.http.app.use(connect.static(__dirname + '/public'));
 
@@ -177,6 +196,7 @@ function start (options, callback) {
         _id = req.param('id'),
         _method = _resource[req.param('method')];
 
+
     //
     // Pull out all the params from the request based on schema
     //
@@ -201,13 +221,13 @@ function start (options, callback) {
       }
     });
 
-    str = view.method.render({
+    view.method.render({
       label: req.param('resource') + ' - ' + req.param('method'),
       method: _method.unwrapped.toString(),
       schema: JSON.stringify(_method.schema, true, 2)
     });
 
-    str = view.method.present({
+    view.method.present({
       resource: _resource,
       methods: _resource.methods,
       method: _method,
@@ -242,6 +262,7 @@ function start (options, callback) {
     });
   });
 
+  callback(null, resource.http.server);
 }
 
 exports.admin = admin;
