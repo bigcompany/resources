@@ -8,7 +8,7 @@ resources for any occasion
  - [creature](https://github.com/bigcompany/resources/tree/master/creature) for creatures like dragons, unicorns, and ponies
  - [datasource](https://github.com/bigcompany/resources/tree/master/datasource) perists resources to data storage engines
  - [docs](https://github.com/bigcompany/resources/tree/master/docs) generates documentation
- - [forms](https://github.com/bigcompany/resources/tree/master/forms) 
+ - [forms](https://github.com/bigcompany/resources/tree/master/forms) generates HTML forms
  - [http](https://github.com/bigcompany/resources/tree/master/http) HTTP server resource
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes

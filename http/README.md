@@ -17,7 +17,7 @@ HTTP server resource
 
 #### [methods](#http-methods)
 
-  - [start](#http-methods-start) (options, callback)
+  - [listen](#http-methods-listen) (options, callback)
 
 
 <a name="http-properties"></a>
@@ -54,11 +54,11 @@ HTTP server resource
 
 ## methods 
 
-<a name="http-methods-start"></a> 
+<a name="http-methods-listen"></a> 
 
-### http.start(options, callback)
+### http.listen(options, callback)
 
-starts an http server
+starts a listening http server
 
 - **options** 
 
