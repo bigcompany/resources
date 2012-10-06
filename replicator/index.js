@@ -90,7 +90,7 @@ function listen () {
       console.log('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
       console.log('checking out latest commit...');
       var exec = require('child_process').exec;
-      var _command = "export GIT_WORK_TREE=/root/big/ && git checkout -f";
+      var _command = "git --git-dir=/root/big/ checkout -f";
       var checkout = exec(_command,
         function (error, stdout, stderr) {
           if (error !== null) {
@@ -102,7 +102,9 @@ function listen () {
           push.accept();
           console.log('restart needed to update');
           console.log('exiting process... ( there should be a process monitor watching this )')
-          process.exit();
+          process.nextTick(function(){
+            process.exit();
+          });
       });
   });
 
