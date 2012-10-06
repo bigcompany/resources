@@ -1,6 +1,6 @@
 # forms
 
-
+generates HTML forms
 
 ## API
 
@@ -19,7 +19,7 @@
 <a name="forms-properties"></a>
 
 ## properties 
-
+generates HTML forms
 
 - **id** 
 
