@@ -12,8 +12,13 @@ module['exports'] = function (options, callback) {
 
   if (typeof options.data !== 'undefined') {
     $('form').remove();
-    $('.result').html(JSON.stringify(options.data));
+    options.method(options.data, function(err, result) {
+      $('.result').html(JSON.stringify(result, true, 2));
+      callback(null, $.html());
+    });
   } else {
+
+    $('.results').remove();
     if(typeof method.schema.properties !== 'undefined') {
       var _props = method.schema.properties;
       if (typeof method.schema.properties.options.properties !== 'undefined') {
@@ -33,14 +38,8 @@ module['exports'] = function (options, callback) {
     $('legend').html(entity + ' form');
     $('.inputs').html(output);
     $('input[type="submit"]').attr('value', options.name);
+    callback(null, $.html());
+
   }
-
-  output = $.html();
-
-  if (callback) {
-    return callback(null, output);
-  }
-
-  return output;
 
 }
