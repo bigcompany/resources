@@ -90,7 +90,7 @@ function listen () {
       console.log('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
       console.log('checking out latest commit...');
       var exec = require('child_process').exec;
-      var _command = "git --git-dir=/root/big/ checkout -f";
+      var _command = "git --work-tree=/root/big/ checkout -f";
       var checkout = exec(_command,
         function (error, stdout, stderr) {
           if (error !== null) {
