@@ -128,21 +128,26 @@ function sh (options, callback) {
    //
    ssh = spawn('ssh', ['-l' + options.username, options.host, commands]);
 
+   var output = '';
+
    //
    // When the SSH binary exits, execute the callback
    //
    ssh.on('exit', function (code, signal) {
      callback(null, {
        code: code,
-       signal: signal
+       signal: signal,
+       result: output
      })
    });
 
    ssh.stderr.on('data', function (err) {
      process.stdout.write(err);
+     output += err.toString();
    });
 
    ssh.stdout.on('data', function (out) {
+     output += out.toString();
      process.stdout.write(out);
      if (!loggedIn) {
        var stdin = process.openStdin();
@@ -152,7 +157,6 @@ function sh (options, callback) {
      }
      loggedIn = true;
    });
-
 
  });
 
