@@ -19,8 +19,8 @@ http.property("root", {
   "type": "string"
 });
 
-http.method('start', start, {
-  "description": "starts an http server",
+http.method('listen', listen, {
+  "description": "starts a listening http server",
   "properties": {
     "options": {
       "type": "object",
@@ -42,7 +42,7 @@ http.method('start', start, {
   }
 });
 
-function start (options, callback) {
+function listen (options, callback) {
   options = options || {};
 
   var server;
@@ -72,8 +72,7 @@ function start (options, callback) {
     }));
   }
 
-
-   http.server = server = require('http').createServer(app).listen(options.port, options.host, function(){
+   http.server = server = require('http').createServer(app).listen(options.port, options.host, function (){
       callback(null, server);
    });
    http.app = app;
