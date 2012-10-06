@@ -9,7 +9,7 @@ mesh.schema.description = "distributed p2p event emitter mesh";
 //
 // Use the node resource for looking up node schemas
 //
-resource.use('node');
+resource.use('node', { datasource: 'fs' });
 
 mesh.method('connect', connect, {
   "description": "Connect to the big mesh ",
