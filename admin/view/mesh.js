@@ -9,7 +9,7 @@ module['exports'] = function (options, callback) {
       var output;
       if(record.role === "server") {
         output = ('<tr>'
-               +     '<td><a href="http://' + record.id +'">' + record.id + '</a></td>'
+               +     '<td><a href="/admin/resources/node/get/' + record.id +'">' + record.id + '</a></td>'
                +     '<td>' + record.status + '</td>'
                +     '<td>' + record.lastSeen + '</td>'
                +   '</tr>');
