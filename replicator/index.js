@@ -88,6 +88,7 @@ function listen () {
 
   repos.on('push', function (push) {
       console.log('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
+      push.accept();
       console.log('checking out latest commit...');
       var exec = require('child_process').exec;
       var _command = "git --work-tree=/root/big/ checkout -f";
@@ -99,7 +100,6 @@ function listen () {
           } else {
             console.log('checked out lastest commit to: /root/big/');
           }
-          push.accept();
           console.log('restart needed to update');
           console.log('exiting process... ( there should be a process monitor watching this )')
       });
