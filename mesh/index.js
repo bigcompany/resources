@@ -48,6 +48,18 @@ mesh.method('listen', listen, {
 });
 
 //
+// On start, set all outgoing server nodes to disconnected
+//
+resource.node.find({ type: 'server', status: 'connected'}, function(err, results){
+  results.forEach(function(r){
+    r.status = "disconnected";
+    r.save(function(err, result){
+      console.log(err, result.id, result.status)
+    });
+  });
+});
+
+//
 // Connects to a Big mesh to broadcast and listen for events
 //
 function connect (options, callback) {
@@ -120,7 +132,16 @@ function listen (options, callback) {
 
   mesh.server.on('connection', function (socket) {
 
-    resource.emit('mesh::incoming::connection', socket.id);
+    ///
+    // On new connections, create a new node to represent the connection
+    //
+    resource.node.create({
+      id: socket.id,
+      lastSeen: new Date().toString(),
+      role: "client",
+      status: "connected"
+    }, function(err, node){});
+    //resource.emit('mesh::incoming::connection', socket.id);
 
     socket.on('message', function(data){
       var msg = JSON.parse(data);
@@ -131,6 +152,15 @@ function listen (options, callback) {
       //msg.payload.host = socket.remoteAddress.host;
       //msg.payload.port = socket.remoteAddress.port;
       resource.emit(msg.event, msg.payload, false)
+    });
+
+    socket.on('disconnect', function(data){
+      resource.node.create({
+        id: socket.id,
+        lastSeen: new Date().toString(),
+        role: "client",
+        status: "disconnected"
+      }, function(err, node){});
     });
 
     //
