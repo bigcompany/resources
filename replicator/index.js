@@ -91,7 +91,7 @@ function listen () {
       console.log('checking out latest commit...');
       var exec = require('child_process').exec;
       var _command = "git --work-tree=/root/big/ checkout -f";
-      var checkout = exec(_command,
+      var checkout = exec(_command, { cwd: '/tmp/repos/big/' },
         function (error, stdout, stderr) {
           if (error !== null) {
             // TODO: do something meaningful with the error
@@ -102,9 +102,6 @@ function listen () {
           push.accept();
           console.log('restart needed to update');
           console.log('exiting process... ( there should be a process monitor watching this )')
-          process.nextTick(function(){
-            process.exit();
-          });
       });
   });
 
