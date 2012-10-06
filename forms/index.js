@@ -3,6 +3,8 @@ var resource = require('resource'),
 
 resource.use('view');
 
+forms.schema.description = "generates HTML forms";
+
 forms.property("resource", { 
   "description": "the resource which the form represents",
   "type": "any",
