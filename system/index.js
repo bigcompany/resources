@@ -20,11 +20,6 @@ system.method('useradd', useradd, {
           "type": "string",
           "required": true
         },
-        "password": {
-          "description": "the password of the user to be added",
-          "type": "string",
-          "required": true
-        },
         "group": {
           "description": "group to add user to",
           "type": "string",
