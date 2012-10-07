@@ -125,6 +125,11 @@ system.method('members', members, {
   }
 });
 
+// TODO: move this to "process" resource, restart on system should be a system restart
+system.method('kill', function(){
+  // TODO: if kill was a command on system, it would take a pID as an argument
+  process.exit();
+});
 
 function info () {
 
@@ -155,7 +160,7 @@ function useradd (options, callback) {
   }
 
   // useradd -s /usr/local/bin/big-sh -m -g big-users marak
-  var useradd  = spawn('useradd', ['-s', '/usr/local/bin/big-sh', '-m', '-g', options.group, options.name]);
+  var useradd  = spawn('useradd', ['-s', '/usr/local/bin/big-sh', '-m', '-g', options.group, options.user]);
 
   useradd.stdout.on('data', function (data) {
     console.log('stdout: ' + data);
