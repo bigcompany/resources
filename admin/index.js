@@ -91,8 +91,9 @@ function listen (options, callback) {
 
   resource.http.app.get('/admin/replicator', auth, function (req, res, next) {
    view.replicator.render({});
-   str = view.replicator.present({});
-   res.end(str);
+   view.replicator.present({}, function(err, result){
+     res.end(result);
+   });
   });
 
   resource.http.app.get('/admin/datasources', auth, function (req, res, next) {
