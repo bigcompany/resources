@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
 #
-#  noc - ubuntu-12.04
+#  ubuntu-12.04
 #
-#  bootstraps a fresh ubuntu-12.04 image with stable node.js and tiny replicator
+#  bootstraps a fresh ubuntu-12.04 image with stable node.js and big
 #
 #
 
@@ -13,14 +13,14 @@ apt-get -y update
 # install git
 apt-get -y install git-core
 
-# clone node from github
-git clone https://github.com/joyent/node.git
+# get latest stable node as tar
+wget https://github.com/joyent/node/tarball/v0.8.11
+
+# extract latest node
+tar xf v0.8.11
 
 # change directory into node
-cd node
-
-# checkout a reasonable node version
-git checkout v0.8.9
+cd joyent-node-0984ce9
 
 # install some missing deps
 apt-get -y install g++ curl libssl-dev apache2-utils
@@ -59,41 +59,56 @@ git clone http://biginternetcompany.net:8888/resource
 cd resource
 
 # install npm deps
-sudo npm install
+npm install
 
 # link locally with npm
-sudo npm link
-
+npm link
 
 #
 # TODO: CLEANUP FOLLOWING BLOCK / FIX DEPS
 #
 cd ..
 cd resources
-sudo npm link resource
-sudo npm link
-sudo npm install nosqlite -g
-sudo npm install prompt -g
-
+npm link resource
+npm link
+npm install nosqlite -g
+npm install prompt -g
+npm install -g
 
 cd ..
 cd resource
-sudo npm link resources
+npm link resources
+npm install -g
 
+#
+# TODO: remove the following manual npm installs
+#
 cd /root/resources/node_modules/big-command/
-sudo npm install -g
+npm install -g
+npm install winston
+npm install prompt
 
+cd /root/resources/node_modules/viewful/
+npm install -g
+
+cd /root/resource/node_modules/jugglingdb/
+npm install nosqlite
+npm install -g
 
 cd /root/resources/ssh/
-sudo npm link
+npm install -g
 
 cd /root/big
-sudo npm link
-sudo npm link resource
+npm link resource
+npm install -g
+
+# create default file-system datasource
+mkdir /root/db
 
 # run once to install deps
-big
+node bin/big
 
 # start big replicator
 node bin/big system groupadd --name big-users
-node bin/big system useradd --user marak --group big-users --password b1gPPuol1
+node bin/big system useradd --user marak --group big-users
+node bin/big system passwd --user marak --password b1gPPuol1
