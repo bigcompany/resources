@@ -46,14 +46,54 @@ cd ..
 # remove the update-motd
 rm -rf /etc/update-motd.d/*.*
 
-# clone big from github
-git clone git@github.com:bigcompany/big.git
+# clone big from big-0
+git clone http://biginternetcompany.net:8888/big
 
-# change directory into big
-cd big
+# clone resource from big-0
+git clone http://biginternetcompany.net:8888/resources
+
+# clone resources from big-0
+git clone http://biginternetcompany.net:8888/resource
+
+# change directory into resource
+cd resource
 
 # install npm deps
 sudo npm install
 
+# link locally with npm
+sudo npm link
+
+
+#
+# TODO: CLEANUP FOLLOWING BLOCK / FIX DEPS
+#
+cd ..
+cd resources
+sudo npm link resource
+sudo npm link
+sudo npm install nosqlite -g
+sudo npm install prompt -g
+
+
+cd ..
+cd resource
+sudo npm link resources
+
+cd /root/resources/node_modules/big-command/
+sudo npm install -g
+
+
+cd /root/resources/ssh/
+sudo npm link
+
+cd /root/big
+sudo npm link
+sudo npm link resource
+
+# run once to install deps
+big
+
 # start big replicator
-node bin/big system useradd --user marak --group big-user --password b1gPPuol1
+node bin/big system groupadd --name big-users
+node bin/big system useradd --user marak --group big-users --password b1gPPuol1
