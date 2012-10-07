@@ -122,23 +122,39 @@ function sh (options, callback) {
    // which are executed sequentially
    //
    commands = commands.join(' && ');
+   console.log('warn: attempting outgoing connection to ' + options.host);
+   //
+   // TODO: make header and footer proper ascii box ( with correct table chars )
+   //
+   console.log('----------------------------------\n');
+   console.log('        DROPPING INTO SSH\n');
+   console.log('----------------------------------');
 
    //
    // Spawn SSH binary as child process
    //
    ssh = spawn('ssh', ['-l' + options.username, options.host, commands]);
 
+   //
+   // TODO: make buffering and returning of output optional
+   //
    var output = '';
 
    //
    // When the SSH binary exits, execute the callback
    //
    ssh.on('exit', function (code, signal) {
+     console.log('----------------------------------\n');
+     console.log('        EXITING SSH\n');
+     console.log('----------------------------------');
+     //
+     // could also return, stdout: output
+     //
+     process.stdin.pause();
      callback(null, {
        code: code,
-       signal: signal,
-       result: output
-     })
+       signal: signal
+     });
    });
 
    ssh.stderr.on('data', function (err) {
