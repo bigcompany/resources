@@ -84,14 +84,14 @@ function _log (callback) {
 
   var spawn = require('child_process').spawn;
   var out = [],
-      git = spawn('git', [ 'log', '--numstat' ], { cwd: process.cwd() });
+      git = spawn('git', [ 'log', '--numstat' ], { cwd: "/tmp/repos/big/" });
 
   git.stdout.on('data', function (data) {
     out.push(data.toString());
   });
 
   git.stderr.on('data', function (data) {
-    throw e;
+    throw data;
   });
 
   git.on('exit', function (code) {
