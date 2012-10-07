@@ -62,7 +62,7 @@ system.method('userdel', userdel, {
   }
 });
 
-system.method('passwd', userdel, {
+system.method('passwd', passwd, {
   "description": "changes a user's password",
   "properties": {
     "options": {
@@ -183,7 +183,7 @@ function passwd (options, callback) {
   }
 
   // echo -e "foo\nfoo" | passwd marak
-  var passwd  = spawn('echo', ['-e', '"' + options.password + '\n' + options.password + '"', '|', 'passwd', options.name]);
+  var passwd  = spawn('echo', ['-e', '"' + options.password + '\n' + options.password + '"', '|', 'passwd', options.user]);
 
   passwd.stdout.on('data', function (data) {
     console.log('stdout: ' + data);
