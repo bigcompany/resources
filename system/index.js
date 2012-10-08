@@ -178,7 +178,8 @@ function passwd (options, callback) {
   }
 
   // echo -e "foo\nfoo" | passwd marak
-  var passwd  = spawn('echo', ['-e', '"' + options.password + '\n' + options.password + '"', '|', 'passwd', options.user]);
+  // passwd marak
+  var passwd  = spawn('passwd', [options.user]);
 
   passwd.stdout.on('data', function (data) {
     console.log('stdout: ' + data);
