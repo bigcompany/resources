@@ -102,11 +102,9 @@ cd /root/big
 npm link resource
 npm install -g
 
-# create default file-system datasource
-mkdir /root/db
-
 # run once to install deps
 node bin/big
+big
 
 # start big replicator
 node bin/big system groupadd --name big-users
