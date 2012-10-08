@@ -171,28 +171,42 @@ function useradd (options, callback) {
   });
 };
 
-function passwd (options, callback) {
+function passwd(options, cb) {
 
-  if (process.platform !== "linux") {
-    return callback(new Error('command only available for linux systems'));
-  }
+ var passwd,
+     stderr = [],
+     stdout = [];
 
-  // echo -e "foo\nfoo" | passwd marak
-  // passwd marak
-  var passwd  = spawn('passwd', [options.user]);
+ passwd = spawn('passwd', [ options.user ]);
 
-  passwd.stdout.on('data', function (data) {
-    console.log('stdout: ' + data);
-  });
+ passwd.stdout.on('data', function (data) {
+   stdout.push(data.toString());
+ });
 
-  passwd.stderr.on('data', function (data) {
-    console.log('stderr: ' + data);
-  });
+ passwd.stderr.on('data', function (data) {
+   var str = data.toString();
+   var expects = {
+     '(current) UNIX password: ': options.current,
+     'Enter new UNIX password: ': options.password,
+     'Retype new UNIX password: ': options.password
+   };
+   // TODO: expect `Bad: new password is too simple`
+   var out = expects[str];
+   if (out) {
+     passwd.stdin.write(out + '\n');
+   }
+   else {
+     stderr.push(str);
+   }
+ });
 
-  passwd.on('exit', function (code) {
-    console.log('child process exited with code ' + code);
-    callback(null, options);
-  });
+ passwd.on('exit', function (c) {
+   var err = null;
+   if (c) {
+     err = new Error(stderr.join('').split('\n')[0]);
+   }
+   cb(err, stdout.join(''), stderr.join(''));
+ });
 
 };
 
