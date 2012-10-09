@@ -12,6 +12,7 @@ module['exports'] = function (options, callback) {
   $('.method').html(options.method.unwrapped.toString());
   var form = resource.forms.generate(options);
   form.render();
+  $('.back').attr('href', '/admin/resources/' + options.resource.name);
 
   form.present(options, function(err, str){
     $('.form').html(str);
