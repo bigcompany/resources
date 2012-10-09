@@ -209,9 +209,9 @@ function listen (options, callback) {
 
     var props, str, data = {};
 
-    props = _method.schema.properties;
+    props = _method.schema.properties || {};
 
-    if(typeof _method.schema.properties.options !== 'undefined') {
+    if(typeof _method.schema.properties !== 'undefined' && typeof _method.schema.properties.options !== 'undefined') {
       props = _method.schema.properties.options.properties;
     }
 
