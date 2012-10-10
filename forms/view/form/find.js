@@ -1,17 +1,19 @@
-var layout = require('./layout');
+var layout = require('./layout'),
+    resource = require('resource');
+
 
 module['exports'] = function(options, callback) {
 
-  var resource = options.resource;
+  var r = resource.resources[options.resource];
 
-  if(typeof resource === "undefined") {
+  if(typeof r === "undefined") {
     return callback(new Error('No resource specified'));
   }
 
  var $ = this.$,
      self = this,
      output = '',
-     entity = resource.name || 'unknown';
+     entity = options.resource || 'unknown';
 
   if (options.data) {
 
@@ -25,7 +27,7 @@ module['exports'] = function(options, callback) {
       }
     });
 
-    resource.find(options.data, function(err, results){
+    r.find(options.data, function(err, results){
       if(results.length > 0) {
         $('.message').remove();
         $('form').remove();
@@ -33,7 +35,7 @@ module['exports'] = function(options, callback) {
         results.forEach(function(record){
           output += ('<tr>'
                  +     '<td><a href="./get/' + record.id +'">' + record.id + '</a></td>'
-                 +     '<td><a href="./update/'  + record.id + '">' + 'Edit' + '</a></td>'
+                 +     '<td><a href="./update/'  + record.id + '">' + 'Update' + '</a></td>'
                  +     '<td><a href="./destroy/'  + record.id + '">' + 'Destroy' + '</a></td>'
                  +   '</tr>');
         });
@@ -47,24 +49,29 @@ module['exports'] = function(options, callback) {
     });
   } else {
     $('table').remove();
-    var _props = resource.methods.find.schema.properties.options.properties;
+    var _props = r.methods.find.schema.properties.options.properties;
 
-    Object.keys(_props).forEach(function (property) {
-      var input = _props[property];
-      input.name = property;
-      input.value = '';
-      if (input.writeable !== false) {
-        output += layout.renderControl(input, options);
-      }
-    });
 
     $('.back').html('back to ' + entity);
     $('.back').attr('href', '/' + entity);
 
-    $('.inputs').html(output);
-
-    output = $.html();
-    return callback(null, output);
+    cont = function(err, result) {
+      if (result) {
+        output += result;
+      }
+      if(arr.length === 0) {
+        $('.inputs').html(output);
+        return callback(null, $.html())
+      }
+      var property = arr.pop();
+      var input = _props[property];
+      input.name = property;
+      input.value = '';
+      layout.renderControl(input, options, cont);
+    };
+    var arr = Object.keys(_props);
+    arr.reverse();
+    cont();
 
   }
 

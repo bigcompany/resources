@@ -9,7 +9,7 @@ controls.load();
 //
 layout.controls = controls;
 
-layout.renderControl = function (control, options) {
+layout.renderControl = function (control, options, callback) {
   var output = "", _control, v;
   //
   // determine the type of control to render
@@ -22,6 +22,10 @@ layout.renderControl = function (control, options) {
 
   if(Array.isArray(control.enum)){
     _control = "enum";
+  }
+
+  if (typeof control.key !== 'undefined') {
+    _control = "key";
   }
 
   //
@@ -38,6 +42,5 @@ layout.renderControl = function (control, options) {
   v = controls.inputs[_control].index || controls.inputs[_control];
 
   // Present the View template
-  output = v.present(control, options);
-  return output;
+  v.present(control, options, callback);
 }

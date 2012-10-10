@@ -3,16 +3,17 @@ var layout = require('./layout'),
 
 module['exports'] = function (options, callback) {
 
-  var methods = options.methods,
+  var r = resource.resources[options.resource],
+      method = r.methods[options.method],
       $ = this.$;
 
-  $('h1').html(options.resource.name + ' ' + options.name);
-  $('.description').html(options.method.schema.description);
-  $('.methods').html(layout.controls.list.present({ items: methods, root: '/admin/resources/foo/' }));
-  $('.method').html(options.method.unwrapped.toString());
+  $('h1').html(options.resource + ' ' + method.name);
+  $('.description').html(method.schema.description);
+  $('.methods').html(layout.controls.list.present({ items: r.methods, root: '/admin/resources/foo/' }));
+  $('.method').html(method.unwrapped.toString());
   var form = resource.forms.generate(options);
   form.render();
-  $('.back').attr('href', '/admin/resources/' + options.resource.name);
+  $('.back').attr('href', '/admin/resources/' + options.resource);
 
   form.present(options, function(err, str){
     $('.form').html(str);

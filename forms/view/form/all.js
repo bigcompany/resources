@@ -1,32 +1,36 @@
+var resource = require('resource');
+
 module['exports'] = function(options, callback) {
 
-  var resource = options.resource,
+  var r = resource.resources[options.resource],
       data     = options.data;
-      
 
-  if(typeof resource === "undefined") {
+  if(typeof r === "undefined") {
     return callback(new Error('No resource specified'));
   }
   var $             = this.$,
       output        = '',
-      entity        = resource.lowerResource;
-  
-  resource.all(function(err, data){
+      entity        = options.resource;
+
+  r.all(function(err, data){
 
     if(data.length > 0) {
       $('.message').remove();
       $('table th').html(entity);
 
       data.forEach(function(record){
+
+        var label = record.title || record.name || record.id;
+
         output += ('<tr>'
-               +     '<td><a href="./get/' + record.id +'">' + record.id + '</a></td>'
-               +     '<td><a href="./update/'  + record.id + '">' + 'Edit' + '</a></td>'
+               +     '<td><a href="./get/' + record.id +'">' + label + '</a></td>'
+               +     '<td><a href="./update/'  + record.id + '">' + 'Update' + '</a></td>'
                +     '<td><a href="./destroy/'  + record.id + '">' + 'Destroy' + '</a></td>'
                +   '</tr>');
       });
       $('h1').html(entity);
       $('.records').html(output);
-      $('.schema').html(JSON.stringify(resource.schema.properties, true, 2));
+      $('.schema').html(JSON.stringify(r.schema.properties, true, 2));
       $('.create').html('Create new ' + entity);
       $('.create').attr('href', '/' + entity + '/new');
 

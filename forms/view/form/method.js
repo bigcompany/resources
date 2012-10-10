@@ -1,4 +1,5 @@
-var layout = require('./layout');
+var layout = require('./layout'),
+    resource = require('resource');
 
 module['exports'] = function (options, callback) {
 
@@ -7,38 +8,55 @@ module['exports'] = function (options, callback) {
   var $ = this.$,
     self = this,
     output = '',
-    method = options.method,
-    entity = options.name || 'unknown';
+    method = resource[options.resource].methods[options.method],
+    entity = options.resource || 'unknown';
 
   if (typeof options.data !== 'undefined') {
     $('form').remove();
-    options.method(options.data, function(err, result) {
+    method(options.data, function(err, result) {
       $('.result').html(JSON.stringify(result, true, 2));
       callback(null, $.html());
     });
   } else {
 
     $('.results').remove();
+
     if(typeof method.schema.properties !== 'undefined') {
-      var _props = method.schema.properties;
-      if (typeof method.schema.properties.options.properties !== 'undefined') {
+      var _props = method.schema.properties || {};
+
+      if (method.schema.properties.options && typeof method.schema.properties.options.properties !== 'undefined') {
         _props = method.schema.properties.options.properties;
       }
-      Object.keys(_props).forEach(function (property) {
+
+      $('h1').html(entity + ' - create');
+      $('legend').html(entity + ' form');
+      $('input[type="submit"]').attr('value', options.name);
+
+      cont = function(err, result) {
+        if (result) {
+          output += result;
+        }
+        if(arr.length === 0) {
+          $('.inputs').html(output);
+          return callback(null, $.html())
+        }
+        var property = arr.pop();
         var input = _props[property];
         input.name = property;
         input.value = input.default || '';
-        if (input.writeable !== false) {
-          output += layout.renderControl(input, options);
-        }
-      });
-    }
+        layout.renderControl(input, options, function(err, str){
+          cont(err, str);
+        });
+      };
 
-    $('h1').html(entity + ' - create');
-    $('legend').html(entity + ' form');
-    $('.inputs').html(output);
-    $('input[type="submit"]').attr('value', options.name);
-    callback(null, $.html());
+      var arr = Object.keys(_props);
+      console.log(arr);
+      arr.reverse();
+      cont();
+
+    } else {
+      callback(null, $.html());
+    }
 
   }
 

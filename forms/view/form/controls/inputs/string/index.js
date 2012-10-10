@@ -1,7 +1,6 @@
 //
 // string.js - input fields for String types
 //
-
 module['exports'] = function (input, options, callback) {
   //
   // Todo: This load statement should be moved to Viewful
@@ -37,5 +36,5 @@ module['exports'] = function (input, options, callback) {
     $('.add-on').html('<i class="icon-envelope"></i>');
   }
 
-  return $.html();
+  return callback(null, $.html());
 };

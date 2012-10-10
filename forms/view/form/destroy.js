@@ -1,8 +1,9 @@
-var layout = require('./layout');
+var layout = require('./layout'),
+    resource = require('resource');
 
 module['exports'] = function (options, callback) {
 
-  var resource = options.resource,
+  var r = resource.resources[options.resource],
        $ = this.$,
        output = '',
        record = options.data;
@@ -10,9 +11,8 @@ module['exports'] = function (options, callback) {
     //
     // Todo: perform check if record exists
     //
-
     if(options.action === "post") {
-      resource.destroy(options.id, function(err, result){
+      r.destroy(options.id, function(err, result){
         $('.message').html('Destroyed!');
         $('form').remove();
         output = $.html();
