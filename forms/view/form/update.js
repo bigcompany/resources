@@ -1,18 +1,20 @@
-var layout = require('./layout');
+var layout = require('./layout'),
+    resource = require('resource');
 
 module['exports'] = function (options, callback) {
 
-  var resource = options.resource;
+  var r = resource.resources[options.resource];
+
   var output = '',
      $ = this.$,
      self = this,
      inflect = 'foos',
      record = options.data || {},
      entity  = 'foo',
-     _props = resource.methods.update.schema.properties.options.properties;
+     _props = r.methods.update.schema.properties.options.properties;
 
   if (options.data) {
-    resource.update(options.data, function(err, result){
+    r.update(options.data, function(err, result){
       if (err) {
         $('.message').html(err.message);
         $('form').remove();
@@ -30,20 +32,31 @@ module['exports'] = function (options, callback) {
   }
   else if (typeof options.id !== 'undefined') {
 
-    resource.get(options.id, function(err, record){
-      var schema = resource.schema.properties;
-      Object.keys(resource.schema.properties).forEach(function (property) {
-        var schema = resource.schema.properties[property];
+    r.get(options.id, function(err, record){
+      cont = function(err, result) {
+        if (result) {
+          output += result;
+        }
+        if(arr.length === 0) {
+          $('.inputs').html(output);
+          return callback(null, $.html())
+        }
+        var property = arr.pop();
+        var schema = r.schema.properties[property];
         var input = {};
         input.description = schema.description;
         input.name = property;
+        input.key = schema.key;
         input.value = record[property] || '';
         input.format = schema.format;
         input.type = schema.type;
         input.enum = schema.enum || '';
         input.editable = schema.editable;
-        output += layout.renderControl(input, options);
-      });
+        layout.renderControl(input, options, cont);
+      };
+      var arr = Object.keys(r.schema.properties);
+      arr.reverse();
+      cont();
 
       if (options.updated) {
         $('h1').html('Updated!');
@@ -53,12 +66,7 @@ module['exports'] = function (options, callback) {
 
       $('.back').html('back to ' + entity);
       $('.back').attr('href', '/' + entity);
-      $('.inputs').html(output);
-      $('legend').html(options.resource.methods.update.schema.description);
-      //$('form').attr('action', '/' + entity + '/' + record.id + '/update');
-
-      output = $.html();
-      return callback(null, output);
+      $('legend').html(r.methods.update.schema.description);
 
     });
 
@@ -70,18 +78,13 @@ module['exports'] = function (options, callback) {
     var input = _props['id'];
     input.name = 'id';
     input.value = input.default || '';
-    if (input.writeable !== false) {
-      output += layout.renderControl(input, options);
-    }
-
-    $('h1').html(entity + ' - create');
-    $('legend').html(entity + ' form');
-    $('.inputs').html(output);
-    $('input[type="submit"]').attr('value', 'Get ' + entity);
-
-    output = $.html();
-
-    return callback(null, output);
+    layout.renderControl(input, options, function(err, re){
+      $('h1').html(entity + ' - create');
+      $('legend').html(entity + ' form');
+      $('input[type="submit"]').attr('value', 'Get ' + entity);
+      $('.inputs').html(re);
+      return callback(null, $.html());
+    });
 
   }
 

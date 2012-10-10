@@ -130,6 +130,13 @@ function listen (options, callback) {
 
   });
 
+  resource.http.app.get('/admin/resources/:resource/:method', auth, function (req, res, next) {
+    view.method.render();
+    view.method.present({ resource: req.param('resource'), method: req.param('method') }, function(err, str){
+      res.end(str);
+    });
+  });
+
   resource.http.app.post('/admin/resources/:resource/:method', auth, function (req, res, next) {
 
     var _resource = resource.resources[req.param('resource')],
@@ -153,24 +160,20 @@ function listen (options, callback) {
     }
 
     Object.keys(props).forEach(function(prop) {
-      data[prop] = req.param(prop);
+      if(typeof req.param(prop) !== 'undefined') {
+        data[prop] = req.param(prop);
+      }
       if(props[prop].type === "number") {
         data[prop] = Number(req.param(prop));
       }
     });
 
-    str = view.method.render({
-      label: req.param('resource') + ' - ' + req.param('method'),
-      method: _method.unwrapped.toString(),
-      schema: JSON.stringify(_method.schema, true, 2)
-    });
-
-    str = view.method.present({
-      resource: _resource,
-      methods: _resource.methods,
-      method: _method, name:
-      req.param('method'),
+    view.method.render();
+    view.method.present({
+      resource: req.param('resource'),
+      method: req.param('method'),
       data: data,
+      action: 'post',
       id: id
     }, function(err, str){
       res.end(str);
@@ -178,25 +181,21 @@ function listen (options, callback) {
 
   });
 
-  resource.http.app.get('/admin/resources/:resource/:method', auth, function (req, res, next) {
-    var _resource = resource.resources[req.param('resource')],
-        _method = _resource[req.param('method')],
-        str;
-    str = view.method.render({
-      label: req.param('resource') + ' - ' + req.param('method'),
-      method: _method.unwrapped.toString(),
-      schema: JSON.stringify(_method.schema, true, 2)
-    });
-    str = view.method.present({ resource: _resource, methods: _resource.methods, method: _method, name: req.param('method') }, function(err, str){
+  resource.http.app.get('/admin/resources/:resource/:method/:id', auth, function (req, res, next) {
+    var _id = req.param('id');
+    view.method.render();
+    view.method.present({
+      resource: req.param('resource'),
+      method: req.param('method'),
+      id: _id
+    }, function(err, str){
       res.end(str);
     });
   });
 
   resource.http.app.post('/admin/resources/:resource/:method/:id', auth, function (req, res, next) {
-    var _resource = resource.resources[req.param('resource')],
-        _id = req.param('id'),
-        _method = _resource[req.param('method')];
 
+    var _method = resource.resources[req.param('resource')].methods[req.param('method')];
 
     //
     // Pull out all the params from the request based on schema
@@ -222,18 +221,11 @@ function listen (options, callback) {
       }
     });
 
-    view.method.render({
-      label: req.param('resource') + ' - ' + req.param('method'),
-      method: _method.unwrapped.toString(),
-      schema: JSON.stringify(_method.schema, true, 2)
-    });
-
+    view.method.render();
     view.method.present({
-      resource: _resource,
-      methods: _resource.methods,
-      method: _method,
-      name: req.param('method'),
-      id: _id,
+      resource: req.param('resource'),
+      method: req.param('method'),
+      id: req.param('id'),
       data: data,
       action: 'post'
     }, function(err, str){
@@ -242,26 +234,6 @@ function listen (options, callback) {
 
   });
 
-  resource.http.app.get('/admin/resources/:resource/:method/:id', auth, function (req, res, next) {
-    var _resource = resource.resources[req.param('resource')],
-        _id = req.param('id'),
-        _method = _resource[req.param('method')],
-        str;
-    str = view.method.render({
-      label: req.param('resource') + ' - ' + req.param('method'),
-      method: _method.unwrapped.toString(),
-      schema: JSON.stringify(_method.schema, true, 2)
-    });
-    str = view.method.present({
-      resource: _resource,
-      methods: _resource.methods,
-      method: _method,
-      name: req.param('method'),
-      id: _id
-    }, function(err, str){
-      res.end(str);
-    });
-  });
 
   callback(null, resource.http.server);
 }

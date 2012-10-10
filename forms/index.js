@@ -23,7 +23,7 @@ view.load();
 
 function generate (options) {
   var str = '', form;
-  form = view.form[options.name] || view.form['method'];
+  form = view.form[options.method] || view.form['method'];
   return form;
 };
 
