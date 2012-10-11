@@ -12,14 +12,24 @@ module['exports'] = function (options, callback) {
     entity = options.resource || 'unknown';
 
   if (typeof options.data !== 'undefined') {
-    $('form').remove();
     method(options.data, function(err, result) {
-      $('.result').html(JSON.stringify(result, true, 2));
-      callback(null, $.html());
+      if (err) {
+        err.errors.forEach(function(e){
+          $('.result').append(JSON.stringify(e));
+        });
+        return showForm(options.data, err.errors);
+      } else {
+        $('form').remove();
+        $('.result').html(JSON.stringify(result, true, 2));
+        return callback(null, $.html());
+      }
     });
   } else {
+    showForm();
+  }
 
-    $('.results').remove();
+  function showForm (data, errors) {
+    data = data || {};
 
     if(typeof method.schema.properties !== 'undefined') {
       var _props = method.schema.properties || {};
@@ -41,23 +51,33 @@ module['exports'] = function (options, callback) {
           return callback(null, $.html())
         }
         var property = arr.pop();
-        var input = _props[property];
+        var input = {};
+        for(var p in _props[property]) {
+          input[p] = _props[property][p];
+        };
         input.name = property;
-        input.value = input.default || '';
+        for(var e in errors) {
+          if (errors[e].property === input.name) {
+            input.error = errors[e];
+          }
+        }
+        if(typeof data[input.name] !== 'undefined') {
+          input.value = data[input.name];
+        } else {
+          input.value = input.default || '';
+        }
         layout.renderControl(input, options, function(err, str){
           cont(err, str);
         });
       };
 
       var arr = Object.keys(_props);
-      console.log(arr);
       arr.reverse();
       cont();
 
     } else {
       callback(null, $.html());
     }
-
   }
 
 }

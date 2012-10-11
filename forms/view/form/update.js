@@ -16,10 +16,10 @@ module['exports'] = function (options, callback) {
   if (options.data) {
     r.update(options.data, function(err, result){
       if (err) {
-        $('.message').html(err.message);
-        $('form').remove();
-        output = $.html();
-        return callback(null, output);
+        err.errors.forEach(function(e){
+          $('.result').append(JSON.stringify(e));
+        });
+        showForm(options.data, err.errors);
       } else {
         //$('.message').html('Updated!');
         //$('form').remove();
@@ -31,52 +31,15 @@ module['exports'] = function (options, callback) {
     });
   }
   else if (typeof options.id !== 'undefined') {
-
-    r.get(options.id, function(err, record){
-      cont = function(err, result) {
-        if (result) {
-          output += result;
-        }
-        if(arr.length === 0) {
-          $('.inputs').html(output);
-          return callback(null, $.html())
-        }
-        var property = arr.pop();
-        var schema = r.schema.properties[property];
-        var input = {};
-        input.description = schema.description;
-        input.name = property;
-        input.key = schema.key;
-        input.value = record[property] || '';
-        input.format = schema.format;
-        input.type = schema.type;
-        input.enum = schema.enum || '';
-        input.editable = schema.editable;
-        layout.renderControl(input, options, cont);
-      };
-      var arr = Object.keys(r.schema.properties);
-      arr.reverse();
-      cont();
-
-      if (options.updated) {
-        $('h1').html('Updated!');
-      } else {
-        $('h1').html('Update ' + (record.id || entity));
-      }
-
-      $('.back').html('back to ' + entity);
-      $('.back').attr('href', '/' + entity);
-      $('legend').html(r.methods.update.schema.description);
-
+    r.get(options.id, function(err, record) {
+      showForm(record);
     });
-
-  } 
-
+  }
   else {
-
     $('table').remove();
     var input = _props['id'];
     input.name = 'id';
+
     input.value = input.default || '';
     layout.renderControl(input, options, function(err, re){
       $('h1').html(entity + ' - create');
@@ -85,7 +48,50 @@ module['exports'] = function (options, callback) {
       $('.inputs').html(re);
       return callback(null, $.html());
     });
-
   }
 
- };
+  function showForm (data, errors)  {
+    cont = function(err, result) {
+      if (result) {
+        output += result;
+      }
+      if(arr.length === 0) {
+        $('.inputs').html(output);
+        return callback(null, $.html())
+      }
+      var property = arr.pop();
+      var schema = r.schema.properties[property];
+      var input = {};
+      input.description = schema.description;
+      input.name = property;
+      input.key = schema.key;
+      input.value = record[property] || '';
+      input.format = schema.format;
+      input.type = schema.type;
+      input.enum = schema.enum || '';
+      input.editable = schema.editable;
+
+      for(var e in errors) {
+        if (errors[e].property === input.name) {
+          input.error = errors[e];
+        }
+      }
+
+      layout.renderControl(input, options, cont);
+    };
+    var arr = Object.keys(r.schema.properties);
+    arr.reverse();
+    cont();
+
+    if (options.updated) {
+      $('h1').html('Updated!');
+    } else {
+      $('h1').html('Update ' + (record.id || entity));
+    }
+
+    $('.back').html('back to ' + entity);
+    $('.back').attr('href', '/' + entity);
+    $('legend').html(r.methods.update.schema.description);
+  }
+
+};
