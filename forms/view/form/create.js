@@ -3,38 +3,40 @@ var layout = require('./layout'),
 
 module['exports'] = function (options, callback) {
 
-  options = options || {};
-  var r = resource.resources[options.resource];
-
+ options = options || {};
+ var r = resource.resources[options.resource];
  var $ = this.$,
      self = this,
      output = '',
-     entity = resource.name || 'unknown';
+     entity = options.resource || 'unknown';
 
   if (options.data) {
     r.create(options.data, function(err, result){
       if (err) {
-        $('.message').html(err.message);
-        output = $.html();
-        return callback(null, output);
+        err.errors.forEach(function(e){
+          $('.message').append(JSON.stringify(e));
+        });
+        showForm(options.data, err.errors);
       } else {
         $('.message').html('Created!');
         $('form').remove();
         self.parent.get.present({ resource: options.resource, id: result.id }, function(err, re){
-          console.log(err, re)
           return callback(null, re);
         });
       }
     });
   } else {
+    showForm();
+  }
+
+  function showForm (data, errors) {
 
     $('h1').html(entity + ' - create');
     $('.back').html('back to ' + entity);
     $('.back').attr('href', '/' + entity);
-
     $('legend').html(r.methods.create.schema.description);
     $('input[type="submit"]').attr('value', 'Create new ' + entity);
-    
+
     cont = function(err, result) {
       if (result) {
         output += result;
@@ -46,13 +48,17 @@ module['exports'] = function (options, callback) {
       var property = arr.pop();
       var input = r.schema.properties[property];
       input.name = property;
+      for(var e in errors) {
+        if (errors[e].property === input.name) {
+          input.error = errors[e];
+        }
+      }
       input.value = input.default || '';
       layout.renderControl(input, options, cont);
     };
+
     var arr = Object.keys(r.schema.properties);
     arr.reverse();
-    cont();
-
-  }
+    cont();  }
 
 }
