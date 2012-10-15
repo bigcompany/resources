@@ -15,6 +15,12 @@ node.property("host", {
   "description": "the host of the node"
 });
 
+node.property("name", {
+  "type": "string",
+  "description": "the name of the node"
+});
+
+
 node.property('events', {
   "description": "the total amount of events processed by this node",
   "type": "number"
@@ -49,7 +55,7 @@ node.property('password', {
 
 node.property('system', {
   "description": "a dump of the node's system information ( from node.process and require('os') module )",
-  "type": "object"
+  "type": "any"
 });
 
 node.property('lastSeen', {
@@ -79,6 +85,18 @@ node.method('sh', sh, {
     }
   }
 });
+
+
+//
+// Before any nodes are created...
+// If they do not have a name, create a new named based on the host port tuple
+//
+node.before('create', function(data, next){
+  if(typeof data.name !== 'undefined') {
+    data.name = data.host + ":" + data.port;
+  }
+  next(null, data);
+})
 
 var spawn = require('child_process').spawn,
     fs = require('fs'),
