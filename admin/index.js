@@ -6,6 +6,7 @@ admin.schema.description = "web based admin panel";
 resource.use('system');
 resource.use('view');
 resource.use('datasource');
+
 resource.use('forms');
 resource.use('http');
 
@@ -96,6 +97,13 @@ function listen (options, callback) {
    });
   });
 
+  resource.http.app.get('/admin/hooks', auth, function (req, res, next) {
+   view.hooks.render({});
+   view.hooks.present({}, function(err, result){
+     res.end(result);
+   });
+  });
+
   resource.http.app.get('/admin/datasources', auth, function (req, res, next) {
    view.datasources.render({});
    resource.datasource.all(function(err, results){
@@ -146,9 +154,6 @@ function listen (options, callback) {
         data = {},
         props = _method.schema.properties || {};
 
-    //
-    // Pull out all the params from the request based on schema
-    //
     if(typeof _method.schema === 'undefined') {
       _method.schema = {
         properties: {}
@@ -169,6 +174,7 @@ function listen (options, callback) {
     });
 
     view.method.render();
+
     view.method.present({
       resource: req.param('resource'),
       method: req.param('method'),
