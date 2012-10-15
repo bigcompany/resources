@@ -51,4 +51,52 @@ datasource.property('password', {
   description: "the password used to connect to the datasource"
 });
 
+datasource.method('test', test, {
+  description: "tests the datasource connection",
+  properties: {
+    "datasource": {
+      "description": "the name of the datasource to test",
+      "type": "string",
+      "key": "datasource"
+    }
+  }
+});
+
+function test (id, callback) {
+  //
+  // Get the datasource that will be tested
+  //
+  datasource.get(id, function(err, record){
+    if (err) {
+      return callback(err);
+    }
+    //
+    // Attempt connection based on type
+    //
+    var type = record.type,
+        result;
+    switch (type) {
+      case 'memory':
+        result = true;
+      break;
+      case 'file-system':
+        // TODO: check for for existend of fs database location
+        result = true;
+      break;
+      case 'couch':
+        // TODO:
+        result = false;
+      break;
+      case 'mongo':
+        // TODO:
+        result = false;
+      break;
+      default:
+        result = false;
+      break;
+    }
+    callback(null, { ok: result })
+  })
+}
+
 exports.datasource = datasource;
