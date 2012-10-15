@@ -24,6 +24,9 @@ module['exports'] = function (options, callback) {
         $('.clients .nodes').append(output);
       }
     });
+    if($('.clients .nodes').length === 1) {
+      $('.clients').remove()
+    }
     callback(null, $.html())
   });
 }
