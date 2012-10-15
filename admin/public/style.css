@@ -1,4 +1,9 @@
-@import url('http://fonts.googleapis.com/css?family=Muli');
+@font-face {
+  font-family: 'Muli';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Muli'), url(font.woff) format('woff');
+}
 /*!
  * Bootstrap v2.1.1
  *
