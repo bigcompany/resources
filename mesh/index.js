@@ -6,10 +6,8 @@ var resource = require('resource'),
 
 mesh.schema.description = "distributed p2p event emitter mesh";
 
-//
-// Use the node resource for looking up node schemas
-//
 resource.use('node', { datasource: 'fs' });
+resource.use('system');
 
 mesh.method('connect', connect, {
   "description": "Connect to the big mesh ",
@@ -47,49 +45,25 @@ mesh.method('listen', listen, {
   }
 });
 
-//
-// On start, set all outgoing server nodes to disconnected
-//
-resource.node.find({ type: 'server', status: 'connected'}, function(err, results){
-  results.forEach(function(r){
-    r.status = "disconnected";
-    r.save(function(err, result){
-      console.log(err, result.id, result.status)
-    });
-  });
+mesh.method('connected', connected, {
+  "description": "succesffuly connected to a big mesh ",
+  "properties": {
+    "options": {
+      "type": "object",
+      "properties": {
+        "port": resource.node.schema.properties['port'],
+        "host": resource.node.schema.properties['host']
+      }
+    },
+    "callback": {
+      "description": "the callback executed after connecting to mesh",
+      "type": "function",
+      "required": false
+    }
+  }
 });
 
-//
-// Connects to a Big mesh to broadcast and listen for events
-//
-function connect (options, callback) {
-
-  var client = require('engine.io-client');
-
-  resource.use('system');
-
-  mesh.client = new client.Socket({ host: options.host, port: options.port });
-
-  mesh.client.on('error', function (err) {
-    console.log(err)
-  });
-
-  mesh.client.on('open', function () {
-
-    //
-    // If a successful connection to a mesh has been made,
-    // store that information locally as a node
-    //
-    resource.node.create({
-      id: options.host + ":" + options.port,
-      port: options.port,
-      host: options.host,
-      status: "connected",
-      lastSeen: new Date().toString(),
-      role: "server"
-    }, function(err, result){
-      // console.log(err, result)
-    });
+function connected (options, callback) {
 
     //
     // Any mesh client events should be rebroadcasted locally,
@@ -99,6 +73,11 @@ function connect (options, callback) {
       var msg = JSON.parse(data);
       resource.emit(msg.event, msg.payload, false)
     })
+
+    /*
+
+       Working, but commented out for now.
+       Should should make this configurable or move it somewhere else
 
     //
     // Any local events, should be re-broadcasted back to mesh,
@@ -113,25 +92,31 @@ function connect (options, callback) {
         mesh.client.send(JSON.stringify(msg));
       }
     });
+    */
 
     //
-    // Send a friendly phone-home method
+    // Send a friendly phone-home message
     // Feel free to comment this line out at any time
     //
-    resource.emit('node::ohai', resource.system.info());
+    mesh.client.send(JSON.stringify({ event: 'node::ohai', payload: resource.system.info() }));
 
-  });
+    //
+    // Continue with information about the newly connected to node
+    //
+    callback(null, {
+      id: options.host + ":" + options.port,
+      port: options.port,
+      host: options.host,
+      status: "connected",
+      lastSeen: new Date().toString(),
+      role: "server"
+    });
 
 };
 
-function listen (options, callback) {
+mesh.method('connection', function connection (socket, callback) {
 
-  var engine = require('engine.io');
-
-  mesh.server = engine.attach(resource.http.server);
-
-  mesh.server.on('connection', function (socket) {
-
+    /*
     ///
     // On new connections, create a new node to represent the connection
     //
@@ -141,6 +126,7 @@ function listen (options, callback) {
       role: "client",
       status: "connected"
     }, function(err, node){});
+    */
     //resource.emit('mesh::incoming::connection', socket.id);
 
     socket.on('message', function(data){
@@ -177,8 +163,37 @@ function listen (options, callback) {
       }
     });
 
-  });
+    //
+    // Continue with information about the socket
+    //
+    callback(null, {
+      id: socket.id,
+      lastSeen: new Date().toString(),
+      role: "client",
+      status: "connected"
+    });
 
+});
+
+//
+// Connects to a Big mesh to broadcast and listen for events
+//
+function connect (options, callback) {
+  var client = require('engine.io-client');
+  mesh.client = new client.Socket({ host: options.host, port: options.port });
+  mesh.client.on('error', function (err) {
+    console.log(err)
+    callback(err);
+  });
+  mesh.client.on('open', function(){
+    mesh.connected(options, callback);
+  });
+};
+
+function listen (options, callback) {
+  var engine = require('engine.io');
+  mesh.server = engine.attach(resource.http.server);
+  mesh.server.on('connection', mesh.connection);
 };
 
 exports.dependencies = {
