@@ -121,21 +121,12 @@ function listen (options, callback) {
   });
 
   resource.http.app.get('/admin/resources/:resource', auth, function (req, res, next) {
-    var _resource = resource.resources[req.param('resource')],
-        obj = resource.toJSON(_resource),
-        str;
-
-    str = view.resource.render({
-      name: _resource.name,
-      methods: JSON.stringify(_methods(_resource), true, 2)
+    view.resource.render({});
+    view.resource.present({
+      resource: req.param('resource')
+    }, function(err, str){
+      res.end(str);
     });
-
-    str = view.resource.present({
-      methods: _resource.methods,
-      resource: _resource
-    });
-    res.end(str);
-
   });
 
   resource.http.app.get('/admin/resources/:resource/:method', auth, function (req, res, next) {
@@ -239,7 +230,6 @@ function listen (options, callback) {
     });
 
   });
-
 
   callback(null, resource.http.server);
 }
