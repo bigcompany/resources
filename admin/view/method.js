@@ -15,6 +15,8 @@ module['exports'] = function (options, callback) {
   form.render();
   $('.back').attr('href', '/admin/resources/' + options.resource);
 
+  $('.schema').html(JSON.stringify(method.schema, true, 2));
+
   form.present(options, function(err, str){
     $('.form').html(str);
     callback(null, $.html())

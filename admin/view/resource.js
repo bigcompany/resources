@@ -4,27 +4,37 @@ var layout = require('./layout'),
 module['exports'] = function (options, callback) {
 
   var $ = this.$;
-  $('.description').html(options.resource.schema.description);
 
-  if (options.methods) {
-    $('.methods').html(layout.controls.list.present({ items: options.methods, root: '/admin/resources/' + options.resource.name + '/' }));
+  var _resource = resource.resources[options.resource],
+      methods = resource.resources[options.resource].methods;
+
+  $('.name').html(_resource.name);
+  $('.description').html(_resource.schema.description);
+
+  if (methods) {
+    var _methods = Object.keys(methods).sort();
+    _methods.forEach(function(method){
+      $('.methods').append('<tr><td><a href="/admin/resources/' + _resource.name + '/' + method + '">' + _resource.name + '.' + method + '</a></td><td>' + (methods[method].schema.description || "&nbsp;") + '</td></tr>')
+    });
   }
 
-  if(Object.keys(options.resource.dependencies).length > 0) {
-    $('.dependencies').html(layout.controls.list.present({ items: options.resource.dependencies, root: 'http://npmjs.org/package/' }));
+  if(Object.keys(_resource.dependencies).length > 0) {
+    $('.dependencies').html(layout.controls.list.present({ items: _resource.dependencies, root: 'http://npmjs.org/package/' }));
   } else {
-    $('.dependencies').html('none');
+    $('.deps').remove();
   }
 
-  var ds = options.resource.config.datasource || 'none';
+  $('.schema').html(JSON.stringify(_resource.schema, true, 2));
+
+  var ds = _resource.config.datasource || 'none';
   if(ds !== 'none') {
     ds = '<a href="/admin/datasources/' +  ds + '">' + ds +'</a>';
+    $('.datasource').html(ds);
+  } else {
+    $('.datasources').remove();
   }
 
-  $('.datasource').html(ds);
-
   //$('.schema').html(resource.docs.schemaToHTML(options.resource.schema));
-
-  return $.html();
+  callback(null, $.html());
 
 }
