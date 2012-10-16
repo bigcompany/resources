@@ -16,7 +16,6 @@ module['exports'] = function(options, callback) {
 
     if(data.length > 0) {
       $('.message').remove();
-      $('table th').html(entity);
 
       data.forEach(function(record){
 
@@ -24,8 +23,8 @@ module['exports'] = function(options, callback) {
 
         output += ('<tr>'
                +     '<td><a href="./get/' + record.id +'">' + label + '</a></td>'
-               +     '<td><a href="./update/'  + record.id + '">' + 'Update' + '</a></td>'
-               +     '<td><a href="./destroy/'  + record.id + '">' + 'Destroy' + '</a></td>'
+               +     '<td><a href="./update/'  + record.id + '">' + 'update' + '</a></td>'
+               +     '<td><a href="./destroy/'  + record.id + '">' + 'destroy' + '</a></td>'
                +   '</tr>');
       });
       $('h1').html(entity);
