@@ -61,7 +61,7 @@ function generate (resource, template) {
     usage: resourceUsage(resource),
     properties: resourceProperties(resource),
     methods: resourceMethods(resource),
-    dependencies: JSON.stringify(resource.dependencies),
+    dependencies: resourceDeps(resource),
     footer: generateFooter()
   };
 
@@ -92,6 +92,14 @@ function resourceProperties (resource) {
   str += schemaToTable(resource.schema);
 
   return str;
+}
+
+function resourceDeps (resource) {
+  var list = '## dependencies \n';
+  for(var d in resource.dependencies) {
+    list += "- [" + d + "](http://npmjs.org/package/" + d + ")\n";
+  }
+  return list;
 }
 
 //
