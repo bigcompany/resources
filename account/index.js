@@ -51,7 +51,7 @@ account.method('reset', reset, {
   }
 });
 
-account.method('auth', reset, {
+account.method('auth', auth, {
   "description": "checks accountname and password for a account ( auth check )",
   "properties": {
     "accountname": {
@@ -65,13 +65,30 @@ account.method('auth', reset, {
   }
 });
 
-account.before('create', function(_account, next){
+account.before('create', function(_account, next) {
   //
   // Generate a new UUID for the account's access token
   //
   _account.token = resource.uuid();
   next(null, _account)
 });
+
+function auth (email, password, callback) {
+
+  //
+  // Lookup account by name and password
+  //
+  account.find({ email: email, password: password }, function(err, _account){
+    if (err) {
+      return callback(err);
+    }
+    if(_account.length === 0) {
+      return callback(new Error('invalid'));
+    }
+    return callback(null, true);
+  })
+
+}
 
 function reset (email, callback) {
   account.find({ email: email }, function(err, _account){
@@ -88,7 +105,7 @@ function reset (email, callback) {
       }
       return callback(null, result.token);
     });
-  })
+  });
 };
 
 function confirm (token, callback) {
