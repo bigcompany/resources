@@ -5,25 +5,6 @@ var resource  = require('resource'),
 
 replicator.schema.description = "replicator service for big instances";
 
-replicator.property('replication', {
-  "decription": "a replication event",
-  "properties": {
-    "time": {
-      "description": "the date and time of the replication",
-      "type": "string",
-      "default": new Date().toString()
-    },
-    "source": {
-      "description": "the source of the replication ( where the code is coming from )",
-      "type": "string"
-    },
-    "target": {
-      "description": "the target of the replication ( where the code is going )",
-      "type": "string"
-    }
-  }
-});
-
 replicator.method('push', push, {
   "description": "pushes current big instance to a remote big instance",
   "properties": {
@@ -212,34 +193,61 @@ function _log (callback) {
 
 }
 
-replicator.method('checkout', function(callback){
-  // TODO: add ability to check out specific sha instead of master
-  console.log('checking out latest commit...');
-  var exec = require('child_process').exec;
-  var _command = "git --work-tree=" + process.env.HOME + "/big/ checkout -f";
-  var checkout = exec(_command, { cwd: '/tmp/repos/big/' },
-    function (err, stdout, stderr) {
-      console.log(stdout, stderr);
-      if (err) {
-        // TODO: do something meaningful with the error
-        console.log('exec error: ' + err);
-      } else {
-        console.log('checked out latest commit to: ~/big/');
+replicator.method('checkout', checkout, {
+  "description": "checks out a local git repo into a directory",
+  "properties": {
+    "options": {
+      "repo": {
+        "description": "the repo to checkout",
+        "type": "string"
+      },
+      "path": {
+        "description": "the path to check the repo out to",
+        "type": "string"
       }
-      console.log('restart needed to update');
-      callback(err, true);
-  });
+    },
+    "callback": {
+      "type": "function"
+    }
+  }
 });
+
+
+function checkout (callback) {
+
+    // TODO: add ability to check out specific sha instead of master
+    console.log('checking out latest commit...');
+    var exec = require('child_process').exec;
+    var _command = "git --work-tree=" + process.env.HOME + "/big/ checkout -f";
+    var checkout = exec(_command, { cwd: '/tmp/repos/big/' },
+      function (err, stdout, stderr) {
+        console.log(stdout, stderr);
+        if (err) {
+          // TODO: do something meaningful with the error
+          console.log('exec error: ' + err);
+        } else {
+          console.log('checked out latest commit to: ~/big/');
+        }
+        console.log('restart needed to update');
+        callback(err, true);
+    });
+
+}
 
 replicator.method('listen', listen, {
-  "description": "starts a listening replicator service capable of recieving big push requests"
+  "description": "starts a listening replicator service capable of recieving big push requests",
+  "properties": {
+    "callback": {
+      "type": "function"
+    }
+  }
 });
 
-function listen () {
+function listen (callback) {
 
   var pushover = require('pushover');
   var p = '/tmp/repos';
-  console.log(p);
+  // console.log(p);
   var repos = pushover(p);
 
   repos.on('push', function (push) {
@@ -258,6 +266,9 @@ function listen () {
   resource.http.app.use(function(req, res){
     repos.handle(req, res);
   });
+
+  // TODO: where is the event handler for when this is ready?
+  callback(null);
 
 };
 
