@@ -247,7 +247,7 @@ function build () {
     try {
       stat = fs.statSync(__dirname + '/../' + p + '/' + "index" + '.js');
     } catch(err) {
-      //console.log(err)
+      console.log(err)
     }
     if(stat) {
       _resources[p] = {};
