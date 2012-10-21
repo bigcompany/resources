@@ -14,6 +14,12 @@ module['exports'] = function(options, callback) {
 
   r.all(function(err, data){
 
+    if (err) {
+      $('table').remove();
+      $('.message').html(JSON.stringify(err, true, 2));
+      return callback(null, $.html());
+    }
+
     if(data.length > 0) {
       $('.message').remove();
 
@@ -42,13 +48,8 @@ module['exports'] = function(options, callback) {
     }
 
     output = $.html();
+    return callback(null, output);
 
-    if (callback) {
-      return callback(null, output);
-    }
-    return output;    
-    
   });
-
 
 }
