@@ -13,9 +13,6 @@ module['exports'] = function (options, callback) {
   if (options.data) {
     r.create(options.data, function(err, result){
       if (err) {
-        err.errors.forEach(function(e){
-          $('.message').append(JSON.stringify(e));
-        });
         showForm(options.data, err.errors);
       } else {
         $('.message').html('Created!');
@@ -54,11 +51,15 @@ module['exports'] = function (options, callback) {
         }
       }
       input.value = input.default || '';
+      if(data && typeof data[property] !== "undefined") {
+        input.value = data[property];
+      }
       layout.renderControl(input, options, cont);
     };
 
     var arr = Object.keys(r.schema.properties);
     arr.reverse();
-    cont();  }
+    cont();
+  }
 
 }
