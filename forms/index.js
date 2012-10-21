@@ -18,10 +18,9 @@ forms.method("generate", generate, {
   }
 });
 
-var view = resource.view.create({ path: __dirname + '/view', input: "html"});
-view.load();
-
 function generate (options) {
+  var view = resource.view.create({ path: __dirname + '/view', input: "html"});
+  view.load();
   var str = '', form;
   form = view.form[options.method] || view.form['method'];
   return form;
