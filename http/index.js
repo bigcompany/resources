@@ -75,6 +75,14 @@ function listen (options, callback) {
    http.server = server = require('http').createServer(app).listen(options.port, options.host, function (){
       callback(null, server);
    });
+
+   app.get('/', function (req, res){
+     res.end('home');
+   });
+
+   //
+   // Bind app instance to http resource
+   //
    http.app = app;
 
 }
