@@ -21,6 +21,18 @@ for creatures like dragons, unicorns, and ponies
 
   - [talk](#creature-methods-talk) (text)
 
+  - [create](#creature-methods-create) (options, callback)
+
+  - [get](#creature-methods-get) (id, callback)
+
+  - [find](#creature-methods-find) (options, callback)
+
+  - [all](#creature-methods-all) (callback)
+
+  - [update](#creature-methods-update) (options, callback)
+
+  - [destroy](#creature-methods-destroy) (id, callback)
+
 
 <a name="creature-properties"></a>
 
@@ -117,6 +129,172 @@ echos back a string
   - **default** : hello!
 
   - **required** : true
+
+<a name="creature-methods-create"></a> 
+
+### creature.create(options, callback)
+
+create a new creature
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **type** 
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *dragon*
+
+        - 1 : *unicorn*
+
+        - 2 : *pony*
+
+      - **default** : dragon
+
+    - **life** 
+
+      - **type** : number
+
+      - **default** : 10
+
+- **callback** 
+
+  - **type** : function
+
+<a name="creature-methods-get"></a> 
+
+### creature.get(id, callback)
+
+get creature by id
+
+- **id** 
+
+  - **type** : any
+
+  - **description** : the id of the object
+
+  - **required** : true
+
+- **callback** 
+
+  - **type** : function
+
+<a name="creature-methods-find"></a> 
+
+### creature.find(options, callback)
+
+search for instances of creature
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+    - **type** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+    - **life** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
+
+<a name="creature-methods-all"></a> 
+
+### creature.all(callback)
+
+gets all instances of creature
+
+- **callback** 
+
+  - **type** : function
+
+<a name="creature-methods-update"></a> 
+
+### creature.update(options, callback)
+
+updates a creature by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **type** 
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *dragon*
+
+        - 1 : *unicorn*
+
+        - 2 : *pony*
+
+      - **default** : dragon
+
+    - **life** 
+
+      - **type** : number
+
+      - **default** : 10
+
+- **callback** 
+
+  - **type** : function
+
+<a name="creature-methods-destroy"></a> 
+
+### creature.destroy(id, callback)
+
+destroys a creature by id
+
+- **id** 
+
+  - **type** : any
+
+  - **description** : the id of the object
+
+  - **required** : true
+
+- **callback** 
+
+  - **type** : function
 
 
 {}

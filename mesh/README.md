@@ -11,9 +11,11 @@ distributed p2p event emitter mesh
 
 #### [methods](#mesh-methods)
 
-  - [connect](#mesh-methods-connect) (options, callback)
+  - [uplink](#mesh-methods-uplink) (options, callback)
 
   - [listen](#mesh-methods-listen) (options, callback)
+
+  - [downlink](#mesh-methods-downlink) ()
 
 
 distributed p2p event emitter mesh
@@ -27,9 +29,9 @@ distributed p2p event emitter mesh
 
 ## methods 
 
-<a name="mesh-methods-connect"></a> 
+<a name="mesh-methods-uplink"></a> 
 
-### mesh.connect(options, callback)
+### mesh.uplink(options, callback)
 
 Connect to the big mesh 
 
@@ -98,6 +100,10 @@ Listens for incoming big instances
   - **type** : function
 
   - **required** : false
+
+<a name="mesh-methods-downlink"></a> 
+
+### mesh.downlink()
 
 
 {"engine.io":"*","engine.io-client":"*"}

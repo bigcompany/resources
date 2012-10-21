@@ -23,6 +23,8 @@ interacts with the operating system
 
   - [members](#system-methods-members) (options, callback)
 
+  - [kill](#system-methods-kill) ()
+
 
 interacts with the operating system
 
@@ -54,14 +56,6 @@ adds a user to a group
     - **user** 
 
       - **description** : the name of the user to add
-
-      - **type** : string
-
-      - **required** : true
-
-    - **password** 
-
-      - **description** : the password of the user to be added
 
       - **type** : string
 
@@ -192,6 +186,10 @@ lists members of a group
 - **callback** 
 
   - **type** : function
+
+<a name="system-methods-kill"></a> 
+
+### system.kill()
 
 
 {}

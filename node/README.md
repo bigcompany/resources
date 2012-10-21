@@ -12,6 +12,8 @@ for managing nodes
 
   - [host](#node-properties-host)
 
+  - [name](#node-properties-name)
+
   - [events](#node-properties-events)
 
   - [username](#node-properties-username)
@@ -69,6 +71,12 @@ for managing nodes
 
   - **description** : the host of the node
 
+- **name** 
+
+  - **type** : string
+
+  - **description** : the name of the node
+
 - **events** 
 
   - **description** : the total amount of events processed by this node
@@ -125,7 +133,7 @@ for managing nodes
 
   - **description** : a dump of the node's system information ( from node.process and require('os') module )
 
-  - **type** : object
+  - **type** : any
 
 - **lastSeen** 
 
@@ -200,6 +208,12 @@ create a new node
 
       - **description** : the host of the node
 
+    - **name** 
+
+      - **type** : string
+
+      - **description** : the name of the node
+
     - **events** 
 
       - **description** : the total amount of events processed by this node
@@ -256,7 +270,7 @@ create a new node
 
       - **description** : a dump of the node's system information ( from node.process and require('os') module )
 
-      - **type** : object
+      - **type** : any
 
     - **lastSeen** 
 
@@ -323,6 +337,16 @@ search for instances of node
       - **default** : 
 
       - **description** : the host of the node
+
+      - **required** : false
+
+    - **name** 
+
+      - **type** : any
+
+      - **description** : the name of the node
+
+      - **default** : 
 
       - **required** : false
 
@@ -442,6 +466,12 @@ updates a node by id
 
       - **description** : the host of the node
 
+    - **name** 
+
+      - **type** : string
+
+      - **description** : the name of the node
+
     - **events** 
 
       - **description** : the total amount of events processed by this node
@@ -498,7 +528,7 @@ updates a node by id
 
       - **description** : a dump of the node's system information ( from node.process and require('os') module )
 
-      - **type** : object
+      - **type** : any
 
     - **lastSeen** 
 
