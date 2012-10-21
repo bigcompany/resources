@@ -60,19 +60,34 @@ module['exports'] = function(options, callback) {
           value = value + '<iframe width="560" height="315" src="' + embed + '" frameborder="0" allowfullscreen></iframe>';
         }
 
+        //
+        // Render null values as an empty space
+        //
+        if(value === null) {
+          value = "&nbsp;";
+        }
+
         if (typeof prop.key !== 'undefined') {
-          resource[prop.key].getTag({ id: record[property] }, function(err, results){
+          resource[prop.key].get(record[property], function (err, results){
             if (err) {
               return cont(err);
             }
             var tr = '<tr>';
             tr += ('<td>' + property + '</td><td>');
-            results.forEach(function(result, i){
-              tr += ('<a href="/admin/resources/' + prop.key + '/get/' + result.id + '">' + result.name + '</a>');
-              if(i < results.length - 1) {
-                tr += ' > ';
-              }
-            });
+            //
+            // for tag.getTag
+            // TODO: move this block
+            /*
+              results.forEach(function(result, i){
+                tr += ('<a href="/admin/resources/' + prop.key + '/get/' + result.id + '">' + result.name + '</a>');
+                if(i < results.length - 1) {
+                  tr += ' > ';
+                }
+              });*/
+            //
+            // for tag.getTag
+            //
+            tr += results.id;
             tr += '</td></tr>';
             cont(err, tr);
           });
@@ -103,29 +118,17 @@ module['exports'] = function(options, callback) {
     var input = _props['id'];
     input.name = 'id';
     input.value = input.default || '';
-    if (input.writeable !== false) {
-      output += layout.renderControl(input, options);
-    }
 
     $('h1').html(entity + ' - create');
-    //$('.back').html('back to ' + entity);
-    //$('.back').attr('href', '/' + entity);
-
     $('legend').html(entity + ' form');
-    //$('form').attr('action', '/' + entity + '/new');
-    $('.inputs').html(output);
     $('input[type="submit"]').attr('value', 'Get ' + entity);
 
-    output = $.html();
-
-    if (callback) {
-      return callback(null, output);
+    if (input.writeable !== false) {
+      output += layout.renderControl(input, options, function(err, result){
+        $('.inputs').html(result);
+        callback(null, $.html());
+      });
     }
-    return output;
-    
   }
-
- 
- 
  
 }
