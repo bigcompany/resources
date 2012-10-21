@@ -9,8 +9,8 @@ mesh.schema.description = "distributed p2p event emitter mesh";
 resource.use('node', { datasource: 'fs' });
 resource.use('system');
 
-mesh.method('uplink', uplink, {
-  "description": "Connect to the big mesh ",
+mesh.method('connect', connect, {
+  "description": "connect to the big mesh",
   "properties": {
     "options": {
       "type": "object",
@@ -28,7 +28,7 @@ mesh.method('uplink', uplink, {
 });
 
 mesh.method('listen', listen, {
-  "description": "Listens for incoming big instances",
+  "description": "listens for incoming nodes",
   "properties": {
     "options": {
       "type": "object",
@@ -48,6 +48,11 @@ mesh.method('listen', listen, {
 mesh.method('downlink', downlink, {
   "description": "when an incoming node connection has been made"
 });
+
+mesh.method('uplink', uplink, {
+  "description": "when an outgoing node connection has been made"
+});
+
 
 function downlink (socket, callback) {
 
@@ -83,10 +88,41 @@ function downlink (socket, callback) {
 
 }
 
+function uplink (client, callback) {
+
+  //
+  // Any mesh client events should be rebroadcasted locally,
+  // but they should not be re-emitted
+  //
+  mesh.client.on('message', function(data){
+    var msg = JSON.parse(data);
+    resource.emit(msg.event, msg.payload, false)
+  })
+
+  //
+  // Send a friendly phone-home message
+  // Feel free to comment this line out at any time
+  //
+  mesh.client.send(JSON.stringify({ event: 'node::ohai', payload: resource.system.info() }));
+
+  //
+  // Continue with information about the newly connected to node
+  //
+  callback(null, {
+    id: options.host + ":" + options.port,
+    port: options.port,
+    host: options.host,
+    status: "connected",
+    lastSeen: new Date().toString(),
+    role: "server"
+  });
+
+}
+
 //
 // Connects to a Big mesh to broadcast and listen for events
 //
-function uplink (options, callback) {
+function connect (options, callback) {
 
   var client = require('engine.io-client');
   mesh.client = new client.Socket({ host: options.host, port: options.port });
@@ -94,36 +130,11 @@ function uplink (options, callback) {
     console.log('error', err)
     return callback(err);
   });
+
   mesh.client.on('open', function(){
-
-    //
-    // Any mesh client events should be rebroadcasted locally,
-    // but they should not be re-emitted
-    //
-    mesh.client.on('message', function(data){
-      var msg = JSON.parse(data);
-      resource.emit(msg.event, msg.payload, false)
-    })
-
-    //
-    // Send a friendly phone-home message
-    // Feel free to comment this line out at any time
-    //
-    mesh.client.send(JSON.stringify({ event: 'node::ohai', payload: resource.system.info() }));
-
-    //
-    // Continue with information about the newly connected to node
-    //
-    callback(null, {
-      id: options.host + ":" + options.port,
-      port: options.port,
-      host: options.host,
-      status: "connected",
-      lastSeen: new Date().toString(),
-      role: "server"
-    });
-
+    mesh.uplink(client, callback);
   });
+
 };
 
 function listen (options, callback) {
