@@ -6,7 +6,7 @@ datasource.schema.description = "perists resources to data storage engines";
 datasource.property('status', {
   type: "string",
   description: "the status of the datasource",
-  enum: ['inactive', 'active', 'error'],
+  enum: ['online', 'offline', 'error'],
   format: 'status',
   default: "inactive"
 });
@@ -52,12 +52,13 @@ datasource.property('password', {
 });
 
 datasource.method('test', test, {
-  description: "tests the datasource connection",
+  description: "tests the status of a datasource by attempting to connect to it",
   properties: {
     "datasource": {
       "description": "the name of the datasource to test",
       "type": "string",
-      "key": "datasource"
+      "key": "datasource",
+      "required": true
     }
   }
 });
@@ -95,7 +96,14 @@ function test (id, callback) {
         result = false;
       break;
     }
-    callback(null, { ok: result })
+
+    if(result === false) {
+      record.status = "error"
+    } else {
+      record.status = "online";
+    }
+    record.save(callback);
+
   })
 }
 
