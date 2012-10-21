@@ -27,7 +27,7 @@ module['exports'] = function(options, callback) {
       }
     });
 
-    r.find(options.data, function(err, results){
+    r.find(query, function(err, results){
       if(results.length > 0) {
         $('.message').remove();
         $('form').remove();
