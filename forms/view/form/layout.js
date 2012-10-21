@@ -16,6 +16,11 @@ layout.renderControl = function (control, options, callback) {
   //
   _control = "string"; // forcing everything to string input as default for now
 
+  if (control.private === true) {
+    // do not render
+    return callback(null, '');
+  }
+
   if(control.type === "boolean") {
     _control = "boolean";
   }
