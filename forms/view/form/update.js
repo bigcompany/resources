@@ -13,11 +13,13 @@ module['exports'] = function (options, callback) {
      entity  = 'foo',
      _props = r.methods.update.schema.properties.options.properties;
 
+  $('legend').html(r.methods.update.schema.description);
+
   if (options.data) {
     r.update(options.data, function(err, result){
       if (err) {
         err.errors.forEach(function(e){
-          $('.result').append(JSON.stringify(e));
+          $('.message').append(JSON.stringify(e));
         });
         showForm(options.data, err.errors);
       } else {
@@ -39,18 +41,16 @@ module['exports'] = function (options, callback) {
     $('table').remove();
     var input = _props['id'];
     input.name = 'id';
-
     input.value = input.default || '';
     layout.renderControl(input, options, function(err, re){
       $('h1').html(entity + ' - create');
-      $('legend').html(entity + ' form');
       $('input[type="submit"]').attr('value', 'Get ' + entity);
       $('.inputs').html(re);
       return callback(null, $.html());
     });
   }
 
-  function showForm (data, errors)  {
+  function showForm (record, errors)  {
     cont = function(err, result) {
       if (result) {
         output += result;
@@ -62,6 +62,7 @@ module['exports'] = function (options, callback) {
       var property = arr.pop();
       var schema = r.schema.properties[property];
       var input = {};
+      input.private = schema.private || false;
       input.description = schema.description;
       input.name = property;
       input.key = schema.key;
@@ -91,7 +92,6 @@ module['exports'] = function (options, callback) {
 
     $('.back').html('back to ' + entity);
     $('.back').attr('href', '/' + entity);
-    $('legend').html(r.methods.update.schema.description);
   }
 
 };
