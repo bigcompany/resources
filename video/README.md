@@ -14,7 +14,7 @@ for managing online digital videos
 
   - [description](#video-properties-description)
 
-  - [tagID](#video-properties-tagID)
+  - [tag](#video-properties-tag)
 
 
 #### [methods](#video-methods)
@@ -47,7 +47,7 @@ for managing online digital videos
 
   - **description** : the link to the video on a third party site
 
-  - **format** : url
+  - **format** : video
 
 - **description** 
 
@@ -55,11 +55,13 @@ for managing online digital videos
 
   - **description** : a brief description of the video
 
-- **tagID** 
+- **tag** 
 
   - **type** : string
 
-  - **description** : the immediate parent tag of the video
+  - **key** : tag
+
+  - **description** : the tag id of the video
 
 
 <a name="video-methods"></a> 

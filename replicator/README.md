@@ -8,8 +8,6 @@ replicator service for big instances
 
   - [id](#replicator-properties-id)
 
-  - [replication](#replicator-properties-replication)
-
 
 #### [methods](#replicator-methods)
 
@@ -17,43 +15,18 @@ replicator service for big instances
 
   - [pull](#replicator-methods-pull) (options, callback)
 
-  - [listen](#replicator-methods-listen) ()
+  - [log](#replicator-methods-log) ()
+
+  - [checkout](#replicator-methods-checkout) (options, callback)
+
+  - [listen](#replicator-methods-listen) (callback)
 
 
-<a name="replicator-properties"></a>
-
-## properties 
 replicator service for big instances
 
 - **id** 
 
   - **type** : any
-
-- **replication** 
-
-  - **decription** : a replication event
-
-  - **properties**
-
-    - **time** 
-
-      - **description** : the date and time of the replication
-
-      - **type** : string
-
-      - **default** : Thu Oct 04 2012 16:25:00 GMT-0700 (PDT)
-
-    - **source** 
-
-      - **description** : the source of the replication ( where the code is coming from )
-
-      - **type** : string
-
-    - **target** 
-
-      - **description** : the target of the replication ( where the code is going )
-
-      - **type** : string
 
 
 <a name="replicator-methods"></a> 
@@ -72,21 +45,21 @@ pushes current big instance to a remote big instance
 
   - **properties**
 
-    - **path** 
+    - **host** 
 
-      - **description** : the path of the big instance to push
-
-      - **type** : string
-
-      - **default** : .
-
-    - **location** 
-
-      - **description** : the location to push the big instance
+      - **description** : the host to push to
 
       - **type** : string
 
-      - **default** : localhost
+      - **default** : biginternetcompany.net
+
+    - **port** 
+
+      - **description** : the port to push to
+
+      - **type** : string
+
+      - **default** : 8888
 
 - **callback** 
 
@@ -132,10 +105,44 @@ pulls a big instance from a remote big instance
 
   - **type** : function
 
+<a name="replicator-methods-log"></a> 
+
+### replicator.log()
+
+<a name="replicator-methods-checkout"></a> 
+
+### replicator.checkout(options, callback)
+
+checks out a local git repo into a directory
+
+- **options** 
+
+  - **repo**
+
+    - description : *the repo to checkout*
+
+    - type : *string*
+
+  - **path**
+
+    - description : *the path to check the repo out to*
+
+    - type : *string*
+
+- **callback** 
+
+  - **type** : function
+
 <a name="replicator-methods-listen"></a> 
 
-### replicator.listen()
+### replicator.listen(callback)
+
+starts a listening replicator service capable of recieving big push requests
+
+- **callback** 
+
+  - **type** : function
 
 
-{"fstream":"*","fstream-npm":"*","tar":"*","request":"*","ncp":"*"}
+{"pushover":"*"}
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
