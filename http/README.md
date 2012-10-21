@@ -101,5 +101,9 @@ starts a listening http server
   - **required** : false
 
 
-{"connect":"*","express":"*"}
+## dependencies 
+
+- [connect](http://npmjs.org/package/connect)
+- [express](http://npmjs.org/package/express)
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

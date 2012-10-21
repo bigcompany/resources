@@ -106,5 +106,9 @@ Listens for incoming big instances
 ### mesh.downlink()
 
 
-{"engine.io":"*","engine.io-client":"*"}
+## dependencies 
+
+- [engine.io](http://npmjs.org/package/engine.io)
+- [engine.io-client](http://npmjs.org/package/engine.io-client)
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

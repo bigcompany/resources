@@ -30,5 +30,7 @@ allows application to listen for input from STDIN
 ### stdin.start()
 
 
-{}
+## dependencies 
+
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

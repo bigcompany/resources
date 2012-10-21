@@ -40,5 +40,8 @@ starts a socket.io server
   - **required** : false
 
 
-{"socketful":"*"}
+## dependencies 
+
+- [socketful](http://npmjs.org/package/socketful)
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

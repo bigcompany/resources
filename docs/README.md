@@ -64,5 +64,8 @@ view the documentation for a resource
   - **required** : true
 
 
-{"view":"*"}
+## dependencies 
+
+- [view](http://npmjs.org/package/view)
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

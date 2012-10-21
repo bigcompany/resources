@@ -33,7 +33,7 @@ replication service for big instances
 
   - **type** : string
 
-  - **default** : Sun Oct 21 2012 13:28:15 GMT-0700 (PDT)
+  - **default** : Sun Oct 21 2012 13:40:58 GMT-0700 (PDT)
 
 - **source** 
 
@@ -53,5 +53,7 @@ replication service for big instances
 ## methods 
 
 
-{}
+## dependencies 
+
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -519,5 +519,7 @@ destroys a datasource by id
   - **type** : function
 
 
-{}
+## dependencies 
+
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
