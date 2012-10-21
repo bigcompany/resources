@@ -18,6 +18,10 @@ module['exports'] = function (options, callback) {
   $('.schema').html(JSON.stringify(method.schema, true, 2));
 
   form.present(options, function(err, str){
+    if(options.data) {
+     $('.schemaHolder').remove();
+     $('.codeHolder').remove();
+    }
     $('.form').html(str);
     callback(null, $.html())
   });
