@@ -77,5 +77,7 @@ for managing online digital videos
 ### video.stop()
 
 
-{}
+## dependencies 
+
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

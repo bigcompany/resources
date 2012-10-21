@@ -58,5 +58,8 @@ start a listening admin web server
   - **type** : function
 
 
-{"connect":"*"}
+## dependencies 
+
+- [connect](http://npmjs.org/package/connect)
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -144,5 +144,8 @@ starts a listening replicator service capable of recieving big push requests
   - **type** : function
 
 
-{"pushover":"*"}
+## dependencies 
+
+- [pushover](http://npmjs.org/package/pushover)
+
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
