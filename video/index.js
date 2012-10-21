@@ -12,7 +12,7 @@ video.property("title", {
 video.property("link", {
   "type":"string",
   "description": "the link to the video on a third party site",
-  "format": "url"
+  "format": "video"
 });
 
 video.property("description", {
@@ -20,9 +20,10 @@ video.property("description", {
   "description": "a brief description of the video"
 });
 
-video.property("tagID", {
-  "type":"string",
-  "description": "the immediate parent tag of the video"
+video.property("tag", {
+  "type": "string",
+  "key": "tag",
+  "description": "the tag id of the video"
 });
 
 video.method("play", function () {
