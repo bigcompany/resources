@@ -161,6 +161,9 @@ function listen (options, callback) {
       }
       if(props[prop].type === "number") {
         data[prop] = Number(req.param(prop));
+        if(data[prop].toString() === "NaN") {
+          data[prop] = req.param(prop);
+        }
       }
     });
 
@@ -215,6 +218,9 @@ function listen (options, callback) {
       data[prop] = req.param(prop);
       if(props[prop].type === "number") {
         data[prop] = Number(req.param(prop));
+        if(data[prop].toString() === "NaN") {
+          data[prop] = req.param(prop);
+        }
       }
     });
 
