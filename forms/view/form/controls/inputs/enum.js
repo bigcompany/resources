@@ -4,22 +4,15 @@
 
 module['exports'] = function (input, options, callback) {
 
-  var $ = this.$;
+  //
+  // Todo: This load statement should be moved to Viewful
+  //
+  var $ = this.$.load(this.template);
 
-  if(options.error) {
-    options.error.validate.errors.forEach(function(error){
-      if(input.name === error.property){
-        $('.control-group').addClass('error');
-        $('.help-inline').html(error.message);
-      }
-    });
-    for(var v in options.error.value) {
-      if(input.name === v){
-        input.value = options.error.value[v];
-      }
-    }
+  if(input.error) {
+    $('.control-group').addClass('error');
+    $('.help-inline').html(input.error.message);
   }
-
 
   $('.control-label').attr('for', input.name);
   $('.control-label').html(input.name);

@@ -1,11 +1,11 @@
 var resource = require('resource');
 
 //
-// string.js - input fields for String types
+// key.js - input fields key lookups
 //
 module['exports'] = function (input, options, callback) {
 
-  var $ = this.$;
+  var $ = this.$.load(this.template);
 
   $('.control-label').attr('for', input.name);
   $('.control-label').html(input.name);
@@ -19,7 +19,7 @@ module['exports'] = function (input, options, callback) {
       if(option.id === input.value) {
         selected = ' SELECTED ';
       }
-      $('select').append('<option value="' + option.id + '" ' + selected + '>' + option.name + '</option>'); // Bad string concat!
+      $('select').append('<option value="' + option.id + '" ' + selected + '>' + ( option.name || option.id ) + '</option>'); // Bad string concat!
     });
     callback(null, $.html());
   });
