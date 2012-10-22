@@ -15,6 +15,9 @@ args="--bigconf $root/bigconf"
 mkdir $root
 mkdir $root/tmp
 
+ln -s /usr/local/lib/node_modules $HOME/node_modules
+ln -s /root/big/resources $HOME/resources
+
 echo "{
   \"protocol\": \"http\",
 }" > $root/bigconf
