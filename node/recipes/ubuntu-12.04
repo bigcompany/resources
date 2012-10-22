@@ -83,6 +83,9 @@ npm install -g
 #
 # TODO: remove the following manual npm installs
 #
+
+npm install swig -g
+
 cd /root/resources/node_modules/big-command/
 npm install -g
 npm install winston
@@ -100,6 +103,7 @@ npm install -g
 
 cd /root/big
 npm link resource
+npm link big-command
 npm install -g
 
 # run once to install deps
