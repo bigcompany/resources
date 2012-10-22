@@ -33,165 +33,13 @@ replicator.method('pull', pull, {
   "description": "pulls a big instance from a remote big instance",
   "properties": {
     "options": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "description": "the path to pull the big instance from",
-          "type": "string"
-        },
-        "location": {
-          "description": "the type of location big is pulling from",
-          "type": "string",
-          "enum": ["fs", "http"]
-        },
-        "targetDir": {
-          "description": "the location to extract big instance",
-          "type": "string"
-        }
-      }
+      "type": "object"
     },
     "callback": {
       "type": "function"
     }
   }
 });
-
-replicator.method('log', _log, {
-  "description": "shows past commit history of replicator"
-});
-
-
-function _log (callback) {
-
-  var spawn = require('child_process').spawn;
-  var out = [],
-      git = spawn('git', [ 'log', '--numstat' ], { cwd: "/tmp/repos/big/" });
-
-  git.stdout.on('data', function (data) {
-    out.push(data.toString());
-  });
-
-  git.stderr.on('data', function (data) {
-    throw data;
-  });
-
-  git.on('exit', function (code) {
-    if (out.length) {
-      parse(out.join(''), callback);
-    }
-    else {
-      throw new Error('no logs given');
-    }
-  });
-
-  function parse(logs, callback) {
-    var commits = [],
-        thisCommit = {},
-        mode = 'commit';
-
-    function unshift() {
-      thisCommit.msg = thisCommit.msg.join('\n');
-      commits.unshift(thisCommit);
-    }
-
-    logs = logs.split('\n');
-
-    logs.forEach(function (l, i) {
-      if (mode === 'commit') {
-        if (l.substr(0, 6) === 'commit') {
-          init();
-          mode = 'header';
-          return;
-        }
-        throw parseError('expected `commit`');
-      }
-      else if (mode === 'header') {
-        if (l === '') {
-          mode = 'msg';
-          return;
-        }
-        header();
-      }
-      else if (mode === 'msg') {
-        if (l.substr(0, 4) === '    ') {
-          return msg();
-        }
-        if (l === '') {
-          mode = 'numstat';
-          return;
-        }
-        throw parseError('unexpected non-indented block in msg');
-      }
-      else if (mode === 'numstat') {
-        if (l.substr(0, 6) === 'commit') {
-          unshift();
-          init();
-          mode = 'header';
-          return;
-        }
-        if (l === '') {
-          unshift();
-          mode = 'commit';
-          return;
-        }
-        numstat();
-      }
-      return;
-
-      function init() {
-        thisCommit = {
-          commit: l.split(' ')[1],
-          msg: [],
-          plus: 0,
-          minus: 0
-        };
-      }
-
-      function header() {
-        try {
-          var kvp = l.split(':'),
-              key = kvp[0].toLowerCase(),
-              val = kvp[1].trim();
-
-          if (key == 'date') {
-            console.log(val);
-            val = new Date(val);
-          }
-
-          thisCommit[key] = [val];
-        }
-        catch (err) {
-          throw parseError('malformed header format');
-        }
-      }
-
-      function msg() {
-        thisCommit.msg.push(l.substr(4));
-      }
-
-      function numstat() {
-        // way too lazy to do a regexp or anything clever.
-        var row = l.split('\t');
-
-        thisCommit.plus += parseInt(row[0], 10);
-        thisCommit.minus += parseInt(row[1], 10);
-      }
-
-      function parseError(msg) {
-        return new Error(util.format(
-          'git logs parse error: %s\non line %d: `%s`',
-          msg || '(unspecified)', i, l
-        ));
-      }
-    });
-
-    // push on last one
-    //unshift();
-    commits = commits.reverse();
-    callback(null, commits);
-  }
-
-}
 
 replicator.method('checkout', checkout, {
   "description": "checks out a local git repo into a directory",
@@ -212,26 +60,25 @@ replicator.method('checkout', checkout, {
   }
 });
 
-
-function checkout (callback) {
-
-    // TODO: add ability to check out specific sha instead of master
-    console.log('checking out latest commit...');
-    var exec = require('child_process').exec;
-    var _command = "git --work-tree=" + process.env.HOME + "/big/ checkout -f";
-    var checkout = exec(_command, { cwd: '/tmp/repos/big/' },
-      function (err, stdout, stderr) {
-        console.log(stdout, stderr);
-        if (err) {
-          // TODO: do something meaningful with the error
-          console.log('exec error: ' + err);
-        } else {
-          console.log('checked out latest commit to: ~/big/');
-        }
-        console.log('restart needed to update');
-        callback(err, true);
-    });
-
+function checkout (options, callback) {
+  //
+  // TODO: add ability to check out specific branch and sha, instead of master HEAD
+  //
+  console.log('checking out latest commit...');
+  var exec = require('child_process').exec;
+  var _command = "git --work-tree=" + process.env.HOME + "/" + options.repo + "/ checkout -f";
+  var checkout = exec(_command, { cwd: '/tmp/repos/' + options.repo + '/' },
+    function (err, stdout, stderr) {
+      console.log(stdout, stderr);
+      if (err) {
+        // TODO: do something meaningful with the error
+        console.log('exec error: ' + err);
+      } else {
+        console.log('info: checked out latest commit to: ~/' + options.repo +'/');
+      }
+      console.log('warn: restart needed to update');
+      callback(err, true);
+  });
 }
 
 replicator.method('listen', listen, {
@@ -247,17 +94,32 @@ function listen (callback) {
 
   var pushover = require('pushover');
   var p = '/tmp/repos';
-  // console.log(p);
   var repos = pushover(p);
 
   repos.on('push', function (push) {
-      console.log('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
-      push.accept();
+
+    console.log('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
+    push.accept();
+
+    var meta = {};
+    meta.source = push.request.headers['host'];
+    meta.target = "localhost:8888";
+    meta.repo = push.repo;
+    meta.branch = push.branch;
+    meta.time = new Date().toString();
+
+    //
+    // Trigger a pull event
+    //
+    replicator.pull(meta, function(err, result){
+      // console.log(err, result);
+    });
+
   });
 
   repos.on('fetch', function (fetch) {
-      console.log('fetch ' + fetch.commit);
-      fetch.accept();
+    console.log('fetch ' + fetch.commit);
+    fetch.accept();
   });
 
   //
@@ -286,7 +148,8 @@ function push (options, callback) {
   console.log('-----------------');
   console.log('DROPPING INTO GIT\n');
 
-  var git  = spawn('git', ['push', 'http://' + options.host + ':' + options.port + '/big', 'master']);
+  var git  = spawn('git', ['push', 'http://' + options.host + ':' + options.port + '/big', 'master']),
+  err;
 
   git.stdout.on('data', function (data) {
     data = data.toString();
@@ -296,34 +159,39 @@ function push (options, callback) {
 
   git.stderr.on('data', function (data) {
     data = data.toString();
-    console.log(data);
-    result += data;
+    if(data !== '' && data !== "\n") {
+      console.log(data);
+      result += data;
+    }
   });
 
   git.on('exit', function (code) {
     //console.log('child process exited with code ' + code);
+    result = result.split('\n');
     console.log('GIT EXITING')
     console.log('-----------------');
-    callback(null, options);
+    if (result[0].search('t connect to host') !== -1) {
+      console.log('error: git push failed!');
+      console.log('info: attempting to ssh into the machine to fix the problem...');
+      resource.node.sh({ host: options.host, recipe: "ubuntu-12.04" }, callback);
+    } else {
+      callback(null, options);
+    }
   });
-
-  // TODO: remote instance restarts and pipes back success / fail message
-
-  //
-  // TODO:
-  //
-    // if no connection can be found, throw error
-    // in the future, we could add prompt to noc noc over ssh and try push again
 
 }
 
 function pull (options, callback) {
-  // TODO: shell out to git pull
+  //
+  // This function represents the "pull" event
+  // There is no code here, since everything hooks on to "replicator::pull" event
+  //
+  //
+  callback(null, options);
 }
-
 
 exports.replicator = replicator;
 
 exports.dependencies = {
-  "pushover": "*"
+  "pushover": "1.1.0"
 };
