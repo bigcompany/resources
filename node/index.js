@@ -74,7 +74,7 @@ node.method('sh', sh, {
           "default": "0.0.0.0"
         },
         "recipe": {
-          "description": "path to the shell script to run remotely",
+          "description": "name to the shell script to run remotely",
           "type": "string",
           "default": __dirname + "/recipes/ls-test"
         }
@@ -109,7 +109,7 @@ function sh (options, callback) {
   //
   // Read in shell script recipe file
   //
-  fs.readFile(options.recipe, function (err, data) {
+  fs.readFile(__dirname + '/recipes/' + options.recipe, function (err, data) {
 
     if (err) {
       return callback(err);
@@ -140,7 +140,7 @@ function sh (options, callback) {
    // which are executed sequentially
    //
    commands = commands.join(' && ');
-   console.log('warn: attempting outgoing connection to ' + options.host);
+   console.log('warn: attempting outgoing ssh connection to ' + options.host);
    //
    // TODO: make header and footer proper ascii box ( with correct table chars )
    //
