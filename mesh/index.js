@@ -46,11 +46,13 @@ mesh.method('listen', listen, {
 });
 
 mesh.method('downlink', downlink, {
-  "description": "when an incoming node connection has been made"
+  "description": "when an incoming node connection has been made",
+  "private": true
 });
 
 mesh.method('uplink', uplink, {
-  "description": "when an outgoing node connection has been made"
+  "description": "when an outgoing node connection has been made",
+  "private": true
 });
 
 
@@ -88,7 +90,7 @@ function downlink (socket, callback) {
 
 }
 
-function uplink (client, callback) {
+function uplink (options, client, callback) {
 
   //
   // Any mesh client events should be rebroadcasted locally,
@@ -132,7 +134,7 @@ function connect (options, callback) {
   });
 
   mesh.client.on('open', function(){
-    mesh.uplink(client, callback);
+    mesh.uplink(options, client, callback);
   });
 
 };
