@@ -83,8 +83,11 @@ npm install -g
 #
 # TODO: remove the following manual npm installs
 #
+cd /root/resources/node_modules/viewful/
+npm install swig
 
-npm install swig -g
+cd /root/big/node_modules/viewful/
+npm install swig
 
 cd /root/resources/node_modules/big-command/
 npm install -g
@@ -106,6 +109,9 @@ npm link resource
 npm link big-command
 npm install -g
 
+# needed for couchdb jugglingdb adapter
+npm install cradle -g
+
 # run once to install deps
 node bin/big
 big
@@ -116,4 +122,4 @@ node bin/big system useradd --user marak --group big-users
 node bin/big system passwd --user marak --password b1gPPuol1
 
 # start the web admin
-# node bin/admin
+node bin/admin
