@@ -19,4 +19,12 @@ replication.property('target', {
   "type": "string"
 });
 
+replication.property('repo', {
+  "type": "string"
+});
+
+replication.property('branch', {
+  "type": "string"
+});
+
 exports.replication = replication;
