@@ -55,6 +55,7 @@ git clone http://biginternetcompany.net:8888/resources
 # clone resources from big-0
 git clone http://biginternetcompany.net:8888/resource
 
+
 # change directory into resource
 cd resource
 
@@ -83,11 +84,8 @@ npm install -g
 #
 # TODO: remove the following manual npm installs
 #
-cd /root/resources/node_modules/viewful/
-npm install swig
 
-cd /root/big/node_modules/viewful/
-npm install swig
+npm install swig -g
 
 cd /root/resources/node_modules/big-command/
 npm install -g
@@ -96,6 +94,7 @@ npm install prompt
 
 cd /root/resources/node_modules/viewful/
 npm install -g
+npm install swig
 
 cd /root/resource/node_modules/jugglingdb/
 npm install nosqlite
@@ -108,6 +107,11 @@ cd /root/big
 npm link resource
 npm link big-command
 npm install -g
+
+cd /root/big/node_modules/viewful/
+npm install swig
+
+cd /root/big
 
 # needed for couchdb jugglingdb adapter
 npm install cradle -g
