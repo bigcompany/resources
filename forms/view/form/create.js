@@ -43,7 +43,10 @@ module['exports'] = function (options, callback) {
         return callback(null, $.html())
       }
       var property = arr.pop();
-      var input = r.schema.properties[property];
+      var input = {};
+      for(var p in r.schema.properties[property]) {
+        input[p] = r.schema.properties[property][p];
+      }
       input.name = property;
       for(var e in errors) {
         if (errors[e].property === input.name) {
