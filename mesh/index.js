@@ -47,17 +47,36 @@ mesh.method('listen', listen, {
 
 mesh.method('downlink', downlink, {
   "description": "when an incoming node connection has been made",
-  "private": true
+  "private": true,
+  "properties": {
+    "options": {
+      "type": "object"
+    },
+    "callback": {
+      "description": "the callback executed after connecting to mesh",
+      "type": "function",
+      "required": false
+    }
+  }
 });
 
 mesh.method('uplink', uplink, {
   "description": "when an outgoing node connection has been made",
+  "properties": {
+    "options": {
+      "type": "object"
+    },
+    "callback": {
+      "description": "the callback executed after connecting to mesh",
+      "type": "function",
+      "required": false
+    }
+  },
   "private": true
 });
 
 
 function downlink (socket, callback) {
-
   socket.on('message', function(data){
     var msg = JSON.parse(data);
     msg.payload.id = socket.id;
@@ -90,7 +109,7 @@ function downlink (socket, callback) {
 
 }
 
-function uplink (options, client, callback) {
+function uplink (options, callback) {
 
   //
   // Any mesh client events should be rebroadcasted locally,
@@ -126,23 +145,47 @@ function uplink (options, client, callback) {
 //
 function connect (options, callback) {
 
-  var client = require('engine.io-client');
-  mesh.client = new client.Socket({ host: options.host, port: options.port });
-  mesh.client.on('error', function (err) {
-    console.log('error', err)
-    return callback(err);
+  //
+  // Since the mesh is just now connecting, set all previous uplink nodes to disconnected
+  //
+  var uplinks = 0;
+  resource.node.find({ status: 'connected' }, function(err, results){
+    if(results.length === 0) {
+      return _connect();
+    }
+    results.forEach(function(record){
+      record.status = "disconnected";
+      record.save(function(){
+        uplinks++;
+        if(uplinks === results.length) {
+          _connect();
+        }
+      })
+    });
   });
 
-  mesh.client.on('open', function(){
-    mesh.uplink(options, client, callback);
-  });
-
+  function _connect () {
+    var client = require('engine.io-client');
+    mesh.client = new client.Socket({ host: options.host, port: options.port });
+    mesh.client.on('error', function (err) {
+      return callback(err);
+    });
+    mesh.client.on('open', function(){
+      mesh.uplink(options, callback);
+    });
+  }
 };
 
 function listen (options, callback) {
   var engine = require('engine.io');
   mesh.server = engine.attach(resource.http.server);
-  mesh.server.on('connection', mesh.downlink);
+  mesh.server.on('connection', function(socket){
+    mesh.downlink(socket, function(err, result){
+      if (err) {
+        throw err;
+      }
+    });
+  });
 };
 
 exports.dependencies = {
