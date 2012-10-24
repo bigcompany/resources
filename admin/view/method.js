@@ -5,7 +5,8 @@ module['exports'] = function (options, callback) {
 
   var r = resource.resources[options.resource],
       method = r.methods[options.method],
-      $ = this.$;
+      $ = this.$,
+      view = this;
 
   $('h1').html(options.resource + ' ' + method.name);
   $('.description').html(method.schema.description);
@@ -14,9 +15,7 @@ module['exports'] = function (options, callback) {
   var form = resource.forms.generate(options);
   form.render();
   $('.back').attr('href', '/admin/resources/' + options.resource);
-
-  $('.schema').html(JSON.stringify(method.schema, true, 2));
-
+  $('.schema').html(view.parent.schema.present({ schema: method.schema }));
   form.present(options, function(err, str){
     if(options.data) {
      $('.schemaHolder').remove();
@@ -25,7 +24,5 @@ module['exports'] = function (options, callback) {
     $('.form').html(str);
     callback(null, $.html())
   });
-
-  //$('.schema').html(resource.docs.schemaToHTML(options.resource.schema));
 
 }
