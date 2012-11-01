@@ -1,7 +1,7 @@
 var resource  = require('resource'),
     replication = resource.define('replication');
 
-replication.schema.description = "replication service for big instances";
+replication.schema.description = "for managing and keeping track of replication events";
 
 replication.property('time', {
   "description": "the date and time of the replication",

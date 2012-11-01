@@ -4,7 +4,7 @@
 var resource = require('resource'),
     mesh = resource.define('mesh');
 
-mesh.schema.description = "distributed p2p event emitter mesh";
+mesh.schema.description = "provides a distributed p2p event emitter mesh";
 
 resource.use('node', { datasource: 'fs' });
 resource.use('system');
@@ -144,18 +144,17 @@ function uplink (options, callback) {
 // Connects to a Big mesh to broadcast and listen for events
 //
 function connect (options, callback) {
-
   //
   // Since the mesh is just now connecting, set all previous uplink nodes to disconnected
   //
   var uplinks = 0;
-  resource.node.find({ status: 'connected' }, function(err, results){
+  resource.node.find({ status: 'connected' }, function(err, results) {
     if(results.length === 0) {
       return _connect();
     }
-    results.forEach(function(record){
+    results.forEach(function(record) {
       record.status = "disconnected";
-      record.save(function(){
+      record.save(function() {
         uplinks++;
         if(uplinks === results.length) {
           _connect();

@@ -22,24 +22,26 @@ module['exports'] = function(options, callback) {
       if (err) {
         $('table').remove();
         $('form').remove();
-        $('.message').html('could not find ' + options.id);
+        $('h2').html('could not find ' + options.id);
         return callback(err, $.html());
       }
+      $('.message').remove();
       function cont (err, result) {
         if(result) {
           output += result;
         }
         if(arr.length === 0) {
-          //
-          // Check to see if there are any remote methods to show
-          //
-          for(var m in r.methods) {
-            if(["all", "find", "create", "get"].indexOf(m) === -1) {
-              output += ('<tr>'
-                     +     '<td colspan = "2"><a href="../' + m + '/' + options.id  + '">' + m + '</a></td>'
-                     +   '</tr>');
-            }
-          }
+          output += ('<tr>'
+                 +     '<td colspan="2"><h4>methods</h4></td>'
+                 +   '</tr>');
+          var _methods = Object.keys(r.methods);
+          _methods.sort();
+          _methods.forEach(function(m){
+            var desc = r.methods[m].schema.description || '&nbsp;';
+            output += ('<tr>'
+                   +     '<td><a href="../' + m + '/' + options.id  + '">' + m + '</a></td><td>' + desc + '</td>'
+                   +   '</tr>');
+          });
           $('.records').html(output);
           return callback(null, $.html());
         }
@@ -100,6 +102,9 @@ module['exports'] = function(options, callback) {
         }
       }
       var arr = Object.keys(r.schema.properties);
+      output += ('<tr>'
+             +     '<td colspan="2"><h4>properties</h4></td>'
+             +   '</tr>');
       arr.reverse();
       cont();
 

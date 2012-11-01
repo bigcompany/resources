@@ -27,10 +27,16 @@ video.property("tag", {
 });
 
 video.method("play", function () {
-}, {});
+  //
+  // TODO
+  //
+});
 
 video.method("stop", function () {
-}, {});
+  //
+  // TODO
+  //
+});
 
 
 exports.video = video;

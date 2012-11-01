@@ -3,10 +3,10 @@ var resource  = require('resource'),
     path = require('path'),
     fs = require('fs');
 
-replicator.schema.description = "replicator service for big instances";
+replicator.schema.description = "provides an application replication API for resource based apps";
 
 replicator.method('push', push, {
-  "description": "pushes current big instance to a remote big instance",
+  "description": "pushes local big instance to a remote big instance",
   "properties": {
     "options": {
       "type": "object",
@@ -45,13 +45,16 @@ replicator.method('checkout', checkout, {
   "description": "checks out a local git repo into a directory",
   "properties": {
     "options": {
-      "repo": {
-        "description": "the repo to checkout",
-        "type": "string"
-      },
-      "path": {
-        "description": "the path to check the repo out to",
-        "type": "string"
+      "type": "object",
+      "properties": {
+        "repo": {
+          "description": "the repo to checkout",
+          "type": "string"
+        },
+        "path": {
+          "description": "the path to check the repo out to",
+          "type": "string"
+        }
       }
     },
     "callback": {
@@ -82,7 +85,7 @@ function checkout (options, callback) {
 }
 
 replicator.method('listen', listen, {
-  "description": "starts a listening replicator service capable of recieving big push requests",
+  "description": "starts a listening replicator service capable of recieving push requests",
   "properties": {
     "callback": {
       "type": "function"

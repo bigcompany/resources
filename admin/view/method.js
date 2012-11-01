@@ -1,5 +1,5 @@
-var layout = require('./layout'),
-    resource = require('resource');
+var resource = require('resource'),
+    hl = require("highlight").Highlight;
 
 module['exports'] = function (options, callback) {
 
@@ -10,13 +10,9 @@ module['exports'] = function (options, callback) {
 
   $('h1').html(options.resource + ' ' + method.name);
   $('.description').html(method.schema.description);
-  $('.methods').html(layout.controls.list.present({ items: r.methods, root: '/admin/resources/foo/' }));
-  $('.method').html(method.unwrapped.toString());
-  var form = resource.forms.generate(options);
-  form.render();
-  $('.back').attr('href', '/admin/resources/' + options.resource);
-  $('.schema').html(view.parent.schema.present({ schema: method.schema }));
-  form.present(options, function(err, str){
+  // $('.methods').html(view.parent.layout.controls.list.present({ items: r.methods, root: '/admin/resources/foo/' }));
+  $('.method').html(hl(method.unwrapped.toString()));
+  var form = resource.forms.generate(options, function(err, str){
     if(options.data) {
      $('.schemaHolder').remove();
      $('.codeHolder').remove();
@@ -24,5 +20,8 @@ module['exports'] = function (options, callback) {
     $('.form').html(str);
     callback(null, $.html())
   });
+
+  $('.back').attr('href', '/admin/resources/' + options.resource);
+  $('.schema').html(view.parent.schema.present({ schema: method.schema }));
 
 }

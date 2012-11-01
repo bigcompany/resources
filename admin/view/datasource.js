@@ -4,7 +4,6 @@ module['exports'] = function (options, callback) {
       $ = this.$;
 
   $('.datasource').html(JSON.stringify(datasource, true, 2));
-
   return $.html();
 
 }

@@ -24,7 +24,7 @@ module['exports'] = function (options) {
         str += ('<tr><td colspan="2"><h' + level.toString() +'>' + prop + '</h' + level.toString() + '>' + render(props[prop], level) + '</td></tr>');
       } else {
         var val = props[prop];
-        if(props[prop].length === 0 || props[prop] === null) {
+        if(typeof props[prop] === 'undefined' || props[prop].length === 0 || props[prop] === null) {
           val = "&nbsp;";
         }
         str += ('<tr><td style="width:25%">' + prop + '</td><td style="width:75%">' + val + '</td></tr>');
@@ -33,7 +33,10 @@ module['exports'] = function (options) {
     str += "</table>"
     return str;
   }
-  $('.props').append(render(schema.properties, 1));
+
+  if(typeof schema.properties === 'object') {
+    $('.props').append(render(schema.properties, 1));
+  }
 
   return $.html();
 

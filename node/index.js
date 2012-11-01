@@ -64,7 +64,7 @@ node.property('lastSeen', {
 });
 
 node.method('sh', sh, {
-  "description": "execute shell scripts on a remote node via SSH",
+  "description": "execute shell scripts on a node via SSH",
   "properties": {
     "options": {
       "type": "object",
@@ -76,7 +76,7 @@ node.method('sh', sh, {
         "recipe": {
           "description": "name to the shell script to run remotely",
           "type": "string",
-          "default": __dirname + "/recipes/ls-test"
+          "default": __dirname + "/recipes/ls-test" // TODO: ability to load by name, not just path
         }
       }
     },

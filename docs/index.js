@@ -1,36 +1,27 @@
 var resource = require('resource'),
     docs = resource.define('docs'),
+    path = require('path'),
     fs = require('fs'),
     viewModule = require('viewful');
 
-docs.schema.description = "generates documentation";
+docs.schema.description = "for generating documentation";
 
 docs.method('generate', generate, {
-  "description": "generates markdown documentation from a resource",
+  "description": "generates markdown documentation for a single resource",
   "properties": {
     "resource": {
-      "description": "the resource to generate documentation for"
+      "description": "the resource to generate documentation for",
+      "type": "any"
     },
     "template": {
       "type": "string",
-      "required": false
+      "default": __dirname + '/template.md'
     }
   }
 });
 
 docs.method('build', build, {
-  "description": "generates markdown documentation for all resources"
-});
-
-docs.method('view', _view, {
-  "description": "view the documentation for a resource",
-  "properties": {
-    "resource": {
-      "description": "the resource to view documentation for",
-      "type": "any",
-      "required": true
-    }
-  }
+  "description": "builds README.md files for all resources"
 });
 
 docs.all = function (resources) {
@@ -41,10 +32,13 @@ docs.all = function (resources) {
   return str;
 };
 
-function generate (resource, template) {
+function generate (_resource, template, callback) {
 
-  template = template || fs.readFileSync(__dirname + '/template.md').toString();
+  if(typeof _resource === "string") {
+    _resource = resource.resources[_resource];
+  }
 
+  template = fs.readFileSync(__dirname + '/template.md').toString();
   var view = new viewModule.View({
     template: template, 
     input: "swig"
@@ -55,26 +49,24 @@ function generate (resource, template) {
   });
 
   var data = {
-    toc: tableOfContents(resource),
-    name: resource.name + '\n',
-    desc: resource.schema.description,
-    usage: resourceUsage(resource),
-    properties: resourceProperties(resource),
-    methods: resourceMethods(resource),
-    dependencies: resourceDeps(resource),
+    toc: tableOfContents(_resource),
+    name: _resource.name + '\n',
+    desc: _resource.schema.description,
+    usage: resourceUsage(_resource),
+    properties: resourceProperties(_resource),
+    methods: resourceMethods(_resource),
+    dependencies: resourceDeps(_resource),
     footer: generateFooter()
   };
 
   var s = view.render(data);
 
-  return s;
+  if(callback) {
+    return callback(null, s);
+  } else {
+    return s;
+  }
 
-};
-
-function _view (resource) {
-  fs.readFile(__dirname + '/../' + resource + '/README.md', function(err, result) {
-    console.log(result.toString());
-  })
 };
 
 function resourceProperties (resource) {
@@ -255,14 +247,15 @@ function build () {
     try {
       stat = fs.statSync(__dirname + '/../' + p + '/' + "index" + '.js');
     } catch(err) {
-      console.log(err)
+      // TODO: better filtering of /resources/ folder to prevent attempts to read .git, .DS_Store, etc
+      //console.log(err)
     }
     if(stat) {
       _resources[p] = {};
       var str = p.substr(0, 1);
       str = str.toUpperCase();
       var P = str + p.substr(1, p.length - 1);
-      console.log(('attempting to require ' + '../' + p).yellow)
+      resource.logger.warn('attempting to require ' + p.magenta)
 
       var _resource = resource.use(p);
 
@@ -277,7 +270,7 @@ function build () {
 
       try {
         fs.writeFileSync(_path, doc);
-        console.log(('wrote to ' + _path).green)
+        resource.logger.info('wrote to ' + path.resolve(_path));
       } catch(err) {
         console.log(err)
       }
@@ -293,7 +286,7 @@ function build () {
     str += ' - [' + r + '](https://github.com/bigcompany/resources/tree/master/' + r +') ' + resource.resources[r].schema.description + '\n';
   });
   fs.writeFileSync(__dirname + '/../README.md', str);
-  console.log('wrote to core resource README.md file'.green);
+  resource.logger.info('wrote to core resource README.md file');
 }
 
 exports.docs = docs;

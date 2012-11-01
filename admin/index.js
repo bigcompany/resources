@@ -1,7 +1,7 @@
 var resource  = require('resource'),
     admin = resource.define('admin');
 
-admin.schema.description = "web based admin panel";
+admin.schema.description = "a web based admin panel";
 
 resource.use('system');
 resource.use('view');
@@ -154,18 +154,19 @@ function listen (options, callback) {
     if(_method.schema.properties && typeof _method.schema.properties.options !== 'undefined') {
       props = _method.schema.properties.options.properties;
     }
-
-    Object.keys(props).forEach(function(prop) {
-      if(typeof req.param(prop) !== 'undefined') {
-        data[prop] = req.param(prop);
-      }
-      if(props[prop].type === "number") {
-        data[prop] = Number(req.param(prop));
-        if(data[prop].toString() === "NaN") {
+    if(typeof props === 'object') {
+      Object.keys(props).forEach(function(prop) {
+        if(typeof req.param(prop) !== 'undefined') {
           data[prop] = req.param(prop);
         }
-      }
-    });
+        if(props[prop].type === "number") {
+          data[prop] = Number(req.param(prop));
+          if(data[prop].toString() === "NaN") {
+            data[prop] = req.param(prop);
+          }
+        }
+      });
+    }
 
     view.method.render();
 
@@ -240,12 +241,6 @@ function listen (options, callback) {
   callback(null, resource.http.server);
 }
 
-exports.admin = admin;
-
-exports.dependencies = {
-  "connect": "*"
-};
-
 //
 // TODO: move this out of here to resource.toJSON
 //
@@ -286,4 +281,11 @@ function dashboard () {
 
   return obj;
 
+};
+
+exports.admin = admin;
+
+exports.dependencies = {
+  "connect": "*",
+  "highlight": "*"
 };
