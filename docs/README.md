@@ -1,6 +1,6 @@
 # docs
 
-generates documentation
+for generating documentation
 
 ## API
 
@@ -15,10 +15,8 @@ generates documentation
 
   - [build](#docs-methods-build) ()
 
-  - [view](#docs-methods-view) (resource)
 
-
-generates documentation
+for generating documentation
 
 - **id** 
 
@@ -33,39 +31,26 @@ generates documentation
 
 ### docs.generate(resource, template)
 
-generates markdown documentation from a resource
+generates markdown documentation for a single resource
 
 - **resource** 
 
   - **description** : the resource to generate documentation for
 
+  - **type** : any
+
 - **template** 
 
   - **type** : string
 
-  - **required** : false
+  - **default** : /Users/maraksquires/dev/bigcompany/resources/docs/template.md
 
 <a name="docs-methods-build"></a> 
 
 ### docs.build()
 
-<a name="docs-methods-view"></a> 
-
-### docs.view(resource)
-
-view the documentation for a resource
-
-- **resource** 
-
-  - **description** : the resource to view documentation for
-
-  - **type** : any
-
-  - **required** : true
-
 
 ## dependencies 
-
 - [view](http://npmjs.org/package/view)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -150,7 +150,7 @@ for managing nodes
 
 ### node.sh(options, callback)
 
-execute shell scripts on a remote node via SSH
+execute shell scripts on a node via SSH
 
 - **options** 
 
@@ -166,7 +166,7 @@ execute shell scripts on a remote node via SSH
 
     - **recipe** 
 
-      - **description** : path to the shell script to run remotely
+      - **description** : name to the shell script to run remotely
 
       - **type** : string
 
@@ -560,6 +560,5 @@ destroys a node by id
 
 
 ## dependencies 
-
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

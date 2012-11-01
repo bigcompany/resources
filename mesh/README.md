@@ -1,6 +1,6 @@
 # mesh
 
-distributed p2p event emitter mesh
+provides a distributed p2p event emitter mesh
 
 ## API
 
@@ -11,14 +11,16 @@ distributed p2p event emitter mesh
 
 #### [methods](#mesh-methods)
 
-  - [uplink](#mesh-methods-uplink) (options, callback)
+  - [connect](#mesh-methods-connect) (options, callback)
 
   - [listen](#mesh-methods-listen) (options, callback)
 
-  - [downlink](#mesh-methods-downlink) ()
+  - [downlink](#mesh-methods-downlink) (options, callback)
+
+  - [uplink](#mesh-methods-uplink) (options, callback)
 
 
-distributed p2p event emitter mesh
+provides a distributed p2p event emitter mesh
 
 - **id** 
 
@@ -29,11 +31,11 @@ distributed p2p event emitter mesh
 
 ## methods 
 
-<a name="mesh-methods-uplink"></a> 
+<a name="mesh-methods-connect"></a> 
 
-### mesh.uplink(options, callback)
+### mesh.connect(options, callback)
 
-Connect to the big mesh 
+connect to the big mesh
 
 - **options** 
 
@@ -69,7 +71,7 @@ Connect to the big mesh
 
 ### mesh.listen(options, callback)
 
-Listens for incoming big instances
+listens for incoming nodes
 
 - **options** 
 
@@ -103,11 +105,42 @@ Listens for incoming big instances
 
 <a name="mesh-methods-downlink"></a> 
 
-### mesh.downlink()
+### mesh.downlink(options, callback)
+
+when an incoming node connection has been made
+
+- **options** 
+
+  - **type** : object
+
+- **callback** 
+
+  - **description** : the callback executed after connecting to mesh
+
+  - **type** : function
+
+  - **required** : false
+
+<a name="mesh-methods-uplink"></a> 
+
+### mesh.uplink(options, callback)
+
+when an outgoing node connection has been made
+
+- **options** 
+
+  - **type** : object
+
+- **callback** 
+
+  - **description** : the callback executed after connecting to mesh
+
+  - **type** : function
+
+  - **required** : false
 
 
 ## dependencies 
-
 - [engine.io](http://npmjs.org/package/engine.io)
 - [engine.io-client](http://npmjs.org/package/engine.io-client)
 

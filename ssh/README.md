@@ -1,12 +1,8 @@
 # ssh
 
+ssh interface resource
 
-# usage
-
-    var big = require("big");
-    big.use("ssh");
-
-## ssh
+## API
 
 #### [properties](#ssh-properties)
 
@@ -15,10 +11,8 @@
 
 #### [methods](#ssh-methods)
 
-  - [start](#ssh-methods-start) ()
 
-
-enables an ssh interface to communicate with a remote big instance
+ssh interface resource
 
 - **id** 
 
@@ -29,9 +23,7 @@ enables an ssh interface to communicate with a remote big instance
 
 ## methods 
 
-<a name="ssh-methods-start"></a> 
 
-### ssh.start()
+## dependencies 
 
-
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

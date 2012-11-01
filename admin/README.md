@@ -1,6 +1,6 @@
 # admin
 
-web based admin panel
+a web based admin panel
 
 ## API
 
@@ -14,7 +14,7 @@ web based admin panel
   - [listen](#admin-methods-listen) (options, callback)
 
 
-web based admin panel
+a web based admin panel
 
 - **id** 
 
@@ -59,7 +59,7 @@ start a listening admin web server
 
 
 ## dependencies 
-
 - [connect](http://npmjs.org/package/connect)
+- [highlight](http://npmjs.org/package/highlight)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -1,6 +1,6 @@
 # http
 
-HTTP server resource
+provides an HTTP server API
 
 ## API
 
@@ -23,7 +23,7 @@ HTTP server resource
 <a name="http-properties"></a>
 
 ## properties 
-HTTP server resource
+provides an HTTP server API
 
 - **id** 
 
@@ -48,6 +48,8 @@ HTTP server resource
 - **root** 
 
   - **type** : string
+
+  - **default** : /Users/maraksquires/dev/bigcompany/resources/http/public
 
 
 <a name="http-methods"></a> 
@@ -86,6 +88,8 @@ starts a listening http server
 
       - **type** : string
 
+      - **default** : /Users/maraksquires/dev/bigcompany/resources/http/public
+
     - **enableUploads** 
 
       - **type** : boolean
@@ -102,7 +106,6 @@ starts a listening http server
 
 
 ## dependencies 
-
 - [connect](http://npmjs.org/package/connect)
 - [express](http://npmjs.org/package/express)
 

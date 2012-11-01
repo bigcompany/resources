@@ -1,6 +1,6 @@
 # api
 
-provides a web API for interacting with big
+provides a web API for interacting with resources
 
 ## API
 
@@ -10,18 +10,16 @@ provides a web API for interacting with big
 
   - [version](#api-properties-version)
 
-  - [resources](#api-properties-resources)
-
 
 #### [methods](#api-methods)
 
-  - [start](#api-methods-start) (options)
+  - [listen](#api-methods-listen) (options)
 
 
 <a name="api-properties"></a>
 
 ## properties 
-provides a web API for interacting with big
+provides a web API for interacting with resources
 
 - **id** 
 
@@ -35,22 +33,14 @@ provides a web API for interacting with big
 
   - **default** : v0.0.1
 
-- **resources** 
-
-  - **description** : the resources represented by the api
-
-  - **type** : object
-
-  - **default** : undefined
-
 
 <a name="api-methods"></a> 
 
 ## methods 
 
-<a name="api-methods-start"></a> 
+<a name="api-methods-listen"></a> 
 
-### api.start(options)
+### api.listen(options)
 
 when the api resource starts
 
@@ -72,13 +62,7 @@ when the api resource starts
 
       - **default** : v0.0.1
 
-    - **resources** 
 
-      - **description** : the resources represented by the api
+## dependencies 
 
-      - **type** : object
-
-      - **default** : undefined
-
-
-*README auto-generated with [big-docs](https://github.com/bigcompany/big/tree/master/resources/docs)*
+*README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
