@@ -9,10 +9,17 @@ module['exports'] = function (options, callback) {
     self = this,
     output = '',
     method = resource[options.resource].methods[options.method],
-    entity = options.resource || 'unknown';
+    entity = options.resource || 'unknown',
+    desc;
 
-  $('legend').html(options.method);
-  $('.execute').html(options.method);
+  desc = method.schema.description;
+
+  if (desc.length === 0) {
+    desc = options.method;
+  }
+
+  $('#submit').attr('value', options.method);
+  $('legend').html(desc);
 
   if (typeof options.data !== 'undefined') {
 
@@ -29,14 +36,21 @@ module['exports'] = function (options, callback) {
         return showForm(options.data, err.errors);
       } else {
         $('form').remove();
+        console.log(result)
         $('.result').html(JSON.stringify(result, true, 2));
         return callback(null, $.html());
       }
     }
-    for (var p in options.data) {
-      args.push(options.data[p]);
+
+    if(typeof method.schema.properties.options === 'object') {
+      args.push(options.data);
+    } else {
+      for (var p in options.data) {
+        args.push(options.data[p]);
+      }
     }
     args.push(cb);
+
     method.apply(this, args)
   } else {
     $('.results').remove();
@@ -55,7 +69,6 @@ module['exports'] = function (options, callback) {
 
       $('h1').html(entity + ' - create');
       $('input[type="submit"]').attr('value', options.method);
-      $('.description').html(method.schema.description);
 
       cont = function(err, result) {
         if (result) {

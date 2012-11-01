@@ -13,29 +13,26 @@
 
   <div class="row">
     <div class="span12">
-      <!--
-      <h3>if</h3>
-      <select name="if" id="if"></select>
-
-      <h3>then</h3>
-      <select name="then" id="then"></select>
-
-      <br/>
-      <button>create</button>
-      -->
-      <table class="table table-bordered">
+      <form action="/admin/resources/hook/create" method="post">
+        <table class="table table-bordered">
+          <tr>
+            <th>if</th>
+            <th>then</th>
+          </tr>
+          <tr>
+            <td><select name="if" id="if"></select></td>
+            <td><select name="then" id="then"></select></td>
+            <td><input type="submit" class="btn" value="create hook"/></td>
+          </tr>
+        </table>
+      </form>
+      <table class="table table-bordered hooks">
         <tr>
           <th>if</th>
           <th>then</th>
         </tr>
       </table>
 
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="span12">
-      <a class="btn" href="/admin/resources/hook/create">create new hook</a>
     </div>
   </div>
 

@@ -1,7 +1,7 @@
 var resource = require('resource'),
     system = resource.define('system');
 
-system.schema.description = "interacts with the operating system";
+system.schema.description = "for interacting with the operating system";
 
 var spawn = require('child_process').spawn;
 

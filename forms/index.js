@@ -3,27 +3,25 @@ var resource = require('resource'),
 
 resource.use('view');
 
-forms.schema.description = "generates HTML forms";
-
-forms.property("resource", { 
-  "description": "the resource which the form represents",
-  "type": "any",
-  "message": "a valid JSON-schema is required",
-});
+forms.schema.description = "for generating HTML forms";
 
 forms.method("generate", generate, { 
-  "description": "a create form",
+  "description": "generates a new form based on a resource schema",
   "properties": {
-    "resource": forms.schema.properties.resource
+    "resource": {
+      "description": "the resource which the form represents",
+      "type": "any"
+    }
   }
 });
 
-function generate (options) {
+function generate (options, callback) {
   var view = resource.view.create({ path: __dirname + '/view', input: "html"});
   view.load();
   var str = '', form;
   form = view.form[options.method] || view.form['method'];
-  return form;
+  form.render();
+  form.present(options, callback);
 };
 
 exports.forms = forms;

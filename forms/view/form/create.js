@@ -32,7 +32,7 @@ module['exports'] = function (options, callback) {
     $('.back').html('back to ' + entity);
     $('.back').attr('href', '/' + entity);
     $('legend').html(r.methods.create.schema.description);
-    $('input[type="submit"]').attr('value', 'Create new ' + entity);
+    $('input[type="submit"]').attr('value', 'Create');
 
     cont = function(err, result) {
       if (result) {

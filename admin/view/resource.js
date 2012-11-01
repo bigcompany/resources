@@ -3,11 +3,19 @@ var layout = require('./layout'),
 
 module['exports'] = function (options, callback) {
 
-  var $ = this.$;
+  var $ = this.$,
+      view = this;
 
   var _resource = resource.resources[options.resource],
-      methods = resource.resources[options.resource].methods;
+      methods;
 
+  if(typeof _resource === 'undefined') {
+    $('.name').html(options.resource + ' is not a valid resource!');
+    $('.resource').remove();
+    return callback(null, $.html());
+  }
+
+  methods = resource.resources[options.resource].methods;
   $('.name').html(_resource.name);
   $('.description').html(_resource.schema.description);
 
@@ -19,16 +27,22 @@ module['exports'] = function (options, callback) {
   }
 
   if(Object.keys(_resource.dependencies).length > 0) {
-    $('.dependencies').html(layout.controls.list.present({ items: _resource.dependencies, root: 'http://npmjs.org/package/' }));
+    for(var dep in _resource.dependencies) {
+      $('.dependencies').append('<tr><td><a href="http://npmjs.org/package/' + dep + '">' + dep + '</a></td><td>' + _resource.dependencies[dep] + '</td></tr>');
+    }
   } else {
     $('.deps').remove();
   }
 
-  $('.schema').html(JSON.stringify(_resource.schema, true, 2));
+  if (Object.keys(_resource.schema.properties).length === 0) {
+    $('.schema').remove();
+  } else {
+    $('.properties').html(view.parent.schema.present({ schema: _resource.schema }));
+  }
 
   var ds = _resource.config.datasource || 'none';
   if(ds !== 'none') {
-    ds = '<a href="/admin/datasources/' +  ds + '">' + ds +'</a>';
+    ds = 'This resource is currently persisting it\'s data to the <a href="/admin/datasources/' +  ds + '">' + ds +'</a> datasource';
     $('.datasource').html(ds);
   } else {
     $('.datasources').remove();

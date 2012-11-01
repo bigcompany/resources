@@ -1,7 +1,7 @@
 var resource  = require('resource'),
     http = resource.define('http');
 
-http.schema.description = "HTTP server resource";
+http.schema.description = "provides an HTTP server API";
 
 http.property("port", {
   "type": "number",
@@ -16,7 +16,8 @@ http.property("host", {
 });
 
 http.property("root", {
-  "type": "string"
+  "type": "string",
+  "default": __dirname + '/public'
 });
 
 http.method('listen', listen, {

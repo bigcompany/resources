@@ -1,7 +1,7 @@
 var resource = require('resource'),
     view = resource.define('view');
 
-view.schema.description = "templating / markup engine with 22+ supported languages";
+view.schema.description = "for managing views";
 
 view.property("path", {
   "type": "string",
@@ -25,7 +25,14 @@ view.property("output", {
 
 view.method('create', create, {
   "description": "creates a new view",
-  "properties": view.schema.properties
+  "properties": {
+    "options": {
+      "type": "object",
+      "properties": {
+        "path": view.schema.properties.path
+      }
+    }
+  }
 });
 
 function create (options, callback) {
