@@ -1,6 +1,6 @@
 # replication
 
-replication service for big instances
+for managing and keeping track of replication events
 
 ## API
 
@@ -14,6 +14,10 @@ replication service for big instances
 
   - [target](#replication-properties-target)
 
+  - [repo](#replication-properties-repo)
+
+  - [branch](#replication-properties-branch)
+
 
 #### [methods](#replication-methods)
 
@@ -21,7 +25,7 @@ replication service for big instances
 <a name="replication-properties"></a>
 
 ## properties 
-replication service for big instances
+for managing and keeping track of replication events
 
 - **id** 
 
@@ -33,7 +37,7 @@ replication service for big instances
 
   - **type** : string
 
-  - **default** : Sun Oct 21 2012 13:40:58 GMT-0700 (PDT)
+  - **default** : Thu Nov 01 2012 01:07:21 GMT-0700 (PDT)
 
 - **source** 
 
@@ -47,6 +51,14 @@ replication service for big instances
 
   - **type** : string
 
+- **repo** 
+
+  - **type** : string
+
+- **branch** 
+
+  - **type** : string
+
 
 <a name="replication-methods"></a> 
 
@@ -54,6 +66,5 @@ replication service for big instances
 
 
 ## dependencies 
-
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

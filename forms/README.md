@@ -1,6 +1,6 @@
 # forms
 
-generates HTML forms
+for generating HTML forms
 
 ## API
 
@@ -8,30 +8,17 @@ generates HTML forms
 
   - [id](#forms-properties-id)
 
-  - [resource](#forms-properties-resource)
-
 
 #### [methods](#forms-methods)
 
   - [generate](#forms-methods-generate) (resource)
 
 
-<a name="forms-properties"></a>
-
-## properties 
-generates HTML forms
+for generating HTML forms
 
 - **id** 
 
   - **type** : any
-
-- **resource** 
-
-  - **description** : the resource which the form represents
-
-  - **type** : any
-
-  - **message** : a valid JSON-schema is required
 
 
 <a name="forms-methods"></a> 
@@ -42,7 +29,7 @@ generates HTML forms
 
 ### forms.generate(resource)
 
-a create form
+generates a new form based on a resource schema
 
 - **resource** 
 
@@ -50,10 +37,7 @@ a create form
 
   - **type** : any
 
-  - **message** : a valid JSON-schema is required
-
 
 ## dependencies 
-
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

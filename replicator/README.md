@@ -1,6 +1,6 @@
 # replicator
 
-replicator service for big instances
+provides an application replication API for resource based apps
 
 ## API
 
@@ -15,14 +15,12 @@ replicator service for big instances
 
   - [pull](#replicator-methods-pull) (options, callback)
 
-  - [log](#replicator-methods-log) ()
-
   - [checkout](#replicator-methods-checkout) (options, callback)
 
   - [listen](#replicator-methods-listen) (callback)
 
 
-replicator service for big instances
+provides an application replication API for resource based apps
 
 - **id** 
 
@@ -37,7 +35,7 @@ replicator service for big instances
 
 ### replicator.push(options, callback)
 
-pushes current big instance to a remote big instance
+pushes local big instance to a remote big instance
 
 - **options** 
 
@@ -75,39 +73,9 @@ pulls a big instance from a remote big instance
 
   - **type** : object
 
-  - **properties**
-
-    - **path** 
-
-      - **description** : the path to pull the big instance from
-
-      - **type** : string
-
-    - **location** 
-
-      - **description** : the type of location big is pulling from
-
-      - **type** : string
-
-      - **enum**
-
-        - 0 : *fs*
-
-        - 1 : *http*
-
-    - **targetDir** 
-
-      - **description** : the location to extract big instance
-
-      - **type** : string
-
 - **callback** 
 
   - **type** : function
-
-<a name="replicator-methods-log"></a> 
-
-### replicator.log()
 
 <a name="replicator-methods-checkout"></a> 
 
@@ -117,17 +85,21 @@ checks out a local git repo into a directory
 
 - **options** 
 
-  - **repo**
+  - **type** : object
 
-    - description : *the repo to checkout*
+  - **properties**
 
-    - type : *string*
+    - **repo** 
 
-  - **path**
+      - **description** : the repo to checkout
 
-    - description : *the path to check the repo out to*
+      - **type** : string
 
-    - type : *string*
+    - **path** 
+
+      - **description** : the path to check the repo out to
+
+      - **type** : string
 
 - **callback** 
 
@@ -137,7 +109,7 @@ checks out a local git repo into a directory
 
 ### replicator.listen(callback)
 
-starts a listening replicator service capable of recieving big push requests
+starts a listening replicator service capable of recieving push requests
 
 - **callback** 
 
@@ -145,7 +117,6 @@ starts a listening replicator service capable of recieving big push requests
 
 
 ## dependencies 
-
 - [pushover](http://npmjs.org/package/pushover)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

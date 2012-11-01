@@ -1,6 +1,6 @@
 # view
 
-templating / markup engine with 22+ supported languages
+for managing views
 
 ## API
 
@@ -19,13 +19,13 @@ templating / markup engine with 22+ supported languages
 
 #### [methods](#view-methods)
 
-  - [create](#view-methods-create) (id, path, template, input, output)
+  - [create](#view-methods-create) (options)
 
 
 <a name="view-properties"></a>
 
 ## properties 
-templating / markup engine with 22+ supported languages
+for managing views
 
 - **id** 
 
@@ -62,41 +62,28 @@ templating / markup engine with 22+ supported languages
 
 <a name="view-methods-create"></a> 
 
-### view.create(id, path, template, input, output)
+### view.create(options)
 
 creates a new view
 
-- **id** 
+- **options** 
 
-  - **type** : any
+  - **type** : object
 
-- **path** 
+  - **properties**
 
-  - **type** : string
+    - **path** 
 
-  - **default** : .
+      - **type** : string
 
-  - **description** : the path to the view
+      - **default** : .
 
-  - **format** : uri
+      - **description** : the path to the view
 
-- **template** 
-
-  - **type** : string
-
-  - **description** : the string template of the view
-
-- **input** 
-
-  - **type** : string
-
-- **output** 
-
-  - **type** : string
+      - **format** : uri
 
 
 ## dependencies 
-
 - [viewful](http://npmjs.org/package/viewful)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

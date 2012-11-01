@@ -1,6 +1,6 @@
 # system
 
-interacts with the operating system
+for interacting with the operating system
 
 ## API
 
@@ -26,7 +26,7 @@ interacts with the operating system
   - [kill](#system-methods-kill) ()
 
 
-interacts with the operating system
+for interacting with the operating system
 
 - **id** 
 
@@ -193,6 +193,5 @@ lists members of a group
 
 
 ## dependencies 
-
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

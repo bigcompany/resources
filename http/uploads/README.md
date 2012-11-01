@@ -1,0 +1,1 @@
+Files uploaded through the http resource are temporarily stored here

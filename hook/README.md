@@ -51,5 +51,4 @@ for managing event hooks ( IF this THEN that )
 
 ## dependencies 
 
-
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
