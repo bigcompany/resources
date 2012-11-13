@@ -36,7 +36,7 @@ view.method('create', create, {
 });
 
 function create (options, callback) {
-  var viewful = require('viewful');
+  var viewful = require('./lib/viewful');
   options = options || {};
   //
   // TODO: move this delegation / conditional logic to inside view engine
@@ -60,5 +60,5 @@ function create (options, callback) {
 exports.view = view;
 
 exports.dependencies = {
-  "viewful": "*"
+  "cheerio": "0.9.x"
 };
