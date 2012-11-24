@@ -1,8 +1,9 @@
 var resource = require('resource'),
     docs = resource.define('docs'),
     path = require('path'),
-    fs = require('fs'),
-    viewModule = require('viewful');
+    fs = require('fs');
+
+resource.use('view');
 
 docs.schema.description = "for generating documentation";
 
@@ -39,12 +40,12 @@ function generate (_resource, template, callback) {
   }
 
   template = fs.readFileSync(__dirname + '/template.md').toString();
-  var view = new viewModule.View({
+  var view = new view.View({
     template: template, 
     input: "swig"
   });
 
-  viewModule.engines.swig.init({
+  view.engines.swig.init({
       autoescape: false
   });
 
@@ -132,7 +133,7 @@ function resourceMethods (resource) {
 var schemaToHTML = docs.schemaToHTML = function (schema) {
 
   var str = schemaToTable(schema)
-  var view = new viewModule.View({
+  var view = new view.View({
     template: str,
     input: "markdown"
   });
