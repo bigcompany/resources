@@ -1,5 +1,11 @@
 var resource = require('resource'),
-    view = resource.define('view');
+    view = resource.define('view'),
+    viewful = require('./lib/viewful');
+
+//
+// Export the View class for convenience
+//
+exports.View = viewful.View;
 
 view.schema.description = "for managing views";
 
@@ -36,7 +42,6 @@ view.method('create', create, {
 });
 
 function create (options, callback) {
-  var viewful = require('./lib/viewful');
   options = options || {};
   //
   // TODO: move this delegation / conditional logic to inside view engine
