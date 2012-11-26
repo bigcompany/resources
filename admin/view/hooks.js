@@ -26,7 +26,7 @@ module['exports'] = function (options, callback) {
       return a.if > b.if;
     });
     results.forEach(function(item){
-      $('.hooks').append('<tr><td>' + eventLink(item.if) + '</td><td>' + eventLink(item.then) + '</td></tr>')
+      $('.hooks').append('<tr><td>' + eventLink(item.if) + '</td><td>' + eventLink(item.then) + '</td><td>' + '<a href="/admin/resources/hook/get/' + item.id +'"><span class="icon-edit">x</span></a>' + '</td></tr>')
     });
     callback(null,  $.html());
   });
