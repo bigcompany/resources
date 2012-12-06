@@ -6,7 +6,7 @@ admin.schema.description = "a web based admin panel";
 resource.use('system');
 resource.use('view');
 resource.use('datasource');
-
+resource.use('hook');
 resource.use('forms');
 resource.use('http');
 

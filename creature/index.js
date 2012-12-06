@@ -7,7 +7,7 @@ creature.property('type', { type: "string", enum: ['dragon', 'unicorn', 'pony'],
 creature.property('life', { type: "number", default: 10 });
 
 
-function poke(callback) {
+function poke (callback) {
   if (callback) {
     return callback(null, 'poked!');
   }
@@ -22,7 +22,7 @@ function talk (text, callback) {
     return callback(null, result);
   }
   return result;
-};
+}
 function fire (options, callback) {
   var result = {
     status: "fired",
@@ -33,7 +33,7 @@ function fire (options, callback) {
     return callback(null, result);
   }
   return result;
-};
+}
 
 creature.method('poke', poke);
 
