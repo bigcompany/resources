@@ -1,5 +1,5 @@
 var layout = exports;
-var viewful = require('viewful')
+var viewful = require('../../../view/lib/viewful');
 
 var controls = new viewful.View({ path: __dirname + '/controls', input: 'html' });
 controls.load();
