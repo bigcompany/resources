@@ -388,3 +388,6 @@ function unban (options, callback) {
 }
 
 exports.irc = irc;
+exports.dependencies = {
+  "irc": "*"
+};
