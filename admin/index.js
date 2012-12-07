@@ -5,7 +5,7 @@ admin.schema.description = "a web based admin panel";
 
 resource.use('system');
 resource.use('view');
-resource.use('datasource');
+resource.use('datasource', { datasource: "fs" });
 
 resource.use('forms');
 resource.use('http');
@@ -35,7 +35,6 @@ function listen (options, callback) {
   }
 
   resource.http.app.use(connect.static(__dirname + '/public'));
-
   var view = resource.view.create({ path: __dirname + '/view'});
   view.load();
 
