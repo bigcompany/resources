@@ -1,6 +1,9 @@
 var resource = require('resource'),
     irc = resource.define('irc');
 
+var util = require('util'),
+    Client = require('irc').Client;
+
 irc.schema.description = 'for managing communication with irc';
 
 irc.property('server', {
@@ -30,7 +33,10 @@ irc.property('message', {
         channel: irc.schema.properties.channel,
         channels: irc.schema.properties.channels,
         nick: irc.schema.properties.nick,
-        message: { type: 'string' }
+        message: {
+          type: 'string',
+          default: '...'
+        }
       }
     }
   }
@@ -56,6 +62,11 @@ irc.property('channels', {
   type: 'array'
 });
 
+//
+// A lookup table of irc connections
+//
+irc.connections = {};
+
 irc.method('connect', connect, {
   description: 'connects to an irc server',
   properties: {
@@ -63,14 +74,47 @@ irc.method('connect', connect, {
       type: 'object',
       properties: {
         host: irc.schema.properties.server.properties.host,
-        port: irc.schema.properties.server.properties.port
+        port: irc.schema.properties.server.properties.port,
+        nick: (function () {
+          var nick = irc.schema.properties.nick;
+          nick.default = 'big-irc';
+          return nick;
+        })(),
+        channels: irc.schema.properties.channels
       }
     }
   }
 });
 function connect (options, callback) {
-  console.log(options);
-  callback(null, true);
+  var tuple = [options.host, options.port].concat(':'),
+      client;
+
+  client = irc.connections[tuple] = new Client(
+    options.host,
+    options.nick,
+    options
+  );
+
+  client.conn.on('error', function connError (err) {
+    console.log('a connection error has occured');
+  });
+
+  client.on('error', function onError (err) {
+    console.log('a client error has occured');
+  });
+
+  client.on('connect', function () {
+    console.log('a connection has occured');
+  });
+
+  //
+  // Listening for the "message of the day", despite seeming unsatisfactory,
+  // is considered the "best way" to detect when client/server handshaking
+  // is complete.
+  client.once('motd', function (motd) {
+    // TODO: freenode-style "id check" (see L45, hook.io-irc/lib/irc.js)
+    callback(null, true);
+  });
 }
 
 irc.method('disconnect', disconnect, {
@@ -80,13 +124,25 @@ irc.method('disconnect', disconnect, {
       type: 'object',
       properties: {
         host: irc.schema.properties.server.properties.host,
-        port: irc.schema.properties.server.properties.port
+        port: irc.schema.properties.server.properties.port,
+        message: {
+          type: 'string',
+          default: 'big irc is disconnected (http://big.vc)'
+        }
       }
     }
   }
 });
 function disconnect (options, callback) {
-  callback(null, true);
+  var tuple = [options.host, options.port].join(':');
+
+  irc.connections[tuple].disconnect(options.message, function (err) {
+    if (err) {
+      return callback(err);
+    }
+    delete irc.connections[tuple];
+    callback(null, true);
+  });
 }
 
 irc.method('message', message, {
@@ -94,7 +150,13 @@ irc.method('message', message, {
   properties: irc.schema.properties.message.properties
 });
 function message (options, callback) {
-  console.log(options);
+  var tuple = [options.host, options.port].join(':');
+
+  // TODO: Is this an async method? Is there an event or a cb to hook into?
+  irc.connections[tuple].say(
+    options.channels || [options.channel],
+    options.message
+  );  
   callback(null, true);
 }
 
@@ -102,9 +164,11 @@ irc.method('command', command, {
   description: 'sends an irc command',
   properties: irc.schema.properties.command.properties
 });
-function command (cmd, callback) {
-  console.log(cmd);
-  callback(null, cmd);
+function command (options, callback) {
+  var tuple = [options.host, options.port].join(':');
+
+  irc.connections[tuple].send(options.command);  
+  callback(null, true);
 }
 
 irc.method('join', join, {
@@ -121,8 +185,14 @@ irc.method('join', join, {
   }
 });
 function join (options, callback) {
-  console.log(options);
-  callback(null, true);
+  var tuple = [options.host, options.port].join(':');
+
+  irc.connections[tuple].join(options.channel, function (err) {
+    // TODO: Do we need to keep an internal representation of connected
+    // channels? I believe the client does this already, but it might be
+    // nice to decouple that from the underlying library. Maybe later.
+    callback(err, !err);
+  });
 }
 
 irc.method('part', part, {
@@ -139,8 +209,13 @@ irc.method('part', part, {
   }
 });
 function part (options, callback) {
-  console.log(options);
-  callback(null, true);
+  var tuple = [options.host, options.port].join(':');
+
+  irc.connections[tuple].part(options.channel, function (err) {
+    // TODO: If we keep an internal representation of channels, this
+    // is where we would delete them.
+    callback(err, !err);
+  });
 }
 
 irc.method('voice', voice, {
@@ -162,9 +237,9 @@ irc.method('voice', voice, {
   }
 });
 function voice (options, callback) {
-  console.log(options);
-  console.log('voiced');
-  callback(null, true);
+  // TODO: Do we need to make a clone of the options object?
+  options.command = util.format('mode %s +v %s', options.channel, options.nick);
+  irc.command(options, callback);
 }
 
 irc.method('devoice', devoice, {
@@ -186,9 +261,8 @@ irc.method('devoice', devoice, {
   }
 });
 function devoice (options, callback) {
-  console.log(options);
-  console.log('devoiced');
-  callback(null, true);
+  options.command = util.format('mode %s -v %s', options.channel, options.nick);
+  irc.command(options, callback);
 }
 
 irc.method('op', op, {
@@ -210,9 +284,8 @@ irc.method('op', op, {
   }
 });
 function op (options, callback) {
-  console.log(options);
-  console.log('opped');
-  callback(null, true);
+  options.command = util.format('mode %s +o %s', options.channel, options.nick);
+  irc.command(options, callback);
 }
 
 irc.method('deop', deop, {
@@ -234,9 +307,8 @@ irc.method('deop', deop, {
   }
 });
 function deop (options, callback) {
-  console.log(options);
-  console.log('deopped');
-  callback(null, true);
+  options.command = util.format('mode %s -o %s', options.channel, options.nick);
+  irc.command(options, callback);
 }
 
 irc.method('kick', kick, {
@@ -258,9 +330,8 @@ irc.method('kick', kick, {
   }
 });
 function kick (options, callback) {
-  console.log(options);
-  console.log('kicked');
-  callback(null, true);
+  options.command = util.format('kick %s %s', options.channel, options.nick);
+  irc.command(options, callback);
 }
 
 irc.method('ban', ban, {
@@ -282,9 +353,15 @@ irc.method('ban', ban, {
   }
 });
 function ban (options, callback) {
-  console.log(options);
-  console.log('banned');
-  callback(null, true);
+  options.command = util.format('mode %s +b %s', options.channel, options.nick);
+  irc.command(options, function (err, ok) {
+    // Technically this is a "kickban", but it's pretty uncommon to ban
+    // someone without kicking them as well.
+    if (err) {
+      return callback(err, ok);
+    }
+    irc.kick(options, callback);
+  });
 }
 
 irc.method('unban', unban, {
@@ -306,9 +383,8 @@ irc.method('unban', unban, {
   }
 });
 function unban (options, callback) {
-  console.log(options);
-  console.log('unbanned');
-  callback(null, true);
+  options.command = util.format('mode %s -b %s', options.channel, options.nick);
+  irc.command(options, callback);
 }
 
 exports.irc = irc;
