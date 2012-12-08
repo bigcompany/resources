@@ -67,7 +67,7 @@ function checkout (options, callback) {
   //
   // TODO: add ability to check out specific branch and sha, instead of master HEAD
   //
-  console.log('checking out latest commit...');
+  resource.logger.info('checking out latest commit...');
   var exec = require('child_process').exec;
   var _command = "git --work-tree=" + process.env.HOME + "/" + options.repo + "/ checkout -f";
   var checkout = exec(_command, { cwd: '/tmp/repos/' + options.repo + '/' },
@@ -75,11 +75,11 @@ function checkout (options, callback) {
       console.log(stdout, stderr);
       if (err) {
         // TODO: do something meaningful with the error
-        console.log('exec error: ' + err);
+        resource.logger.error('exec error: ' + err);
       } else {
-        console.log('info: checked out latest commit to: ~/' + options.repo +'/');
+        resource.logger.info('checked out latest commit to: ' + process.env.HOME + '/' + options.repo +'/');
       }
-      console.log('warn: restart needed to update');
+      resource.logger.warn('restart needed to update');
       callback(err, true);
   });
 }
@@ -101,7 +101,7 @@ function listen (callback) {
 
   repos.on('push', function (push) {
 
-    console.log('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
+    resource.logger.info('push ' + push.repo + '/' + push.commit + ' (' + push.branch + ')');
     push.accept();
 
     var meta = {};
@@ -121,7 +121,7 @@ function listen (callback) {
   });
 
   repos.on('fetch', function (fetch) {
-    console.log('fetch ' + fetch.commit);
+    resource.logger.info('fetch ' + fetch.commit);
     fetch.accept();
   });
 
@@ -169,13 +169,12 @@ function push (options, callback) {
   });
 
   git.on('exit', function (code) {
-    //console.log('child process exited with code ' + code);
     result = result.split('\n');
     console.log('GIT EXITING')
     console.log('-----------------');
-    if (result[0].search('t connect to host') !== -1) {
-      console.log('error: git push failed!');
-      console.log('info: attempting to ssh into the machine to fix the problem...');
+    if (result[0].search('t connect to host') !== -1 || result[0].search('error: Failed connect') !== -1) {
+      resource.logger.error('git push failed!');
+      resource.logger.info('attempting to ssh into the machine to fix the problem...');
       resource.node.sh({ host: options.host, recipe: "ubuntu-12.04" }, callback);
     } else {
       callback(null, options);
