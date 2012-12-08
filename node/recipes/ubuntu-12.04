@@ -56,6 +56,11 @@ git clone http://biginternetcompany.net:8888/resources
 git clone http://biginternetcompany.net:8888/resource
 
 
+# mon
+git clone https://github.com/visionmedia/mon.git
+cd mon
+make install
+
 # change directory into resource
 cd resource
 
@@ -84,18 +89,6 @@ npm install -g
 #
 # TODO: remove the following manual npm installs
 #
-
-npm install swig -g
-
-cd /root/resources/node_modules/big-command/
-npm install -g
-npm install winston
-npm install prompt
-
-cd /root/resources/node_modules/viewful/
-npm install -g
-npm install swig
-
 cd /root/resource/node_modules/jugglingdb/
 npm install nosqlite
 npm install -g
@@ -105,11 +98,7 @@ npm install -g
 
 cd /root/big
 npm link resource
-npm link big-command
 npm install -g
-
-cd /root/big/node_modules/viewful/
-npm install swig
 
 cd /root/big
 
