@@ -3,6 +3,9 @@
     "description": "resources for any occasion",
     "version": "0.1.0",
     "author": "Marak",
+    "dependencies": {
+      "resource": "0.2.x"
+    },
     "repository": {
         "type": "git", 
         "url": "http://github.com/bigcompany/resources.git" 

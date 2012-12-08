@@ -22,7 +22,6 @@ module['exports'] = function (options, callback) {
   $('legend').html(desc);
 
   if (typeof options.data !== 'undefined') {
-
     var args = [];
     var cb = function (err, result) {
       if (err) {
@@ -41,17 +40,8 @@ module['exports'] = function (options, callback) {
         return callback(null, $.html());
       }
     }
-
-    if(typeof method.schema.properties.options === 'object') {
-      args.push(options.data);
-    } else {
-      for (var p in options.data) {
-        args.push(options.data[p]);
-      }
-    }
     args.push(cb);
-
-    method.apply(this, args)
+    method.call(this, options.data, cb);
   } else {
     $('.results').remove();
     showForm();

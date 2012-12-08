@@ -32,22 +32,30 @@ function start (callback) {
       //
       // Take the IF _resource and add an after method for _method
       //
-      resource.resources[_resource].after(_method, function(data) {
-        //
-        // Inside this resource.after method, run the THEN resource::method pair,
-        // using the results from the IF resource::method pair as "data" argument
-        //
-        var arr = h.then.split('::'),
-        _resource = arr[0],
-        _method = arr[1];
-        if(typeof resource.resources[_resource] === 'undefined') {
-          throw new Error('could not find resource: ' + _resource);
-        }
-        if(typeof resource.resources[_resource].methods[_method] !== 'function') {
-          throw new Error('could not find resource method: ' + _resource + '.' + _method);
-        }
-        resource.resources[_resource].methods[_method](data);
-      })
+      if(
+        typeof resource.resources[_resource] === 'undefined' ||
+        typeof resource.resources[_resource].after !== 'function'
+      ) {
+        //resource.logger.warn('could not find resource: ' + _resource);
+      }
+      else {
+        resource.resources[_resource].after(_method, function(data) {
+          //
+          // Inside this resource.after method, run the THEN resource::method pair,
+          // using the results from the IF resource::method pair as "data" argument
+          //
+          var arr = h.then.split('::'),
+          _resource = arr[0],
+          _method = arr[1];
+          if(typeof resource.resources[_resource] === 'undefined') {
+            throw new Error('could not find resource: ' + _resource);
+          }
+          if(typeof resource.resources[_resource].methods[_method] !== 'function') {
+            throw new Error('could not find resource method: ' + _resource + '.' + _method);
+          }
+          resource.resources[_resource].methods[_method](data);
+        })
+      }
     });
     callback(null)
   });
