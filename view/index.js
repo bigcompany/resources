@@ -6,6 +6,8 @@ var resource = require('resource'),
 // Export the View class for convenience
 //
 exports.View = viewful.View;
+view.View = viewful.View;
+view.engines = viewful.engines;
 
 view.schema.description = "for managing views";
 
@@ -33,10 +35,7 @@ view.method('create', create, {
   "description": "creates a new view",
   "properties": {
     "options": {
-      "type": "object",
-      "properties": {
-        "path": view.schema.properties.path
-      }
+      "type": "object"
     }
   }
 });
