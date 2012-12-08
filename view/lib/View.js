@@ -93,7 +93,6 @@ View.prototype.load = function (viewPath, cb) {
 
 View.prototype.render = function (data, callback) {
   var self = this;
-  
   var inputEngine  = viewful.engines[self.input],
       outputEngine = viewful.engines[self.output];
   
@@ -164,7 +163,10 @@ View.prototype._loadSync = function () {
           var _present = root +  '/' + _path.replace(ext, '');
           presenter = require(_present);
         } catch(ex) {
-          throw ex;
+          presenter = function () {
+            return this.$.html();
+          };
+          //throw ex;
           // console.log(_present, ex);
         }
 
