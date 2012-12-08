@@ -24,8 +24,8 @@ function start () {
   // TODO: ascii art here
   //
   cli.started = true;
-  var _cli = createRouter(resource.resources);
-  _cli.route();
+  cli.router = createRouter(resource.resources);
+  cli.route = router.route;
 
 };
 
@@ -44,9 +44,9 @@ var router = {
     //
     // Use either the supplied command, or the command from argv
     //
-    _command = _command ||  argv._.join(' ');
+    _command = _command || argv._.join(' ');
 
-    var routes = this._routes,
+    var routes = router._routes,
         part,
         c = _command.split(' ');
 
@@ -190,6 +190,7 @@ var createRouter = function (resources, options) {
 
 };
 
+cli.method('createRouter', createRouter);
 
 function promptToList (resource, callback) {
   var property = {
@@ -208,9 +209,15 @@ function promptToList (resource, callback) {
   });
 }
 
+
+cli.router = createRouter(resource.resources);
+cli.route = router.route;
+
+
 exports.route = router.route;
 
 exports.dependencies = {
   "prompt": "*",
-  "optimist": "*"
+  "optimist": "*",
+  "colors": "*"
 };
