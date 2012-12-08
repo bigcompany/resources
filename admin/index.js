@@ -7,6 +7,7 @@ resource.use('system');
 resource.use('view');
 resource.use('datasource', { datasource: "fs" });
 
+resource.use('hook');
 resource.use('forms');
 resource.use('http');
 
