@@ -17,6 +17,7 @@ module['exports'] = function(options, callback) {
     if (err) {
       $('table').remove();
       $('.message').html(JSON.stringify(err, true, 2));
+      $('.message').addClass('error');
       return callback(null, $.html());
     }
 
