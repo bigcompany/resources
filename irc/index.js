@@ -91,7 +91,6 @@ function connect (options, callback) {
       client;
 
   //options.channels = options.channels || options.channel.split(' ');
-  console.log('fff- ', options);
   client = irc.connections[tuple] = new Client(
     options.host,
     options.nick
@@ -103,24 +102,19 @@ function connect (options, callback) {
     console.log('message: ', { from : from, to: to, message: message });
   });
 
-  client.conn.on('error', function connError (err) {
-    console.log('a connection error has occured');
-    console.log(err.stack);
+  client.conn.on('error', function (err) {
+    client.emit('error', err);
   });
 
   client.on('error', function onError (err) {
-    console.log('a client error has occured');
-  });
-
-  client.on('connect', function () {
-    // console.log('connected');
+    irc.emit('irc::error', err);
   });
 
   //
   // Listening for the "message of the day", despite seeming unsatisfactory,
   // is considered the "best way" to detect when client/server handshaking
   // is complete.
-  client.once('motd', function (motd) {
+  client.on('motd', function (motd) {
     // TODO: freenode-style "id check" (see L45, hook.io-irc/lib/irc.js)
     callback(null, options);
   });
