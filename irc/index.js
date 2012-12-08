@@ -56,8 +56,12 @@ irc.property('command', {
   }
 });
 
-irc.property('nick');
-irc.property('channel');
+irc.property('nick', {
+  default: 'biggie'
+});
+irc.property('channel', {
+  default: '#big'
+});
 irc.property('channels', {
   type: 'array'
 });
@@ -75,28 +79,33 @@ irc.method('connect', connect, {
       properties: {
         host: irc.schema.properties.server.properties.host,
         port: irc.schema.properties.server.properties.port,
-        nick: (function () {
-          var nick = irc.schema.properties.nick;
-          nick.default = 'big-irc';
-          return nick;
-        })(),
+        nick: irc.schema.properties.nick,
+        channel: irc.schema.properties.channel,
         channels: irc.schema.properties.channels
       }
     }
   }
 });
 function connect (options, callback) {
-  var tuple = [options.host, options.port].concat(':'),
+  var tuple = [options.host, options.port].join(':'),
       client;
 
+  //options.channels = options.channels || options.channel.split(' ');
+  console.log('fff- ', options);
   client = irc.connections[tuple] = new Client(
     options.host,
-    options.nick,
-    options
+    options.nick
   );
+
+  client.on('message', function (from, to, message) {
+    // XXX we need to emit some sort of message event/method here.
+    // problem: the "message" method is being used
+    console.log('message: ', { from : from, to: to, message: message });
+  });
 
   client.conn.on('error', function connError (err) {
     console.log('a connection error has occured');
+    console.log(err.stack);
   });
 
   client.on('error', function onError (err) {
@@ -104,7 +113,7 @@ function connect (options, callback) {
   });
 
   client.on('connect', function () {
-    console.log('a connection has occured');
+    // console.log('connected');
   });
 
   //
@@ -113,7 +122,7 @@ function connect (options, callback) {
   // is complete.
   client.once('motd', function (motd) {
     // TODO: freenode-style "id check" (see L45, hook.io-irc/lib/irc.js)
-    callback(null, true);
+    callback(null, options);
   });
 }
 
@@ -152,11 +161,10 @@ irc.method('message', message, {
 function message (options, callback) {
   var tuple = [options.host, options.port].join(':');
 
-  // TODO: Is this an async method? Is there an event or a cb to hook into?
   irc.connections[tuple].say(
     options.channels || [options.channel],
     options.message
-  );  
+  );
   callback(null, true);
 }
 
@@ -184,15 +192,11 @@ irc.method('join', join, {
     }
   }
 });
-function join (options, callback) {
+function join (options) {
+  console.log(arguments);
   var tuple = [options.host, options.port].join(':');
-
-  irc.connections[tuple].join(options.channel, function (err) {
-    // TODO: Do we need to keep an internal representation of connected
-    // channels? I believe the client does this already, but it might be
-    // nice to decouple that from the underlying library. Maybe later.
-    callback(err, !err);
-  });
+  console.log('joining...');
+  irc.connections[tuple].join(options.channel);
 }
 
 irc.method('part', part, {
