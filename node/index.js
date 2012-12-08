@@ -140,7 +140,8 @@ function sh (options, callback) {
    // which are executed sequentially
    //
    commands = commands.join(' && ');
-   console.log('warn: attempting outgoing ssh connection to ' + options.host);
+   resource.logger.warn('attempting outgoing ssh connection to ' + options.host);
+
    //
    // TODO: make header and footer proper ascii box ( with correct table chars )
    //
