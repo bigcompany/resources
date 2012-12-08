@@ -5358,3 +5358,7 @@ pre .chunk {
 pre .tex .formula {
   opacity: 0.5;
 }
+
+.error {
+  color: red;
+}
