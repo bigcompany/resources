@@ -1,8 +1,7 @@
 var resource = require('resource'),
     irc = resource.define('irc');
 
-var util = require('util'),
-    Client = require('irc').Client;
+var util = require('util');
 
 irc.schema.description = 'for managing communication with irc';
 
@@ -88,7 +87,8 @@ irc.method('connect', connect, {
 });
 function connect (options, callback) {
   var tuple = [options.host, options.port].join(':'),
-      client;
+      Client = require('irc').Client, // irc Client class
+      client; // irc client instance
 
   //options.channels = options.channels || options.channel.split(' ');
   client = irc.connections[tuple] = new Client(
