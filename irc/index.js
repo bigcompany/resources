@@ -5,6 +5,8 @@ var util = require('util');
 
 irc.schema.description = 'for managing communication with irc';
 
+irc.TRIGGER = "!"
+
 irc.property('server', {
   description: 'an irc server',
   properties: {
@@ -100,6 +102,28 @@ function connect (options, callback) {
     // XXX we need to emit some sort of message event/method here.
     // problem: the "message" method is being used
     console.log('message: ', { from : from, to: to, message: message });
+    if (message[0] === irc.TRIGGER) {
+      resource.logger.info('recieved command from irc client ' + message);
+      var _command = message.substr(1, message.length -1).split(' '),
+          _resource = _command[0],
+          _method = _command[1];
+      //
+      // Assume that _command is in the style of "!resource method"
+      //
+      if (typeof resource[_resource] !== 'object') {
+        client.say(to, 'invalid resource ' +  _resource);
+        return;
+      }
+      if (typeof resource[_resource][_method] !== 'function') {
+        client.say(to, 'invalid resource method ' +  _resource + "::" + _method);
+        return;
+      }
+      //
+      // TODO: add ability to pass in arguments data
+      // TODO: ensure auto-callbacks are working since IRC commands have no callbacks
+      //
+      resource[_resource][_method]();
+    }
   });
 
   client.conn.on('error', function (err) {
