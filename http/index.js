@@ -57,9 +57,7 @@ function listen (options, callback) {
   //
   // Basic virtual host support
   //
-  /* TODO: finish virtual host resource
   if (resource.virtualhost) {
-    resource.logger.info('using virtual hosts');
     app.use(function(req, res, next){
       var host = req.headers.host.split(':');
       host = host[0];
@@ -67,11 +65,10 @@ function listen (options, callback) {
         if (err || results.length === 0) {
           return next();
         }
-        connect.static(path.resolve(results[0].path))(req, res, next);
+        connect.static(path.resolve(process.cwd() + results[0].path))(req, res, next);
       });
     });
   }
-  */
 
   /* TODO: finish resource.view middleware
   app.use(function (req, res, next) {
