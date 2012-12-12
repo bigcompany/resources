@@ -93,8 +93,8 @@ function connect (options, callback) {
       Client = require('irc').Client, // irc Client class
       client; // irc client instance
 
-  //options.channels = options.channels || options.channel.split(' ');
-  client = irc.connections[tuple] = new Client(
+  irc.connections[tuple] = { channels: {} };
+  client = irc.connections[tuple].client = new Client(
     options.host,
     options.nick,
     {
@@ -157,7 +157,6 @@ function connect (options, callback) {
       }
 
       var callback = function (err, results) {
-        //console.log('results', err);
         if (err) {
           return client.say(to, JSON.stringify(err, true, 2));
         }
@@ -211,7 +210,7 @@ irc.method('disconnect', disconnect, {
 function disconnect (options, callback) {
   var tuple = [options.host, options.port].join(':');
 
-  irc.connections[tuple].disconnect(options.message, function (err) {
+  irc.connections[tuple].client.disconnect(options.message, function (err) {
     if (err) {
       return callback(err);
     }
@@ -227,7 +226,7 @@ irc.method('send', send, {
 function send (options, callback) {
   var tuple = [options.host, options.port].join(':');
 
-  irc.connections[tuple].say(
+  irc.connections[tuple].client.say(
     options.channels || [options.channel],
     options.message
   );
@@ -246,7 +245,7 @@ irc.method('receive', receive, {
   }
 });
 function receive(options, callback) {
-  console.log('received message: ', options);
+  resource.logger.info('received message: '.grey + JSON.stringify(options));
   callback(null, options);
 }
 
@@ -257,7 +256,7 @@ irc.method('command', command, {
 function command (options, callback) {
   var tuple = [options.host, options.port].join(':');
 
-  irc.connections[tuple].send(options.command);  
+  irc.connections[tuple].client.send(options.command);  
   callback(null, true);
 }
 
@@ -275,10 +274,14 @@ irc.method('join', join, {
   }
 });
 function join (options) {
-  console.log(arguments);
   var tuple = [options.host, options.port].join(':');
-  console.log('joining...');
-  irc.connections[tuple].join(options.channel);
+
+  // TODO: Do something clever with channel vs. channels
+
+  resource.logger.info('joining ' + options.channel.magenta);
+
+  irc.connections[tuple].client.join(options.channel);
+  irc.connections[tuple].channels[options.channel] = true;
 }
 
 irc.method('part', part, {
@@ -297,11 +300,12 @@ irc.method('part', part, {
 function part (options, callback) {
   var tuple = [options.host, options.port].join(':');
 
-  irc.connections[tuple].part(options.channel, function (err) {
-    // TODO: If we keep an internal representation of channels, this
-    // is where we would delete them.
-    callback(err, !err);
-  });
+  // TODO: Do something clever with channel vs. channels
+
+  resource.logger.info('leaving ' + options.channel.magenta);
+
+  irc.connections[tuple].client.part(options.channel);
+  delete irc.connections[tuple].channels[options.channel];
 }
 
 irc.method('voice', voice, {
