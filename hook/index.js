@@ -5,12 +5,14 @@ hook.schema.description = "for managing event hooks ( IF this THEN that )";
 
 hook.property("if", {
   "type":"string",
-  "description": "the if action"
+  "description": "the if action",
+  "required": true
 });
 
 hook.property("then", {
   "type":"string",
-  "description": "the then action"
+  "description": "the then action",
+  "required": true
 });
 
 hook.method('start', start, {
