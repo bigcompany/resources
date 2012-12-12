@@ -88,6 +88,7 @@ irc.method('connect', connect, {
   }
 });
 function connect (options, callback) {
+
   var tuple = [options.host, options.port].join(':'),
       Client = require('irc').Client, // irc Client class
       client; // irc client instance
@@ -95,18 +96,31 @@ function connect (options, callback) {
   //options.channels = options.channels || options.channel.split(' ');
   client = irc.connections[tuple] = new Client(
     options.host,
-    options.nick
+    options.nick,
+    {
+      floodProtection: true,
+      floodProtectionDelay: 300
+    }
   );
 
   client.on('message', function (from, to, message) {
+
+    var opt = require('optimist');
+
     // XXX we need to emit some sort of message event/method here.
     // problem: the "message" method is being used
     console.log('message: ', { from : from, to: to, message: message });
     if (message[0] === irc.TRIGGER) {
-      resource.logger.info('recieved command from irc client ' + message);
+
+      //
+      // Run user submitted comman
+      //
+
+      resource.logger.info('recieved command from irc client ' + message.magenta);
       var _command = message.substr(1, message.length -1).split(' '),
-          _resource = _command[0],
-          _method = _command[1];
+          _resource = _command.shift(),
+          _method = _command.shift();
+
       //
       // Assume that _command is in the style of "!resource method"
       //
@@ -118,11 +132,37 @@ function connect (options, callback) {
         client.say(to, 'invalid resource method ' +  _resource + "::" + _method);
         return;
       }
+
+      var args = [];
+      var schema = resource[_resource][_method].schema;
+
+      if(_command.length > 0 ) {
+        var _data = opt.parse(_command);
+        if (typeof schema.properties === "object" && typeof schema.properties.options === "undefined") {
+          Object.keys(schema.properties).forEach(function(prop,i){
+            args.push(_data[i]);
+          });
+        }
+        else {
+          args.push(_data);
+        }
+      }
+
+      var callback = function (err, results) {
+        console.log('results', err);
+        if (err) {
+          return client.say(to, JSON.stringify(err, true, 2));
+        }
+        client.say(to, JSON.stringify(results, true, 2));
+      };
+      args.push(callback);
+      resource[_resource][_method].apply(this, args);
+
       //
-      // TODO: add ability to pass in arguments data
-      // TODO: ensure auto-callbacks are working since IRC commands have no callbacks
+      // end running user command
       //
-      resource[_resource][_method]();
+
+
     }
   });
 
@@ -411,5 +451,6 @@ function unban (options, callback) {
 
 exports.irc = irc;
 exports.dependencies = {
-  "irc": "*"
+  "irc": "*",
+  "optimist": "*"
 };
