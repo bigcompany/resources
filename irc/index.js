@@ -23,6 +23,16 @@ irc.property('server', {
   }
 });
 
+irc.property('nick', {
+  default: 'biggie'
+});
+irc.property('channel', {
+  default: '#big'
+});
+irc.property('channels', {
+  type: 'array'
+});
+
 irc.property('message', {
   description: 'an irc message',
   properties: {
@@ -55,16 +65,6 @@ irc.property('command', {
       }
     }
   }
-});
-
-irc.property('nick', {
-  default: 'biggie'
-});
-irc.property('channel', {
-  default: '#big'
-});
-irc.property('channels', {
-  type: 'array'
 });
 
 //
@@ -107,16 +107,24 @@ function connect (options, callback) {
 
     var opt = require('optimist');
 
+    irc.receive({
+      host: options.host,
+      port: options.port,
+      channel: to,
+      channels: [to],
+      nick: from,
+      message: message
+    });
+
     // XXX we need to emit some sort of message event/method here.
     // problem: the "message" method is being used
-    console.log('message: ', { from : from, to: to, message: message });
     if (message[0] === irc.TRIGGER) {
 
       //
-      // Run user submitted comman
+      // Run user submitted command
       //
 
-      resource.logger.info('recieved command from irc client ' + message.magenta);
+      resource.logger.info('received command from irc client ' + message.magenta);
       var _command = message.substr(1, message.length -1).split(' '),
           _resource = _command.shift(),
           _method = _command.shift();
@@ -149,7 +157,7 @@ function connect (options, callback) {
       }
 
       var callback = function (err, results) {
-        console.log('results', err);
+        //console.log('results', err);
         if (err) {
           return client.say(to, JSON.stringify(err, true, 2));
         }
@@ -212,11 +220,11 @@ function disconnect (options, callback) {
   });
 }
 
-irc.method('message', message, {
+irc.method('send', send, {
   description: 'sends an irc message',
   properties: irc.schema.properties.message.properties
 });
-function message (options, callback) {
+function send (options, callback) {
   var tuple = [options.host, options.port].join(':');
 
   irc.connections[tuple].say(
@@ -224,6 +232,22 @@ function message (options, callback) {
     options.message
   );
   callback(null, true);
+}
+
+// TODO: Is this right? Test it with hooks.
+irc.method('receive', receive, {
+  description: 'receives an irc message',
+  properties: {
+    options: irc.schema.properties.message.properties.options,
+    callback: {
+      required: false,
+      default: function () {}
+    }
+  }
+});
+function receive(options, callback) {
+  console.log('received message: ', options);
+  callback(null, options);
 }
 
 irc.method('command', command, {
