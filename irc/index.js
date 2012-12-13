@@ -41,12 +41,13 @@ irc.property('message', {
       properties: {
         host: irc.schema.properties.server.properties.host,
         port: irc.schema.properties.server.properties.port,
-        channel: irc.schema.properties.channel,
-        channels: irc.schema.properties.channels,
-        nick: irc.schema.properties.nick,
+        to: {
+          type: "string",
+          default: "#big"
+        },
         message: {
           type: 'string',
-          default: '...'
+          default: 'big'
         }
       }
     }
@@ -231,12 +232,11 @@ irc.method('send', send, {
 });
 function send (options, callback) {
   var tuple = [options.host, options.port].join(':');
-
   irc.connections[tuple].client.say(
-    options.channels || [options.channel],
+    options.to || options.channels || [options.channel],
     options.message
   );
-  callback(null, true);
+  callback(null, options);
 }
 
 // TODO: Is this right? Test it with hooks.
