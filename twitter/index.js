@@ -24,6 +24,10 @@ twitter.property('credentials', {
   }
 });
 
+//
+// TODO: Look up id if screenName is known but id is not
+// Also: cache user/id pairs (LRU cache?)
+//
 twitter.property('user', {
   description: 'a twitter user',
   properties: {
@@ -32,6 +36,9 @@ twitter.property('user', {
   }
 });
 
+//
+// TODO: There are other properties a tweet may have.
+//
 twitter.property('tweet', {
   description: 'a twitter tweet',
   properties: {
@@ -66,6 +73,11 @@ function connect (options, callback) {
     if (err) {
       return cb(err);
     }
+
+    // your twitter id and screenName
+    twitter.id = data.id;
+    twitter.screenName = data.screen_name;
+
     return cb(null, {
       id: data.id,
       screenName: data.screen_name
@@ -90,32 +102,11 @@ function disconnect (callback) {
 
 twitter.streams = {};
 
-//
-// Defined a default callback that emits the stream events w/ "receive"
-// Defining a callback gives you the original stream.
-//
-// We may want to rethink this.
-//
 twitter.method('stream', stream, {
   description: 'streams tweets from a given twitter method',
   properties: twitter.schema.properties.stream,
     callback: {
-      default: function (error, stream, options) {
-        if (error) {
-          console.log('stream error:');
-          console.log(error.stack);
-          return twitter.error(error);
-        }
-
-        stream.on('data', function (data) {
-          twitter.receive(data);
-        });
-        stream.on('limit', function (data) {
-          twitter.limit(data);
-        });
-        stream.on('error', function (err) {
-          twitter.error(err);
-        });
+      default: function (error, options, stream) {
       }
     }
   }
@@ -138,7 +129,18 @@ function stream (options, callback) {
       stream: stream,
       options: options
     };
-    callback(null, stream, options);
+
+    stream.on('data', function (data) {
+      twitter.receive(data);
+    });
+    stream.on('limit', function (data) {
+      twitter.limit(data);
+    });
+    stream.on('error', function (err) {
+      twitter.error(err);
+    });
+
+    callback(null, options, stream);
   });
 });
 
