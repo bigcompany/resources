@@ -221,7 +221,13 @@ function disconnect (options, callback) {
 
 irc.method('send', send, {
   description: 'sends an irc message',
-  properties: irc.schema.properties.message.properties
+  properties: {
+    options: irc.schema.properties.message.properties.options,
+    callback: {
+      required: false,
+      default: function () {}
+    }
+  }
 });
 function send (options, callback) {
   var tuple = [options.host, options.port].join(':');
