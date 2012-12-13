@@ -98,7 +98,7 @@ function listen (options, callback) {
   }
 
   app
-    .use(connect.favicon())
+    .use(connect.favicon(__dirname + '/favicon.png'))
     .use(connect.logger('dev'))
     .use(connect.cookieParser())
     .use(connect.session({ secret: 'my secret here' }));
