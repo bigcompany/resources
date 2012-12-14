@@ -179,7 +179,9 @@ function connect (options, callback) {
   });
 
   client.on('error', function onError (err) {
-    irc.emit('irc::error', err);
+    // TODO: the irc resource itself should be an event emitter namespaced to irc
+    // Ex: irc.emit('error', err);
+    resource.emit('irc::error', err);
   });
 
   //
