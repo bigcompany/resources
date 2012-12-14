@@ -15,9 +15,56 @@ hook.property("then", {
   "required": true
 });
 
+hook.property("with", {
+  "type":"string",
+  "description": "additional data supplied to `then`",
+  "type": "object"
+});
+
+
 hook.method('start', start, {
   "description": "loads all hooks into memory"
 });
+
+hook.method('bind', bind);
+
+function bind (h) {
+  var _if = h.if.split('::'),
+  _resource = _if[0],
+  _method = _if[1];
+  //
+  // Take the IF _resource and add an after method for _method
+  //
+  if(
+    typeof resource.resources[_resource] === 'undefined' ||
+    typeof resource.resources[_resource].after !== 'function'
+  ) {
+    //resource.logger.warn('could not find resource: ' + _resource);
+  }
+  else {
+    var _then = h.then.split('::');
+    resource.logger.info('hooking `' + (_if[0] + "." + _if[1]).magenta + '` to `' + (_then[0] + "." + _then[1]).magenta + '`');
+    resource.resources[_resource].after(_method, function(data) {
+      //
+      // Inside this resource.after method, run the THEN resource::method pair,
+      // using the results from the IF resource::method pair as "data" argument
+      //
+      var _resource = _then[0],
+          _method = _then[1];
+      if(typeof resource.resources[_resource] === 'undefined') {
+        throw new Error('could not find resource: ' + _resource);
+      }
+      if(typeof resource.resources[_resource].methods[_method] !== 'function') {
+        throw new Error('could not find resource method: ' + _resource + '.' + _method);
+      }
+      var _with = h.with;
+      Object.keys(_with).forEach(function(key){
+        data[key] = _with[key];
+      });
+      resource.resources[_resource].methods[_method](data);
+    });
+  }
+};
 
 function start (callback) {
   //
@@ -28,38 +75,9 @@ function start (callback) {
     // For every hook, determine the resource::method pairs for IF and THEN events
     //
     hooks.forEach(function(h) {
-      var arr = h.if.split('::'),
-      _resource = arr[0],
-      _method = arr[1];
-      //
-      // Take the IF _resource and add an after method for _method
-      //
-      if(
-        typeof resource.resources[_resource] === 'undefined' ||
-        typeof resource.resources[_resource].after !== 'function'
-      ) {
-        //resource.logger.warn('could not find resource: ' + _resource);
-      }
-      else {
-        resource.resources[_resource].after(_method, function(data) {
-          //
-          // Inside this resource.after method, run the THEN resource::method pair,
-          // using the results from the IF resource::method pair as "data" argument
-          //
-          var arr = h.then.split('::'),
-          _resource = arr[0],
-          _method = arr[1];
-          if(typeof resource.resources[_resource] === 'undefined') {
-            throw new Error('could not find resource: ' + _resource);
-          }
-          if(typeof resource.resources[_resource].methods[_method] !== 'function') {
-            throw new Error('could not find resource method: ' + _resource + '.' + _method);
-          }
-          resource.resources[_resource].methods[_method](data);
-        })
-      }
+      hook.bind(h);
     });
-    callback(null)
+    callback(null, true);
   });
 }
 
