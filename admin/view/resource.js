@@ -26,7 +26,7 @@ module['exports'] = function (options, callback) {
     });
   }
 
-  if(Object.keys(_resource.dependencies).length > 0) {
+  if(typeof _resource.dependencies !== "undefined" && Object.keys(_resource.dependencies).length > 0) {
     for(var dep in _resource.dependencies) {
       $('.dependencies').append('<tr><td><a href="http://npmjs.org/package/' + dep + '">' + dep + '</a></td><td>' + _resource.dependencies[dep] + '</td></tr>');
     }
