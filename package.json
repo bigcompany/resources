@@ -6,10 +6,6 @@
     "dependencies": {
       "resource": "0.2.x"
     },
-    "repository": {
-        "type": "git", 
-        "url": "http://github.com/bigcompany/resources.git" 
-    },
     "main": "./index",
     "engine": [
         "node 0.6.x"
