@@ -13,6 +13,8 @@ provides a command line interface
 
   - [start](#cli-methods-start) ()
 
+  - [createRouter](#cli-methods-createRouter) ()
+
 
 provides a command line interface
 
@@ -29,7 +31,14 @@ provides a command line interface
 
 ### cli.start()
 
+<a name="cli-methods-createRouter"></a> 
+
+### cli.createRouter()
+
 
 ## dependencies 
+- [prompt](http://npmjs.org/package/prompt)
+- [optimist](http://npmjs.org/package/optimist)
+- [colors](http://npmjs.org/package/colors)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

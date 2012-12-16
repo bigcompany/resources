@@ -10,5 +10,6 @@ exports.render = function (view, data) {
 
 // 'exports.init' gets called by broadway on 'app.init()'.
 exports.init = function (options) {
+  var swig = require('swig');
   swig.init(options);
 };

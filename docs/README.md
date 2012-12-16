@@ -43,7 +43,7 @@ generates markdown documentation for a single resource
 
   - **type** : string
 
-  - **default** : /Users/maraksquires/dev/bigcompany/resources/docs/template.md
+  - **default** : /Users/maraksquires/dev/big/resources/docs/template.md
 
 <a name="docs-methods-build"></a> 
 
@@ -51,6 +51,6 @@ generates markdown documentation for a single resource
 
 
 ## dependencies 
-- [view](http://npmjs.org/package/view)
+- [swig](http://npmjs.org/package/swig)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

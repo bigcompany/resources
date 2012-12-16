@@ -163,6 +163,7 @@ View.prototype._loadSync = function () {
           var _present = root +  '/' + _path.replace(ext, '');
           presenter = require(_present);
         } catch(ex) {
+          console.log(ex.stack)
           presenter = function () {
             return this.$.html();
           };

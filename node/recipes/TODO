@@ -1,0 +1,2 @@
+- Add conditional checks for existence of system deps and node before attempting installs
+- Add support for more OS and OS versions

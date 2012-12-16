@@ -89,7 +89,7 @@ twitter.method('disconnect', disconnect, {
   description: 'disconnects from twitter',
   properties: {
     callback: {
-      type: 'function'
+      type: 'function',
       default: function () {}
     }
   }
@@ -187,7 +187,8 @@ function removeStream (id, callback) {
       callback(null, options);
     });
   });
-});
+
+}
 
 
 twitter.method('limit', limit, {
