@@ -42,8 +42,18 @@ function bind (h) {
     //resource.logger.warn('could not find resource: ' + _resource);
   }
   else {
-    var _then = h.then.split('::');
-    resource.logger.info('hooking `' + (_if[0] + "." + _if[1]).magenta + '` to `' + (_then[0] + "." + _then[1]).magenta + '`');
+    var _then = h.then.split('::'),
+        _with = h.with,
+        withStr = "";
+
+    if(_with) {
+      //
+      // Remark: Don't show `with` data in log messages ( for now )
+      //
+      // withStr = ' with ' + JSON.stringify(_with, true, 2);
+    }
+
+    resource.logger.hook('if `' + (_if[0] + "::" + _if[1]).magenta + '` then `' + (_then[0] + "::" + _then[1]).magenta + '`');
     resource.resources[_resource].after(_method, function(data) {
       //
       // Inside this resource.after method, run the THEN resource::method pair,
