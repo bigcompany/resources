@@ -5,19 +5,19 @@ twitter.property('credentials', {
   description: 'credentials for logging into twitter',
   properties: {
     type: 'object',
-    consumerKey: {
+    consumer_key: {
       type: 'string',
       required: true
     },
-    consumerSecret: {
+    consumer_secret: {
       type: 'string',
       required: true
     },
-    tokenKey: {
+    access_token_key: {
       type: 'string',
       required: true
     },
-    tokenSecret: {
+    access_token_secret: {
       type: 'string',
       required: true
     }
@@ -42,7 +42,10 @@ twitter.property('user', {
 twitter.property('tweet', {
   description: 'a twitter tweet',
   properties: {
-    message: { type: 'string', required: true }
+    message: {
+      type: 'string',
+      default: 'I am big.'
+    },
   }
 });
 
@@ -71,17 +74,10 @@ function connect (options, callback) {
   twitter.client = new Twitter(options);
   twitter.client.verifyCredentials(function (err, data) {
     if (err) {
-      return cb(err);
+      return callback(err);
     }
 
-    // your twitter id and screenName
-    twitter.id = data.id;
-    twitter.screenName = data.screen_name;
-
-    return cb(null, {
-      id: data.id,
-      screenName: data.screen_name
-    });
+    return callback(null, data);
   });
 };
 
@@ -98,7 +94,7 @@ function disconnect (callback) {
   resource.logger.info('disconnecting from twitter...');
   delete twitter.client;
   callback(null, true);
-};
+}
 
 twitter.streams = {};
 
@@ -142,7 +138,7 @@ function addStream (options, callback) {
     options.streamId = uuid;
     callback(null, options);
   });
-});
+};
 
 twitter.method('getStream', getStream, {
   description: 'gets an active twitter stream',
@@ -164,7 +160,7 @@ function getStream (id, callback) {
     return callback(err);
   }
   callback(null, stream);
-});
+}
 
 twitter.method('removeStream', removeStream, {
   description: 'stops listening to a twitter stream',
@@ -252,7 +248,13 @@ function send (options, callback) {
   var tweet = options.message
 
   // TODO: Intelligent trimming of tweet?
-  irc.client.updateStatus(tweet, callback);
+  twitter.client.updateStatus(tweet, function (err, result) {
+    if (err) {
+      return callback(err);
+    }
+    console.log(options);
+    callback(null, result);
+  });
 };
 
 twitter.method('receive', receive, {
