@@ -49,7 +49,7 @@ provides an HTTP server API
 
   - **type** : string
 
-  - **default** : /Users/maraksquires/dev/bigcompany/resources/http/public
+  - **default** : /Users/maraksquires/dev/big/public
 
 
 <a name="http-methods"></a> 
@@ -88,7 +88,7 @@ starts a listening http server
 
       - **type** : string
 
-      - **default** : /Users/maraksquires/dev/bigcompany/resources/http/public
+      - **default** : /Users/maraksquires/dev/big/public
 
     - **enableUploads** 
 

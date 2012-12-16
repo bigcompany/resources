@@ -70,20 +70,8 @@ creates a new view
 
   - **type** : object
 
-  - **properties**
-
-    - **path** 
-
-      - **type** : string
-
-      - **default** : .
-
-      - **description** : the path to the view
-
-      - **format** : uri
-
 
 ## dependencies 
-- [viewful](http://npmjs.org/package/viewful)
+- [cheerio](http://npmjs.org/package/cheerio)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

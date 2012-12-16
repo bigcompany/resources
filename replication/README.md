@@ -37,7 +37,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Thu Nov 01 2012 01:07:21 GMT-0700 (PDT)
+  - **default** : Sun Dec 16 2012 15:38:38 GMT+0530 (IST)
 
 - **source** 
 
