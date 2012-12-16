@@ -67,10 +67,12 @@ function bind (h) {
       if(typeof resource.resources[_resource].methods[_method] !== 'function') {
         throw new Error('could not find resource method: ' + _resource + '.' + _method);
       }
-      var _with = h.with;
-      Object.keys(_with).forEach(function(key){
-        data[key] = _with[key];
-      });
+
+      if (_with !== null && typeof _with == 'object') {
+        Object.keys(_with).forEach(function(key){
+          data[key] = _with[key];
+        });
+      }
       resource.resources[_resource].methods[_method](data);
     });
   }
