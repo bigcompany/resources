@@ -3,7 +3,7 @@ var resource = require('resource'),
     path = require('path'),
     fs = require('fs');
 
-resource.use('view');
+var view = resource.use('view');
 
 docs.schema.description = "for generating documentation";
 
@@ -40,7 +40,7 @@ function generate (_resource, template, callback) {
   }
 
   template = fs.readFileSync(__dirname + '/template.md').toString();
-  var view = new view.View({
+  var _view = view.create({
     template: template, 
     input: "swig"
   });
@@ -60,7 +60,7 @@ function generate (_resource, template, callback) {
     footer: generateFooter()
   };
 
-  var s = view.render(data);
+  var s = _view.render(data);
 
   if(callback) {
     return callback(null, s);
@@ -239,17 +239,22 @@ function generateFooter() {
 
 function build () {
   var _resources = {};
-  var dirs = fs.readdirSync(__dirname + '/../');
+  var resourcesPath = (path.resolve(require.resolve('resources') + '/../'));
+  var dirs = fs.readdirSync(resourcesPath);
   //
   // Generate a README file for every resource
   //
   dirs.forEach(function(p){
-    var stat;
+    var stat,
+        resourcePath,
+        resourceModule;
     try {
-      stat = fs.statSync(__dirname + '/../' + p + '/' + "index" + '.js');
+      resourcePath = (resourcesPath + '/' + p + '/');
+      resourceModule =  ("index" + '.js');
+      stat = fs.statSync(resourcePath);
     } catch(err) {
       // TODO: better filtering of /resources/ folder to prevent attempts to read .git, .DS_Store, etc
-      //console.log(err)
+      console.log(err.stack)
     }
     if(stat) {
       _resources[p] = {};
@@ -258,22 +263,24 @@ function build () {
       var P = str + p.substr(1, p.length - 1);
       resource.logger.warn('attempting to require ' + p.magenta)
 
-      var _resource = resource.use(p);
-
-      //
-      // Generate the docs
-      //
-      var doc = resource.docs.generate(_resource, fs.readFileSync(__dirname + '/template.md').toString());
-      //
-      // Write them to disk
-      //
-      var _path = __dirname + '/../' + p + '/README.md';
-
       try {
+
+        var _resource = resource.use(p);
+
+        //
+        // Generate the docs
+        //
+        var doc = resource.docs.generate(_resource, fs.readFileSync(__dirname + '/template.md').toString());
+        //
+        // Write them to disk
+        //
+        var _path = resourcePath + '/README.md';
+
         fs.writeFileSync(_path, doc);
         resource.logger.info('wrote to ' + path.resolve(_path));
       } catch(err) {
-        console.log(err)
+        delete _resources[p];
+        console.log(err.stack)
       }
     }
   });
@@ -283,7 +290,7 @@ function build () {
   //
   var str = '# resources \n\n';
   str += 'resources for any occasion \n\n'
-  Object.keys(_resources).forEach(function(r){
+  Object.keys(_resources).forEach(function(r) {
     str += ' - [' + r + '](https://github.com/bigcompany/resources/tree/master/' + r +') ' + resource.resources[r].schema.description + '\n';
   });
   fs.writeFileSync(__dirname + '/../README.md', str);
@@ -293,5 +300,5 @@ function build () {
 exports.docs = docs;
 
 exports.dependencies = {
-  "view": "*"
+  "swig": "*"
 };
