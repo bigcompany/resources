@@ -102,16 +102,17 @@ function disconnect (callback) {
 
 twitter.streams = {};
 
-twitter.method('stream', stream, {
-  description: 'streams tweets from a given twitter method',
-  properties: twitter.schema.properties.stream,
+twitter.method('addStream', addStream, {
+  description: 'starts listening to a twitter stream',
+  properties: {
+    options: twitter.schema.properties.stream,
     callback: {
-      default: function (error, options, stream) {
-      }
+      type: 'function',
+      default: function (error, options, stream) {}
     }
   }
 });
-function stream (options, callback) {
+function addStream (options, callback) {
   var params = {};
 
   Object.keys(options).forEach(function (k) {
@@ -121,11 +122,9 @@ function stream (options, callback) {
   });
 
   twitter.client.stream(options.method, params, function (stream) {
+    var uuid = options.method + '-' + resource.uuid();
 
-    // This assumes that stream methods are all different.
-    // TODO: Generate uuid's for streams
-    // XXX: Instantiable twitter streams w/ datasource?
-    twitter.streams[options.method] = {
+    twitter.streams[uuid] = {
       stream: stream,
       options: options
     };
@@ -140,17 +139,56 @@ function stream (options, callback) {
       twitter.error(err);
     });
 
-    callback(null, options, stream);
+    options.streamId = uuid;
+    callback(null, options);
   });
 });
 
-//
-// TODO: We probably want some sugar for stopping streams
-// For now it's easy enough to search the twitter.streams object and
-// .destroy streams
-//
-// needs a name too. "endStream" ?
-//
+twitter.method('getStream', getStream, {
+  description: 'gets an active twitter stream',
+  properties: {
+    id: { type: 'string' },
+    callback: {
+      type: 'function',
+      required: true
+    }
+  }
+});
+function getStream (id, callback) {
+  var stream;
+
+  try {
+    stream = twitter.streams[id];
+  }
+  catch (err) {
+    return callback(err);
+  }
+  callback(null, stream);
+});
+
+twitter.method('removeStream', removeStream, {
+  description: 'stops listening to a twitter stream',
+  properties: {
+    id: { type: 'string' },
+    callback: {
+      type: 'function',
+      default: function (error, options) {}
+    }
+  }
+});
+function removeStream (id, callback) {
+  twitter.getStream(id, function (err, stream) {
+    if (err) {
+      return callback(err);
+    }
+    stream.destroy();
+    stream.on('destroy', function () {
+      delete twitter.streams[id];
+      callback(null, options);
+    });
+  });
+});
+
 
 twitter.method('limit', limit, {
   description: 'collects rate limiting events from twitter',
@@ -217,7 +255,7 @@ function send (options, callback) {
 };
 
 twitter.method('receive', receive, {
-  description: 'receives a tweet from activated streams',
+  description: 'receives tweets from activated streams',
   properties: {
     options: twitter.schema.properties.tweet,
     callback: {
