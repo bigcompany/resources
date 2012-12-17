@@ -88,6 +88,7 @@ irc.method('connect', connect, {
     }
   }
 });
+
 function connect (options, callback) {
 
   var tuple = [options.host, options.port].join(':'),
@@ -104,75 +105,7 @@ function connect (options, callback) {
     }
   );
 
-  client.on('message', function (from, to, message) {
-
-    var opt = require('optimist');
-
-    irc.receive({
-      host: options.host,
-      port: options.port,
-      channel: to,
-      channels: [to],
-      nick: from,
-      message: message
-    });
-
-    // XXX we need to emit some sort of message event/method here.
-    // problem: the "message" method is being used
-    if (message[0] === irc.TRIGGER) {
-
-      //
-      // Run user submitted command
-      //
-
-      resource.logger.info('received command from irc client ' + message.magenta);
-      var _command = message.substr(1, message.length -1).split(' '),
-          _resource = _command.shift(),
-          _method = _command.shift();
-
-      //
-      // Assume that _command is in the style of "!resource method"
-      //
-      if (typeof resource[_resource] !== 'object') {
-        client.say(to, 'invalid resource ' +  _resource);
-        return;
-      }
-      if (typeof resource[_resource][_method] !== 'function') {
-        client.say(to, 'invalid resource method ' +  _resource + "::" + _method);
-        return;
-      }
-
-      var args = [];
-      var schema = resource[_resource][_method].schema;
-
-      if(_command.length > 0 ) {
-        var _data = opt.parse(_command);
-        if (typeof schema.properties === "object" && typeof schema.properties.options === "undefined") {
-          Object.keys(schema.properties).forEach(function(prop,i){
-            args.push(_data[i]);
-          });
-        }
-        else {
-          args.push(_data);
-        }
-      }
-
-      var callback = function (err, results) {
-        if (err) {
-          return client.say(to, JSON.stringify(err, true, 2));
-        }
-        client.say(to, JSON.stringify(results, true, 2));
-      };
-      args.push(callback);
-      resource[_resource][_method].apply(this, args);
-
-      //
-      // end running user command
-      //
-
-
-    }
-  });
+  client.on('message', _message);
 
   client.conn.on('error', function (err) {
     client.emit('error', err);
@@ -189,9 +122,103 @@ function connect (options, callback) {
   // is considered the "best way" to detect when client/server handshaking
   // is complete.
   client.on('motd', function (motd) {
-    // TODO: freenode-style "id check" (see L45, hook.io-irc/lib/irc.js)
-    callback(null, options);
+    //
+    // Pass the connection continuation, waiting for MOTD
+    //
+    callback(null, motd);
   });
+
+}
+
+//
+// Event handler for listening for incoming irc messages
+//
+function _message (from, to, message) {
+
+  var opt = require('optimist'),
+      client = this;
+
+  //
+  // TODO: better detection of who to reply to, to / from
+  //
+  var replyTo = from;
+  if(to.substr(0, 1) === "#") {
+    replyTo = to;
+  }
+
+  // console.log(from, to, message);
+  irc.receive({
+    host: client.opt.server,
+    port: client.opt.port,
+    channel: to,
+    channels: [to],
+    nick: from,
+    message: message
+  });
+
+  // XXX we need to emit some sort of message event/method here.
+  // problem: the "message" method is being used
+  if (message[0] === irc.TRIGGER) {
+
+    //
+    // Run user submitted command
+    //
+
+    var _command = message.substr(1, message.length -1).split(' '),
+        _resource = _command.shift(),
+        _method = _command.shift();
+
+    resource.logger.info('received command from irc client ' + _command.join(' ').magenta);
+
+    //
+    // Assume that _command is in the style of "!resource method"
+    //
+    if (typeof resource[_resource] !== 'object') {
+      client.say(replyTo, 'invalid resource ' +  _resource);
+      return;
+    }
+    if (typeof resource[_resource][_method] !== 'function') {
+      client.say(replyTo, 'invalid resource method ' +  _resource + "::" + _method);
+      return;
+    }
+
+    var args = [];
+    var schema = resource[_resource][_method].schema;
+
+    if(_command.length > 0 ) {
+      var _data = opt.parse(_command);
+      if (typeof schema.properties === "object" && typeof schema.properties.options === "undefined") {
+        Object.keys(schema.properties).forEach(function(prop,i){
+          args.push(_data[i]);
+        });
+      }
+      else {
+        args.push(_data);
+      }
+    }
+
+    var _callback = function (err, results) {
+      if (err) {
+        return client.say(replyTo, JSON.stringify(err, true, 2));
+      }
+      client.say(replyTo, JSON.stringify(results, true, 2));
+    };
+    args.push(_callback);
+
+    //
+    // TODO: better detection if method is sync or async based on schema
+    //
+    var result = resource[_resource][_method].apply(this, args);
+    if (typeof result !== 'undefined') {
+      _callback(null, result);
+    }
+
+    //
+    // end running user command
+    //
+
+  }
+
 }
 
 irc.method('disconnect', disconnect, {
