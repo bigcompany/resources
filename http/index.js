@@ -131,6 +131,6 @@ function listen (options, callback) {
 exports.http = http;
 
 exports.dependencies = {
-  "connect": "2.7.0",
-  "express": "2.5.11"
+  "connect": "2.7.1",
+  "express": "3.0.4"
 };
