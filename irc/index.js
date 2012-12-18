@@ -107,8 +107,8 @@ function connect (options, callback) {
 
   client.on('message', _message);
 
-  client.conn.on('error', function (err) {
-    client.emit('error', err);
+  client.on('netError', function (err) {
+    resource.emit('irc::netError', err);
   });
 
   client.on('error', function onError (err) {
