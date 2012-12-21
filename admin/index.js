@@ -129,17 +129,17 @@ function listen (options, callback) {
     });
   });
 
-  resource.http.app.get('/admin/resources/:resource/:method', auth, function (req, res, next) {
+  resource.http.app.get('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
     view.method.render();
-    view.method.present({ resource: req.param('resource'), method: req.param('method') }, function(err, str){
+    view.method.present({ resource: req.param('_resource'), method: req.param('_method') }, function(err, str){
       res.end(str);
     });
   });
 
-  resource.http.app.post('/admin/resources/:resource/:method', auth, function (req, res, next) {
+  resource.http.app.post('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
 
-    var _resource = resource.resources[req.param('resource')],
-        _method = _resource[req.param('method')],
+    var _resource = resource.resources[req.param('_resource')],
+        _method = _resource[req.param('_method')],
         id = req.param('id'),
         str,
         data = {},
@@ -171,8 +171,8 @@ function listen (options, callback) {
     view.method.render();
 
     view.method.present({
-      resource: req.param('resource'),
-      method: req.param('method'),
+      resource: req.param('_resource'),
+      method: req.param('_method'),
       data: data,
       action: 'post',
       id: id
@@ -182,21 +182,21 @@ function listen (options, callback) {
 
   });
 
-  resource.http.app.get('/admin/resources/:resource/:method/:id', auth, function (req, res, next) {
+  resource.http.app.get('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
     var _id = req.param('id');
     view.method.render();
     view.method.present({
-      resource: req.param('resource'),
-      method: req.param('method'),
+      resource: req.param('_resource'),
+      method: req.param('_method'),
       id: _id
     }, function(err, str){
       res.end(str);
     });
   });
 
-  resource.http.app.post('/admin/resources/:resource/:method/:id', auth, function (req, res, next) {
+  resource.http.app.post('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
 
-    var _method = resource.resources[req.param('resource')].methods[req.param('method')];
+    var _method = resource.resources[req.param('_resource')].methods[req.param('_method')];
 
     //
     // Pull out all the params from the request based on schema
@@ -227,8 +227,8 @@ function listen (options, callback) {
 
     view.method.render();
     view.method.present({
-      resource: req.param('resource'),
-      method: req.param('method'),
+      resource: req.param('_resource'),
+      method: req.param('_method'),
       id: req.param('id'),
       data: data,
       action: 'post'
