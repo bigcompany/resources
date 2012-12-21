@@ -46,36 +46,6 @@ http.method('listen', listen, {
 
 http.method('start', listen, http.listen.schema);
 
-function request (options, callback) {
-  var requestModule = require('request');
-  return requestModule(options, callback);
-}
-
-//
-// TODO: map all http request methods from https://github.com/mikeal/request,
-// scroll down to "request(options, callback)" documentation )
-//
-http.method('request', request, {
-  "description": "makes outgoing http client requests",
-  "properties": {
-    "options": {
-      "type": "object",
-      "properties": {
-        "uri": {
-          "description": "the uri to be requested",
-          "type": "string",
-          "required": true
-        },
-        "method": {
-          "description": "the HTTP method to use",
-          "type": "string",
-          "enum": ["GET", "POST", "PUT", "DELETE"]
-        }
-      }
-    }
-  }
-});
-
 function listen (options, callback) {
   options = options || {};
 
@@ -158,6 +128,116 @@ function listen (options, callback) {
   http.app = app;
   http.server = server;
 
+}
+
+//
+// TODO: map all http request methods from https://github.com/mikeal/request,
+// scroll down to "request(options, callback)" documentation )
+//
+http.method('request', request, {
+  "description": "makes outgoing http client requests",
+  "properties": {
+    "options": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "description": "the uri to be requested",
+          // can also take object
+          "type": "string",
+          "required": true
+        },
+        "qs": {
+          "description": "querystring values appended to the uri",
+          "type": "object",
+          "required": false
+        },
+        "method": {
+          "description": "the HTTP method to use",
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "DELETE"]
+        },
+        "headers": {
+          "description": "the http headers for the request",
+          "type": "object",
+          "required": false
+        },
+        "body": {
+          "description": "the raw body for POST and PUT requests",
+          "required": false
+          // "type": { "enum": [ "string", "Buffer" ] }
+        },
+        "form": {
+          "description": "form data in the request body",
+          "type": "object",
+          "required": false
+        },
+        "json": {
+          "description": "JSON data in the request body",
+          "type": "object",
+          "required": false
+        },
+
+        "multipart": {
+          "description": "data in a multi-part request",
+          "type": "array",
+          "required": false
+        }/*,
+        // TODO: figure out why not commenting these breaks the admin page
+        "followRedirect": {
+          "description": "follow redirects",
+          "type": "boolean",
+          "required": false,
+          "default": true
+        },
+        "followAllRedirects": {
+          "description": "follow non-GET redirects",
+          "type": "boolean",
+          "required": false,
+          "default": false
+        },
+        "maxRedirects": {
+          "description": "maximum number of redirects to follow",
+          "type": "number",
+          "required": false,
+          "default": 10
+        },
+
+        "encoding": {
+          "description": "set the text encoding of the request body",
+          "type": "string",
+          "required": false
+        },
+        "timeout": {
+          "description": "how long to wait (in ms) before the request times out",
+          "type": "number",
+          "required": false
+        },
+        "strictSSL": {
+          "description": "require that SSL certificates be valid",
+          "type": "boolean",
+          "required": false,
+          "default": false
+        },
+        "jar": {
+          "description": "remember cookie information",
+          "type": "boolean",
+          "required": false,
+          "default": true
+        }
+        // TODO: pool
+        // TODO: proxy
+        // TODO: oauth
+        // TODO: aws
+        */
+      }
+    }
+  }
+});
+
+function request (options, callback) {
+  console.log('trololo');
+  var requestModule = require('request');
+  requestModule(options, callback);
 }
 
 exports.http = http;
