@@ -2,7 +2,7 @@ var resource  = require('resource'),
     path = require('path'),
     http = resource.define('http');
 
-http.schema.description = "provides an HTTP server API";
+http.schema.description = "provides an HTTP API";
 
 http.property("port", {
   "type": "number",
@@ -40,6 +40,38 @@ http.method('listen', listen, {
       "description": "the callback executed after server listen",
       "type": "function",
       "required": false
+    }
+  }
+});
+
+http.method('start', listen, http.listen.schema);
+
+function request (options, callback) {
+  var requestModule = require('request');
+  return requestModule(options, callback);
+}
+
+//
+// TODO: map all http request methods from https://github.com/mikeal/request,
+// scroll down to "request(options, callback)" documentation )
+//
+http.method('request', request, {
+  "description": "makes outgoing http client requests",
+  "properties": {
+    "options": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "description": "the uri to be requested",
+          "type": "string",
+          "required": true
+        },
+        "method": {
+          "description": "the HTTP method to use",
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "DELETE"]
+        }
+      }
     }
   }
 });
@@ -132,5 +164,6 @@ exports.http = http;
 
 exports.dependencies = {
   "connect": "2.7.1",
-  "express": "3.0.4"
+  "express": "3.0.4",
+  "request": "2.12.0"
 };
