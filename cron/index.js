@@ -5,7 +5,7 @@ cron.schema.description = "for managing cron jobs";
 
 cron.property("pattern", {
   "type":"string",
-  "default": "* * * * * *",
+  "default": "*/5 * * * *",
   "description": "the pattern of the cron job"
 });
 
@@ -15,8 +15,13 @@ cron.property("event", {
   "description": "the event to be emitted each time the cron runs"
 });
 
+cron.property("with", {
+  "type": "object",
+  "description": "metadata to execute the cron with"
+});
+
 function run (_cron) {
-  resource.emit(_cron.event);
+  resource.emit(_cron.event, _cron.with);
 };
 
 cron.method('run', run);
