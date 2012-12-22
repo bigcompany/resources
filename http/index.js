@@ -176,13 +176,13 @@ http.method('request', request, {
           "type": "object",
           "required": false
         },
-
         "multipart": {
           "description": "data in a multi-part request",
           "type": "array",
           "required": false
-        }/*,
-        // TODO: figure out why not commenting these breaks the admin page
+        },
+        // TODO: admin view needs to support booleans
+        /*
         "followRedirect": {
           "description": "follow redirects",
           "type": "boolean",
@@ -194,14 +194,13 @@ http.method('request', request, {
           "type": "boolean",
           "required": false,
           "default": false
-        },
+        },*/
         "maxRedirects": {
           "description": "maximum number of redirects to follow",
           "type": "number",
           "required": false,
           "default": 10
         },
-
         "encoding": {
           "description": "set the text encoding of the request body",
           "type": "string",
@@ -211,7 +210,7 @@ http.method('request', request, {
           "description": "how long to wait (in ms) before the request times out",
           "type": "number",
           "required": false
-        },
+        }/*,
         "strictSSL": {
           "description": "require that SSL certificates be valid",
           "type": "boolean",
@@ -223,19 +222,17 @@ http.method('request', request, {
           "type": "boolean",
           "required": false,
           "default": true
-        }
+        }*/
         // TODO: pool
         // TODO: proxy
         // TODO: oauth
         // TODO: aws
-        */
       }
     }
   }
 });
 
 function request (options, callback) {
-  console.log('trololo');
   var requestModule = require('request');
   requestModule(options, callback);
 }
