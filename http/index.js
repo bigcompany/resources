@@ -154,7 +154,17 @@ http.method('request', request, {
         "method": {
           "description": "the HTTP method to use",
           "type": "string",
-          "enum": ["GET", "POST", "PUT", "DELETE"]
+          "enum": [
+            "GET",
+            "HEAD",
+            "POST",
+            "PUT",
+            "DELETE",
+            "TRACE",
+            "OPTIONS",
+            "CONNECT",
+            "PATCH"
+          ]
         },
         "headers": {
           "description": "the http headers for the request",
