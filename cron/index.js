@@ -11,7 +11,7 @@ cron.property("pattern", {
 
 cron.property("event", {
   "type": "string",
-  "default": "logger:log",
+  "default": "logger::log",
   "description": "the event to be emitted each time the cron runs"
 });
 
