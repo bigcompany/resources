@@ -22,7 +22,6 @@ module['exports'] = function (options, callback) {
   $('legend').html(desc);
 
   if (typeof options.data !== 'undefined') {
-    var args = [];
     var cb = function (err, result) {
       if (err) {
         if (err.errors) {
@@ -40,8 +39,11 @@ module['exports'] = function (options, callback) {
         return callback(null, $.html());
       }
     }
-    args.push(cb);
-    method.call(this, options.data, cb);
+    if(Object.keys(options.data) > 0) {
+      method.call(this, options.data, cb);
+    } else {
+      method.call(this, cb);
+    }
   } else {
     $('.results').remove();
     showForm();
