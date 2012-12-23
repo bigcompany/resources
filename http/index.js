@@ -18,7 +18,7 @@ http.property("host", {
 
 http.property("root", {
   "type": "string",
-  "default": process.cwd() + '/public' // TODO: smarter detection of process.cwd() versus __dirname?
+  "default": resource.helper.appDir + '/public' // TODO: smarter detection of process.cwd() versus __dirname?
 });
 
 http.method('listen', listen, {
