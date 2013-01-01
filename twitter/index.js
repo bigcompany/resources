@@ -351,7 +351,7 @@ twitter.method('report', report, {
   }
 });
 function report (options, callback) {
-  irc.client.reportSpam(options.id, callback);
+  twitter.client.reportSpam(options.id, callback);
 };
 
 twitter.method('tweetLength', tweetLength, {
