@@ -354,7 +354,29 @@ function report (options, callback) {
   irc.client.reportSpam(options.id, callback);
 };
 
+twitter.method('tweetLength', tweetLength, {
+  description: 'gets the length of a tweet',
+  properties: {
+    options: twitter.schema.properties.tweet,
+    callback: {
+      type: 'function',
+      required: false
+    }
+  }
+});
+function tweetLength (options, callback) {
+  var l = require('twitter-text').getTweetLength(options.message);
+
+  if (callback) {
+    callback(null, l);
+  }
+  else {
+    return l;
+  }
+};
+
 exports.twitter = twitter;
 exports.dependencies = {
-  "ntwitter": "*"
+  "ntwitter": "*",
+  "twitter-text": "*"
 };
