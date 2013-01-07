@@ -54,7 +54,7 @@ function bind (h) {
     }
 
     resource.logger.hook('if `' + (_if[0] + "::" + _if[1]).magenta + '` then `' + (_then[0] + "::" + _then[1]).magenta + '`');
-    resource.resources[_resource].after(_method, function(data) {
+    resource.resources[_resource].after(_method, function(data, next) {
       //
       // Inside this resource.after method, run the THEN resource::method pair,
       // using the results from the IF resource::method pair as "data" argument
@@ -74,6 +74,7 @@ function bind (h) {
         });
       }
       resource.resources[_resource].methods[_method](data);
+      next(null, data);
     });
   }
 };
