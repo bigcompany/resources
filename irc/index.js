@@ -514,6 +514,6 @@ function unban (options, callback) {
 
 exports.irc = irc;
 exports.dependencies = {
-  "irc": "*",
-  "optimist": "*"
+  "irc": "0.3.4",
+  "optimist": "0.3.5"
 };

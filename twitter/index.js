@@ -377,6 +377,5 @@ function tweetLength (options, callback) {
 
 exports.twitter = twitter;
 exports.dependencies = {
-  "ntwitter": "*",
-  "twitter-text": "*"
+  "ntwitter": "0.5.0"
 };

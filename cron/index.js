@@ -55,7 +55,7 @@ function start () {
 cron.method('start', start);
 
 exports.dependencies = {
-  "cron": "*"
+  "cron": "1.0.1"
 };
 
 exports.cron = cron;
