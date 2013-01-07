@@ -60,19 +60,7 @@ function listen (options, callback) {
   // Basic virtual host support
   //
   if (resource.virtualhost) {
-    app.use(function(req, res, next){
-      var host = req.headers.host.split(':');
-      host = host[0];
-      resource.virtualhost.find({ host: host }, function (err, results) {
-        if (err || results.length === 0) {
-          resource.virtualhost.all(function (err, hosts) {
-            return res.end('unknown host: ' + host + ' \n' + 'available hosts are ' + JSON.stringify(hosts, true, 2));
-          });
-        } else {
-          connect.static(path.resolve(process.cwd() + results[0].path))(req, res, next);
-        }
-      });
-    });
+    app.use(resource.virtualhost.middle);
   }
 
   /* TODO: finish resource.view middleware
