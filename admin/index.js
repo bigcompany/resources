@@ -27,6 +27,8 @@ admin.method('listen', listen, {
   }
 });
 
+admin.method('start', listen, admin.listen.schema);
+
 function listen (options, callback) {
   var connect = require('connect');
   var auth = connect.basicAuth('admin', 'admin');
