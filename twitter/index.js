@@ -433,7 +433,7 @@ twitter.method('follow', follow, {
 function follow (options, callback) {
   var screenName = getScreenNameAndId(options).screenName;
 
-  irc.connections[screenName].client.createFriendship(options.id, callback);
+  twitter.connections[screenName].client.createFriendship(options.id, callback);
 };
 
 twitter.method('unfollow', unfollow, {
@@ -455,7 +455,7 @@ twitter.method('unfollow', unfollow, {
   }
 });
 function unfollow (options, callback) {
-  irc.client.destroyFriendship(options.id, callback);
+  twitter.client.destroyFriendship(options.id, callback);
 };
 
 // TODO: unblock
@@ -477,7 +477,7 @@ twitter.method('block', block, {
 function block (options, callback) {
   var screenName = getScreenNameAndId(options).screenName;
 
-  irc.connections[screenName].client.createBlock(options.id, callback);
+  twitter.connections[screenName].client.createBlock(options.id, callback);
 };
 
 twitter.method('report', report, {
