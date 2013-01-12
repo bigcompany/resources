@@ -1,3 +1,8 @@
+//
+// TODO: Finish this resource
+// TODO: Add HTTP integration tests for REST endpoints
+//
+
 var resource = require('resource'),
     api = resource.define('api');
 
