@@ -37,8 +37,8 @@ provides a command line interface
 
 
 ## dependencies 
-- [prompt](http://npmjs.org/package/prompt)
-- [optimist](http://npmjs.org/package/optimist)
+- [prompt](http://npmjs.org/package/prompt) v0.2.9
+- [optimist](http://npmjs.org/package/optimist) v0.3.5
 - [colors](http://npmjs.org/package/colors)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

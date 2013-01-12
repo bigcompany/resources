@@ -43,7 +43,7 @@ generates markdown documentation for a single resource
 
   - **type** : string
 
-  - **default** : /Users/maraksquires/dev/big/resources/docs/template.md
+  - **default** : /Users/maraksquires/dev/bigcompany/resources/docs/template.md
 
 <a name="docs-methods-build"></a> 
 
