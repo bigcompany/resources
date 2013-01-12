@@ -3,6 +3,8 @@ var resource  = require('resource'),
 
 replication.schema.description = "for managing and keeping track of replication events";
 
+replication.persist('memory');
+
 replication.property('time', {
   "description": "the date and time of the replication",
   "type": "string",

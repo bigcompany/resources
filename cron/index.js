@@ -3,6 +3,8 @@ var resource = require('resource'),
 
 cron.schema.description = "for managing cron jobs";
 
+cron.persist('memory');
+
 cron.property("pattern", {
   "type":"string",
   "default": "*/5 * * * * *",

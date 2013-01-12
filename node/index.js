@@ -3,6 +3,8 @@ var resource  = require('resource'),
 
 node.schema.description = "for managing nodes";
 
+node.persist('memory');
+
 node.property("port", {
   "type": "number",
   "default": 7777,

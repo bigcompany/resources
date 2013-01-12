@@ -3,6 +3,8 @@ var resource = require('resource'),
 
 creature.schema.description = "example resource for creatures like dragons, unicorns, and ponies";
 
+creature.persist('memory');
+
 creature.property('type', { type: "string", enum: ['dragon', 'unicorn', 'pony'], default: "dragon"});
 creature.property('life', { type: "number", default: 10 });
 

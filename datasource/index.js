@@ -3,6 +3,8 @@ var resource = require('resource'),
 
 datasource.schema.description = "perists resources to data storage engines";
 
+datasource.persist('memory');
+
 datasource.property('status', {
   type: "string",
   description: "the status of the datasource",

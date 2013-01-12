@@ -3,6 +3,8 @@ var resource = require('resource'),
 
 tag.schema.description = "a simple hierarchical tagging system";
 
+tag.persist('memory');
+
 tag.property("name", {
   "type":"string",
   "description": "the name of the tag",
