@@ -89,10 +89,14 @@ function resourceProperties (resource) {
 
 function resourceDeps (resource) {
   var list = '';
-  if (Object.keys(resource.dependencies).length > 0) {
+  if (typeof resource.dependencies === 'object' && Object.keys(resource.dependencies).length > 0) {
     list = '## dependencies \n';
     for(var d in resource.dependencies) {
-      list += "- [" + d + "](http://npmjs.org/package/" + d + ")" + " v" + resource.dependencies[d] + "\n";
+      var version = "";
+      if(resource.dependencies[d] !== "*") {
+        version = " v" + resource.dependencies[d];
+      }
+      list += "- [" + d + "](http://npmjs.org/package/" + d + ")" + version + "\n";
     }
   }
   return list;
@@ -268,7 +272,7 @@ function build () {
 
       try {
 
-        var _resource = require('../' + p);
+        var _resource = require(resourcesPath + '/' + p);
 
         if(typeof _resource[p] !== 'undefined') {
           var deps = _resource.dependencies;
