@@ -2,14 +2,13 @@ var resource = require('resource'),
     cli = resource.define('cli');
 
 cli.schema.description = "provides a command line interface";
-
 cli.started = false;
 
 cli.method('start', start, {
   "description": "starts the big command line interface"
 });
 
-function start () {
+function start (callback) {
   console.log('welcome to big');
 
   //
@@ -26,7 +25,7 @@ function start () {
   cli.started = true;
   cli.router = createRouter(resource.resources);
   cli.route = router.route;
-
+  callback(null, router);
 };
 
 exports.cli = cli;
@@ -208,11 +207,6 @@ function promptToList (resource, callback) {
     callback(null, result);
   });
 }
-
-
-cli.router = createRouter(resource.resources);
-cli.route = router.route;
-
 
 exports.route = router.route;
 
