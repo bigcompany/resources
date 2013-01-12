@@ -3,6 +3,8 @@ var resource = require('resource'),
 
 account.schema.description = "for managing accounts"
 
+account.persist('memory');
+
 account.property('email', {
   "type": "string",
   "format": "email",

@@ -3,6 +3,8 @@ var resource = require('resource'),
 
 hook.schema.description = "for managing event hooks ( IF this THEN that )";
 
+hook.persist('memory');
+
 hook.property("if", {
   "type":"string",
   "description": "the if action",
