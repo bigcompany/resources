@@ -9,6 +9,21 @@ mesh.schema.description = "provides a distributed p2p event emitter mesh";
 resource.use('node', { datasource: 'fs' });
 resource.use('system');
 
+/*
+var EventEmitter = require('eventemitter2').EventEmitter2;
+
+var ee = new EventEmitter({
+  wildcard: true, // event emitter should use wildcards ( * )
+  delimiter: '::', // the delimiter used to segment namespaces
+  maxListeners: 20, // the max number of listeners that can be assigned to an event
+});
+
+mesh.emit = ee.emit;
+mesh.on = ee.on;
+mesh.onAny = ee.onAny;
+
+*/
+
 mesh.method('connect', connect, {
   "description": "connect to the big mesh",
   "properties": {
@@ -85,7 +100,7 @@ function downlink (socket, callback) {
     //
     //msg.payload.host = socket.remoteAddress.host;
     //msg.payload.port = socket.remoteAddress.port;
-    resource.emit(msg.event, msg.payload, false)
+    resource.mesh.emit(msg.event, msg.payload, false)
   });
 
   socket.on('disconnect', function(data){
@@ -117,7 +132,8 @@ function uplink (options, callback) {
   //
   mesh.client.on('message', function(data){
     var msg = JSON.parse(data);
-    resource.emit(msg.event, msg.payload, false)
+    console.log('uplink sending', msg)
+    resource.mesh.emit(msg.event, msg.payload, false)
   })
 
   //
@@ -177,6 +193,12 @@ function connect (options, callback) {
 
 function listen (options, callback) {
   var engine = require('engine.io');
+  if(typeof resource.http.server !== 'object') {
+    console.log('cold not find http')
+  }
+  //
+  // Remark: mesh.server is the same as http.server
+  //
   mesh.server = engine.attach(resource.http.server);
   mesh.server.on('connection', function(socket){
     mesh.downlink(socket, function(err, result){
@@ -185,11 +207,13 @@ function listen (options, callback) {
       }
     });
   });
+  callback(null, mesh.server);
 };
 
 exports.dependencies = {
-  "engine.io": "*",
-  "engine.io-client": "*"
+  "engine.io": "0.3.9",
+  "engine.io-client": "0.3.9",
+  "eventemitter2": "*"
 };
 
 exports.mesh = mesh;

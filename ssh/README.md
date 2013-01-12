@@ -19,9 +19,9 @@ ssh interface resource
   - **type** : any
 
 
-<a name="ssh-methods"></a> 
+<a name="ssh-methods"></a>
 
-## methods 
+## methods
 
 
 ## dependencies 

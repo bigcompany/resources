@@ -37,7 +37,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Sun Dec 16 2012 15:38:38 GMT+0530 (IST)
+  - **default** : Sat Jan 12 2013 13:07:54 GMT+0530 (IST)
 
 - **source** 
 
@@ -60,9 +60,9 @@ for managing and keeping track of replication events
   - **type** : string
 
 
-<a name="replication-methods"></a> 
+<a name="replication-methods"></a>
 
-## methods 
+## methods
 
 
 ## dependencies 

@@ -34,11 +34,12 @@ provides virtual hosts
   - **type** : string
 
 
-<a name="virtualhost-methods"></a> 
+<a name="virtualhost-methods"></a>
 
-## methods 
+## methods
 
 
 ## dependencies 
+- [connect](http://npmjs.org/package/connect) v2.7.1
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

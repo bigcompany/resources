@@ -170,9 +170,9 @@ for managing communication with irc
           - **type** : string
 
 
-<a name="irc-methods"></a> 
+<a name="irc-methods"></a>
 
-## methods 
+## methods
 
 <a name="irc-methods-connect"></a> 
 
@@ -720,7 +720,7 @@ unbans a user from an irc channel
 
 
 ## dependencies 
-- [irc](http://npmjs.org/package/irc)
-- [optimist](http://npmjs.org/package/optimist)
+- [irc](http://npmjs.org/package/irc) v0.3.4
+- [optimist](http://npmjs.org/package/optimist) v0.3.5
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

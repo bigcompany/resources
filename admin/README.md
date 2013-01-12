@@ -13,6 +13,8 @@ a web based admin panel
 
   - [listen](#admin-methods-listen) (options, callback)
 
+  - [start](#admin-methods-start) (options, callback)
+
 
 a web based admin panel
 
@@ -21,9 +23,9 @@ a web based admin panel
   - **type** : any
 
 
-<a name="admin-methods"></a> 
+<a name="admin-methods"></a>
 
-## methods 
+## methods
 
 <a name="admin-methods-listen"></a> 
 
@@ -57,9 +59,41 @@ start a listening admin web server
 
   - **type** : function
 
+<a name="admin-methods-start"></a> 
+
+### admin.start(options, callback)
+
+start a listening admin web server
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **port** 
+
+      - **type** : number
+
+      - **default** : 8888
+
+      - **description** : the port to listen on 
+
+    - **host** 
+
+      - **type** : string
+
+      - **default** : 0.0.0.0
+
+      - **description** : the host interface to listen on
+
+- **callback** 
+
+  - **type** : function
+
 
 ## dependencies 
-- [connect](http://npmjs.org/package/connect)
-- [highlight](http://npmjs.org/package/highlight)
+- [connect](http://npmjs.org/package/connect) v2.7.1
+- [highlight](http://npmjs.org/package/highlight) v0.2.3
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

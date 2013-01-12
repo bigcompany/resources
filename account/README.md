@@ -80,9 +80,9 @@ for managing accounts
   - **default** : 
 
 
-<a name="account-methods"></a> 
+<a name="account-methods"></a>
 
-## methods 
+## methods
 
 <a name="account-methods-confirm"></a> 
 

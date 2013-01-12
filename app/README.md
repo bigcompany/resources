@@ -32,9 +32,9 @@ for managing apps
   - **description** : the title of the app
 
 
-<a name="app-methods"></a> 
+<a name="app-methods"></a>
 
-## methods 
+## methods
 
 
 ## dependencies 

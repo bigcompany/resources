@@ -56,9 +56,9 @@ for managing views
   - **type** : string
 
 
-<a name="view-methods"></a> 
+<a name="view-methods"></a>
 
-## methods 
+## methods
 
 <a name="view-methods-create"></a> 
 
@@ -72,6 +72,6 @@ creates a new view
 
 
 ## dependencies 
-- [cheerio](http://npmjs.org/package/cheerio)
+- [cheerio](http://npmjs.org/package/cheerio) v0.9.x
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

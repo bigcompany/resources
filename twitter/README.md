@@ -21,9 +21,13 @@
 
   - [connect](#twitter-methods-connect) (options, callback)
 
-  - [disconnect](#twitter-methods-disconnect) (callback)
+  - [disconnect](#twitter-methods-disconnect) (options, callback)
 
-  - [stream](#twitter-methods-stream) (description, properties)
+  - [addStream](#twitter-methods-addStream) (options, callback)
+
+  - [getStream](#twitter-methods-getStream) (object, callback)
+
+  - [removeStream](#twitter-methods-removeStream) (object, callback)
 
   - [limit](#twitter-methods-limit) (options, callback)
 
@@ -40,6 +44,8 @@
   - [block](#twitter-methods-block) (options, callback)
 
   - [report](#twitter-methods-report) (options, callback)
+
+  - [tweetLength](#twitter-methods-tweetLength) (options, callback)
 
 
 <a name="twitter-properties"></a>
@@ -59,25 +65,25 @@
 
     - type : *object*
 
-    - **consumerKey** 
+    - **consumer_key** 
 
       - **type** : string
 
       - **required** : true
 
-    - **consumerSecret** 
+    - **consumer_secret** 
 
       - **type** : string
 
       - **required** : true
 
-    - **tokenKey** 
+    - **access_token_key** 
 
       - **type** : string
 
       - **required** : true
 
-    - **tokenSecret** 
+    - **access_token_secret** 
 
       - **type** : string
 
@@ -91,11 +97,13 @@
 
     - **id** 
 
-      - **type** : string
+      - **required** : false
 
     - **screenName** 
 
       - **type** : string
+
+      - **required** : false
 
 - **tweet** 
 
@@ -107,7 +115,19 @@
 
       - **type** : string
 
-      - **required** : true
+      - **default** : I am big.
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
 
 - **stream** 
 
@@ -121,10 +141,22 @@
 
       - **required** : true
 
+    - **screenName** 
 
-<a name="twitter-methods"></a> 
+      - **type** : string
 
-## methods 
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
+
+
+<a name="twitter-methods"></a>
+
+## methods
 
 <a name="twitter-methods-connect"></a> 
 
@@ -140,25 +172,25 @@ connects to twitter
 
     - type : *object*
 
-    - **consumerKey** 
+    - **consumer_key** 
 
       - **type** : string
 
       - **required** : true
 
-    - **consumerSecret** 
+    - **consumer_secret** 
 
       - **type** : string
 
       - **required** : true
 
-    - **tokenKey** 
+    - **access_token_key** 
 
       - **type** : string
 
       - **required** : true
 
-    - **tokenSecret** 
+    - **access_token_secret** 
 
       - **type** : string
 
@@ -172,9 +204,27 @@ connects to twitter
 
 <a name="twitter-methods-disconnect"></a> 
 
-### twitter.disconnect(callback)
+### twitter.disconnect(options, callback)
 
 disconnects from twitter
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
 
 - **callback** 
 
@@ -182,21 +232,109 @@ disconnects from twitter
 
   - **default** : function () {}
 
-<a name="twitter-methods-stream"></a> 
+<a name="twitter-methods-addStream"></a> 
 
-### twitter.stream(description, properties)
+### twitter.addStream(options, callback)
 
-streams tweets from a given twitter method
+starts listening to a twitter stream
 
-- description : *a twitter stream*
+- **options** 
 
-- **properties** 
+  - **description** : a twitter stream
 
-  - **method**
+  - **properties**
+
+    - **method** 
+
+      - **type** : string
+
+      - **required** : true
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
+
+  - **default** : function (error, options, stream) {}
+
+<a name="twitter-methods-getStream"></a> 
+
+### twitter.getStream(object, callback)
+
+gets an active twitter stream
+
+- **object** 
+
+  - **type** : object
+
+  - **streamId**
 
     - type : *string*
 
-    - required : *true*
+  - **properties**
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
+
+  - **required** : true
+
+<a name="twitter-methods-removeStream"></a> 
+
+### twitter.removeStream(object, callback)
+
+stops listening to a twitter stream
+
+- **object** 
+
+  - **type** : object
+
+  - **streamId**
+
+    - type : *string*
+
+  - **properties**
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
+
+  - **default** : function (error, options) {}
 
 <a name="twitter-methods-limit"></a> 
 
@@ -246,7 +384,19 @@ sends a tweet (updates your status)
 
       - **type** : string
 
-      - **required** : true
+      - **default** : I am big.
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
 
 - **callback** 
 
@@ -261,7 +411,7 @@ sends a tweet (updates your status)
 
 ### twitter.receive(options, callback)
 
-receives a tweet from activated streams
+receives tweets from activated streams
 
 - **options** 
 
@@ -273,7 +423,19 @@ receives a tweet from activated streams
 
       - **type** : string
 
-      - **required** : true
+      - **default** : I am big.
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
 
 - **callback** 
 
@@ -292,17 +454,37 @@ follows a twitter user
 
 - **options** 
 
-  - **description** : a twitter user
+  - **type** : object
+
+  - **user**
+
+    - description : *a twitter user*
+
+    - **properties** 
+
+      - **id**
+
+        - required : *false*
+
+      - **screenName**
+
+        - type : *string*
+
+        - required : *false*
 
   - **properties**
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
 
     - **id** 
 
       - **type** : string
 
-    - **screenName** 
-
-      - **type** : string
+      - **required** : false
 
 - **callback** 
 
@@ -323,17 +505,37 @@ unfollows a twitter user
 
 - **options** 
 
-  - **description** : a twitter user
+  - **type** : object
+
+  - **user**
+
+    - description : *a twitter user*
+
+    - **properties** 
+
+      - **id**
+
+        - required : *false*
+
+      - **screenName**
+
+        - type : *string*
+
+        - required : *false*
 
   - **properties**
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
 
     - **id** 
 
       - **type** : string
 
-    - **screenName** 
-
-      - **type** : string
+      - **required** : false
 
 - **callback** 
 
@@ -360,11 +562,13 @@ blocks a twitter user
 
     - **id** 
 
-      - **type** : string
+      - **required** : false
 
     - **screenName** 
 
       - **type** : string
+
+      - **required** : false
 
 - **callback** 
 
@@ -391,11 +595,13 @@ reports a twitter user
 
     - **id** 
 
-      - **type** : string
+      - **required** : false
 
     - **screenName** 
 
       - **type** : string
+
+      - **required** : false
 
 - **callback** 
 
@@ -408,8 +614,44 @@ reports a twitter user
         });
       }
 
+<a name="twitter-methods-tweetLength"></a> 
+
+### twitter.tweetLength(options, callback)
+
+gets the length of a tweet
+
+- **options** 
+
+  - **description** : a twitter tweet
+
+  - **properties**
+
+    - **message** 
+
+      - **type** : string
+
+      - **default** : I am big.
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **type** : string
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
+
+  - **required** : false
+
 
 ## dependencies 
-- [ntwitter](http://npmjs.org/package/ntwitter)
+- [ntwitter](http://npmjs.org/package/ntwitter) v0.5.0
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

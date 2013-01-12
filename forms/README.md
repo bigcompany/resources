@@ -21,9 +21,9 @@ for generating HTML forms
   - **type** : any
 
 
-<a name="forms-methods"></a> 
+<a name="forms-methods"></a>
 
-## methods 
+## methods
 
 <a name="forms-methods-generate"></a> 
 

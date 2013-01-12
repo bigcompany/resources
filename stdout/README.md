@@ -19,9 +19,9 @@ outputs all events as new-line delimited JSON fragments to STDOUT
   - **type** : any
 
 
-<a name="stdout-methods"></a> 
+<a name="stdout-methods"></a>
 
-## methods 
+## methods
 
 
 ## dependencies 

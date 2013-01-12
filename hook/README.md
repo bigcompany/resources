@@ -54,9 +54,9 @@ for managing event hooks ( IF this THEN that )
   - **description** : additional data supplied to `then`
 
 
-<a name="hook-methods"></a> 
+<a name="hook-methods"></a>
 
-## methods 
+## methods
 
 <a name="hook-methods-start"></a> 
 
