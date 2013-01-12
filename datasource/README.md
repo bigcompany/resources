@@ -25,8 +25,6 @@ perists resources to data storage engines
 
 #### [methods](#datasource-methods)
 
-  - [test](#datasource-methods-test) (datasource)
-
   - [create](#datasource-methods-create) (options, callback)
 
   - [get](#datasource-methods-get) (id, callback)
@@ -38,6 +36,8 @@ perists resources to data storage engines
   - [update](#datasource-methods-update) (options, callback)
 
   - [destroy](#datasource-methods-destroy) (id, callback)
+
+  - [test](#datasource-methods-test) (datasource)
 
 
 <a name="datasource-properties"></a>
@@ -139,22 +139,6 @@ perists resources to data storage engines
 <a name="datasource-methods"></a> 
 
 ## methods 
-
-<a name="datasource-methods-test"></a> 
-
-### datasource.test(datasource)
-
-tests the status of a datasource by attempting to connect to it
-
-- **datasource** 
-
-  - **description** : the name of the datasource to test
-
-  - **type** : string
-
-  - **key** : datasource
-
-  - **required** : true
 
 <a name="datasource-methods-create"></a> 
 
@@ -517,6 +501,22 @@ destroys a datasource by id
 - **callback** 
 
   - **type** : function
+
+<a name="datasource-methods-test"></a> 
+
+### datasource.test(datasource)
+
+tests the status of a datasource by attempting to connect to it
+
+- **datasource** 
+
+  - **description** : the name of the datasource to test
+
+  - **type** : string
+
+  - **key** : datasource
+
+  - **required** : true
 
 
 

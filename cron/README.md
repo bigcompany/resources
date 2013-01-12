@@ -17,9 +17,19 @@ for managing cron jobs
 
 #### [methods](#cron-methods)
 
-  - [run](#cron-methods-run) ()
+  - [create](#cron-methods-create) (options, callback)
 
-  - [create](#cron-methods-create) ()
+  - [get](#cron-methods-get) (id, callback)
+
+  - [find](#cron-methods-find) (options, callback)
+
+  - [all](#cron-methods-all) (callback)
+
+  - [update](#cron-methods-update) (options, callback)
+
+  - [destroy](#cron-methods-destroy) (id, callback)
+
+  - [run](#cron-methods-run) ()
 
   - [start](#cron-methods-start) ()
 
@@ -60,13 +70,193 @@ for managing cron jobs
 
 ## methods 
 
+<a name="cron-methods-create"></a> 
+
+### cron.create(options, callback)
+
+create a new cron
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **pattern** 
+
+      - **type** : string
+
+      - **default** : */5 * * * * *
+
+      - **description** : the pattern of the cron job
+
+    - **event** 
+
+      - **type** : string
+
+      - **default** : logger::log
+
+      - **description** : the event to be emitted each time the cron runs
+
+    - **with** 
+
+      - **type** : object
+
+      - **description** : metadata to execute the cron with
+
+- **callback** 
+
+  - **type** : function
+
+<a name="cron-methods-get"></a> 
+
+### cron.get(id, callback)
+
+get cron by id
+
+- **id** 
+
+  - **type** : any
+
+  - **description** : the id of the object
+
+  - **required** : true
+
+- **callback** 
+
+  - **type** : function
+
+<a name="cron-methods-find"></a> 
+
+### cron.find(options, callback)
+
+search for instances of cron
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+    - **pattern** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **description** : the pattern of the cron job
+
+      - **required** : false
+
+    - **event** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **description** : the event to be emitted each time the cron runs
+
+      - **required** : false
+
+    - **with** 
+
+      - **type** : any
+
+      - **description** : metadata to execute the cron with
+
+      - **default** : 
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
+
+<a name="cron-methods-all"></a> 
+
+### cron.all(callback)
+
+gets all instances of cron
+
+- **callback** 
+
+  - **type** : function
+
+<a name="cron-methods-update"></a> 
+
+### cron.update(options, callback)
+
+updates a cron by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **pattern** 
+
+      - **type** : string
+
+      - **default** : */5 * * * * *
+
+      - **description** : the pattern of the cron job
+
+    - **event** 
+
+      - **type** : string
+
+      - **default** : logger::log
+
+      - **description** : the event to be emitted each time the cron runs
+
+    - **with** 
+
+      - **type** : object
+
+      - **description** : metadata to execute the cron with
+
+- **callback** 
+
+  - **type** : function
+
+<a name="cron-methods-destroy"></a> 
+
+### cron.destroy(id, callback)
+
+destroys a cron by id
+
+- **id** 
+
+  - **type** : string
+
+  - **description** : the id of the object
+
+  - **required** : true
+
+- **callback** 
+
+  - **type** : function
+
 <a name="cron-methods-run"></a> 
 
 ### cron.run()
-
-<a name="cron-methods-create"></a> 
-
-### cron.create()
 
 <a name="cron-methods-start"></a> 
 

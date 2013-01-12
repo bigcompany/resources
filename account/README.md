@@ -19,13 +19,23 @@ for managing accounts
 
 #### [methods](#account-methods)
 
+  - [create](#account-methods-create) (options, callback)
+
+  - [get](#account-methods-get) (id, callback)
+
+  - [find](#account-methods-find) (options, callback)
+
+  - [all](#account-methods-all) (callback)
+
+  - [update](#account-methods-update) (options, callback)
+
+  - [destroy](#account-methods-destroy) (id, callback)
+
   - [confirm](#account-methods-confirm) (token)
 
   - [reset](#account-methods-reset) (email)
 
   - [auth](#account-methods-auth) (accountname, password)
-
-  - [create](#account-methods-create) ()
 
 
 <a name="account-properties"></a>
@@ -84,6 +94,238 @@ for managing accounts
 
 ## methods 
 
+<a name="account-methods-create"></a> 
+
+### account.create(options, callback)
+
+create a new account
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **email** 
+
+      - **type** : string
+
+      - **format** : email
+
+      - **required** : true
+
+    - **password** 
+
+      - **type** : string
+
+      - **format** : password
+
+    - **status** 
+
+      - **description** : the current status of the account
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *new*
+
+        - 1 : *active*
+
+        - 2 : *inactive*
+
+        - 3 : *disabled*
+
+      - **default** : new
+
+    - **token** 
+
+      - **description** : unique access token for the account. used for account confirmations and password resets
+
+      - **type** : string
+
+      - **private** : true
+
+      - **default** : 
+
+- **callback** 
+
+  - **type** : function
+
+<a name="account-methods-get"></a> 
+
+### account.get(id, callback)
+
+get account by id
+
+- **id** 
+
+  - **type** : any
+
+  - **description** : the id of the object
+
+  - **required** : true
+
+- **callback** 
+
+  - **type** : function
+
+<a name="account-methods-find"></a> 
+
+### account.find(options, callback)
+
+search for instances of account
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+    - **email** 
+
+      - **type** : any
+
+      - **required** : false
+
+      - **default** : 
+
+    - **password** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+    - **status** 
+
+      - **description** : the current status of the account
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+    - **token** 
+
+      - **description** : unique access token for the account. used for account confirmations and password resets
+
+      - **type** : any
+
+      - **private** : true
+
+      - **default** : 
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
+
+<a name="account-methods-all"></a> 
+
+### account.all(callback)
+
+gets all instances of account
+
+- **callback** 
+
+  - **type** : function
+
+<a name="account-methods-update"></a> 
+
+### account.update(options, callback)
+
+updates a account by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **email** 
+
+      - **type** : string
+
+      - **format** : email
+
+      - **required** : true
+
+    - **password** 
+
+      - **type** : string
+
+      - **format** : password
+
+    - **status** 
+
+      - **description** : the current status of the account
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *new*
+
+        - 1 : *active*
+
+        - 2 : *inactive*
+
+        - 3 : *disabled*
+
+      - **default** : new
+
+    - **token** 
+
+      - **description** : unique access token for the account. used for account confirmations and password resets
+
+      - **type** : string
+
+      - **private** : true
+
+      - **default** : 
+
+- **callback** 
+
+  - **type** : function
+
+<a name="account-methods-destroy"></a> 
+
+### account.destroy(id, callback)
+
+destroys a account by id
+
+- **id** 
+
+  - **type** : string
+
+  - **description** : the id of the object
+
+  - **required** : true
+
+- **callback** 
+
+  - **type** : function
+
 <a name="account-methods-confirm"></a> 
 
 ### account.confirm(token)
@@ -131,10 +373,6 @@ checks accountname and password for a account ( auth check )
   - **type** : string
 
   - **required** : true
-
-<a name="account-methods-create"></a> 
-
-### account.create()
 
 
 

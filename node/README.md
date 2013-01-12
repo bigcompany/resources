@@ -31,8 +31,6 @@ for managing nodes
 
 #### [methods](#node-methods)
 
-  - [sh](#node-methods-sh) (options, callback)
-
   - [create](#node-methods-create) (options, callback)
 
   - [get](#node-methods-get) (id, callback)
@@ -44,6 +42,8 @@ for managing nodes
   - [update](#node-methods-update) (options, callback)
 
   - [destroy](#node-methods-destroy) (id, callback)
+
+  - [sh](#node-methods-sh) (options, callback)
 
 
 <a name="node-properties"></a>
@@ -145,36 +145,6 @@ for managing nodes
 <a name="node-methods"></a> 
 
 ## methods 
-
-<a name="node-methods-sh"></a> 
-
-### node.sh(options, callback)
-
-execute shell scripts on a node via SSH
-
-- **options** 
-
-  - **type** : object
-
-  - **properties**
-
-    - **host** 
-
-      - **type** : string
-
-      - **default** : 0.0.0.0
-
-    - **recipe** 
-
-      - **description** : name to the shell script to run remotely
-
-      - **type** : string
-
-      - **default** : /Users/maraksquires/dev/big/resources/node/recipes/ls-test
-
-- **callback** 
-
-  - **type** : function
 
 <a name="node-methods-create"></a> 
 
@@ -553,6 +523,36 @@ destroys a node by id
   - **description** : the id of the object
 
   - **required** : true
+
+- **callback** 
+
+  - **type** : function
+
+<a name="node-methods-sh"></a> 
+
+### node.sh(options, callback)
+
+execute shell scripts on a node via SSH
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **host** 
+
+      - **type** : string
+
+      - **default** : 0.0.0.0
+
+    - **recipe** 
+
+      - **description** : name to the shell script to run remotely
+
+      - **type** : string
+
+      - **default** : /Users/maraksquires/dev/bigcompany/resources/node/recipes/ls-test
 
 - **callback** 
 
