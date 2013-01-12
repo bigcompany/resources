@@ -80,6 +80,9 @@ function listen (options, callback) {
   });
 
   /*
+    //
+    // Remark: Commented out docs route ( for now )
+    //
   resource.http.app.get('/admin/docs/resources/:resource', function (req, res, next) {
     var r = resource.resources[req.param('resource')];
     var str = resource.docs.generate(r);
@@ -92,19 +95,25 @@ function listen (options, callback) {
   });
   */
 
-  resource.http.app.get('/admin/replicator', auth, function (req, res, next) {
-   view.replicator.render({});
-   view.replicator.present({}, function(err, result){
-     res.end(result);
-   });
-  });
+  //
+  // TODO: don't add these routes if the resources aren't available
+  //
+    resource.http.app.get('/admin/replicator', auth, function (req, res, next) {
+     view.replicator.render({});
+     view.replicator.present({}, function(err, result){
+       res.end(result);
+     });
+    });
 
-  resource.http.app.get('/admin/hooks', auth, function (req, res, next) {
-   view.hooks.render({});
-   view.hooks.present({}, function(err, result){
-     res.end(result);
-   });
-  });
+    resource.http.app.get('/admin/hooks', auth, function (req, res, next) {
+     view.hooks.render({});
+     view.hooks.present({}, function(err, result){
+       res.end(result);
+     });
+    });
+  //
+  // END TODO
+  //
 
   resource.http.app.get('/admin/datasources', auth, function (req, res, next) {
    view.datasources.render({});
