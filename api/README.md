@@ -34,9 +34,9 @@ provides a web API for interacting with resources
   - **default** : v0.0.1
 
 
-<a name="api-methods"></a>
+<a name="api-methods"></a> 
 
-## methods
+## methods 
 
 <a name="api-methods-listen"></a> 
 
@@ -63,6 +63,5 @@ when the api resource starts
       - **default** : v0.0.1
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

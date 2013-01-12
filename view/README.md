@@ -56,9 +56,9 @@ for managing views
   - **type** : string
 
 
-<a name="view-methods"></a>
+<a name="view-methods"></a> 
 
-## methods
+## methods 
 
 <a name="view-methods-create"></a> 
 

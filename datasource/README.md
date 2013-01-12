@@ -136,9 +136,9 @@ perists resources to data storage engines
   - **description** : the password used to connect to the datasource
 
 
-<a name="datasource-methods"></a>
+<a name="datasource-methods"></a> 
 
-## methods
+## methods 
 
 <a name="datasource-methods-test"></a> 
 
@@ -519,6 +519,5 @@ destroys a datasource by id
   - **type** : function
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

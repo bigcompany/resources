@@ -34,9 +34,9 @@ provides virtual hosts
   - **type** : string
 
 
-<a name="virtualhost-methods"></a>
+<a name="virtualhost-methods"></a> 
 
-## methods
+## methods 
 
 
 ## dependencies 

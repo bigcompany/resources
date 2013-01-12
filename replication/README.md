@@ -37,7 +37,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Sat Jan 12 2013 13:07:54 GMT+0530 (IST)
+  - **default** : Sat Jan 12 2013 19:58:47 GMT+0530 (IST)
 
 - **source** 
 
@@ -60,11 +60,10 @@ for managing and keeping track of replication events
   - **type** : string
 
 
-<a name="replication-methods"></a>
+<a name="replication-methods"></a> 
 
-## methods
+## methods 
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

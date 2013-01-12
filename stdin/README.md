@@ -21,15 +21,14 @@ allows application to listen for input from STDIN
   - **type** : any
 
 
-<a name="stdin-methods"></a>
+<a name="stdin-methods"></a> 
 
-## methods
+## methods 
 
 <a name="stdin-methods-start"></a> 
 
 ### stdin.start()
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

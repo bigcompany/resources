@@ -21,9 +21,9 @@ for generating HTML forms
   - **type** : any
 
 
-<a name="forms-methods"></a>
+<a name="forms-methods"></a> 
 
-## methods
+## methods 
 
 <a name="forms-methods-generate"></a> 
 
@@ -38,6 +38,5 @@ generates a new form based on a resource schema
   - **type** : any
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

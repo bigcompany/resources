@@ -142,9 +142,9 @@ for managing nodes
   - **type** : string
 
 
-<a name="node-methods"></a>
+<a name="node-methods"></a> 
 
-## methods
+## methods 
 
 <a name="node-methods-sh"></a> 
 
@@ -559,6 +559,5 @@ destroys a node by id
   - **type** : function
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -64,9 +64,9 @@ for managing online digital videos
   - **description** : the tag id of the video
 
 
-<a name="video-methods"></a>
+<a name="video-methods"></a> 
 
-## methods
+## methods 
 
 <a name="video-methods-play"></a> 
 
@@ -77,6 +77,5 @@ for managing online digital videos
 ### video.stop()
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

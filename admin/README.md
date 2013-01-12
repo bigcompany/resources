@@ -23,9 +23,9 @@ a web based admin panel
   - **type** : any
 
 
-<a name="admin-methods"></a>
+<a name="admin-methods"></a> 
 
-## methods
+## methods 
 
 <a name="admin-methods-listen"></a> 
 

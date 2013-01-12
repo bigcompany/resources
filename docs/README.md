@@ -23,9 +23,9 @@ for generating documentation
   - **type** : any
 
 
-<a name="docs-methods"></a>
+<a name="docs-methods"></a> 
 
-## methods
+## methods 
 
 <a name="docs-methods-generate"></a> 
 
@@ -51,6 +51,6 @@ generates markdown documentation for a single resource
 
 
 ## dependencies 
-- [swig](http://npmjs.org/package/swig) v*
+- [swig](http://npmjs.org/package/swig)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

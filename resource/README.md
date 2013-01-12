@@ -46,11 +46,10 @@ meta-resource for describing and creating new resources
   - **type** : object
 
 
-<a name="resource-methods"></a>
+<a name="resource-methods"></a> 
 
-## methods
+## methods 
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

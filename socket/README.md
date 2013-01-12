@@ -21,9 +21,9 @@ socket.io websocket resource
   - **type** : any
 
 
-<a name="socket-methods"></a>
+<a name="socket-methods"></a> 
 
-## methods
+## methods 
 
 <a name="socket-methods-start"></a> 
 
@@ -41,6 +41,6 @@ starts a socket.io server
 
 
 ## dependencies 
-- [socketful](http://npmjs.org/package/socketful) v*
+- [socketful](http://npmjs.org/package/socketful)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
