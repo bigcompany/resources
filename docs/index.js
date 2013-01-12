@@ -88,9 +88,12 @@ function resourceProperties (resource) {
 }
 
 function resourceDeps (resource) {
-  var list = '## dependencies \n';
-  for(var d in resource.dependencies) {
-    list += "- [" + d + "](http://npmjs.org/package/" + d + ")\n";
+  var list = '';
+  if (Object.keys(resource.dependencies).length > 0) {
+    list = '## dependencies \n';
+    for(var d in resource.dependencies) {
+      list += "- [" + d + "](http://npmjs.org/package/" + d + ")" + " v" + resource.dependencies[d] + "\n";
+    }
   }
   return list;
 }
@@ -265,19 +268,25 @@ function build () {
 
       try {
 
-        var _resource = resource.use(p);
+        var _resource = require('../' + p);
 
-        //
-        // Generate the docs
-        //
-        var doc = resource.docs.generate(_resource, fs.readFileSync(__dirname + '/template.md').toString());
-        //
-        // Write them to disk
-        //
-        var _path = resourcePath + '/README.md';
+        if(typeof _resource[p] !== 'undefined') {
+          var deps = _resource.dependencies;
+          _resource = _resource[p];
+          _resource.dependencies = deps;
 
-        fs.writeFileSync(_path, doc);
-        resource.logger.info('wrote to ' + path.resolve(_path));
+          //
+          // Generate resource documentation
+          //
+          var doc = resource.docs.generate(_resource, fs.readFileSync(__dirname + '/template.md').toString());
+          //
+          // Write resource documentation to disk
+          //
+          var _path = resourcePath + '/README.md';
+
+          fs.writeFileSync(_path, doc);
+          resource.logger.info('wrote to ' + path.resolve(_path));
+        }
       } catch(err) {
         delete _resources[p];
         console.log(err.stack)
