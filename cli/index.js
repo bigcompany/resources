@@ -116,6 +116,13 @@ var createRouter = function (resources, options) {
     resources = arr;
    }
 
+  //
+  // Create default routes
+  //
+
+  //
+  // Root, run when no arguments are passed in
+  //
   router.on("", function(){
     logger.info('resources'.magenta + ' available:');
     // sort resources by name
@@ -128,6 +135,29 @@ var createRouter = function (resources, options) {
     logger.help('type ' + 'the ' + 'resource'.magenta + ' name to use');
   });
 
+  //
+  // resource.use() route
+  //
+  router.on("use", function (_resource) {
+    if(typeof _resource === "undefined") {
+      logger.warn('resource name is required!');
+      var prop = {
+        "name": "resource",
+        "type": "string",
+        "message": "resource name",
+        "required": true
+      };
+      prompt.get(prop, function (err, data) {
+        resource.use(data.resource);
+      });
+    } else {
+      resource.use(_resource);
+    }
+  });
+
+  //
+  // Create routes for all resources and resource methods
+  //
   resources.forEach(function (resource) {
     var entity = resource.name
         param = options.param || ':id';
