@@ -19,11 +19,10 @@ ssh interface resource
   - **type** : any
 
 
-<a name="ssh-methods"></a>
+<a name="ssh-methods"></a> 
 
-## methods
+## methods 
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -170,9 +170,9 @@ for managing communication with irc
           - **type** : string
 
 
-<a name="irc-methods"></a>
+<a name="irc-methods"></a> 
 
-## methods
+## methods 
 
 <a name="irc-methods-connect"></a> 
 

@@ -19,11 +19,10 @@ outputs all events as new-line delimited JSON fragments to STDOUT
   - **type** : any
 
 
-<a name="stdout-methods"></a>
+<a name="stdout-methods"></a> 
 
-## methods
+## methods 
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

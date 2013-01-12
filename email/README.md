@@ -72,9 +72,9 @@ for sending emails
   - **description** : the content of the email
 
 
-<a name="email-methods"></a>
+<a name="email-methods"></a> 
 
-## methods
+## methods 
 
 <a name="email-methods-send"></a> 
 
@@ -133,6 +133,5 @@ sends an email
   - **type** : function
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

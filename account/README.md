@@ -80,9 +80,9 @@ for managing accounts
   - **default** : 
 
 
-<a name="account-methods"></a>
+<a name="account-methods"></a> 
 
-## methods
+## methods 
 
 <a name="account-methods-confirm"></a> 
 
@@ -137,6 +137,5 @@ checks accountname and password for a account ( auth check )
 ### account.create()
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

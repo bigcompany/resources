@@ -48,9 +48,9 @@ a simple hierarchical tagging system
   - **default** : 
 
 
-<a name="tag-methods"></a>
+<a name="tag-methods"></a> 
 
-## methods
+## methods 
 
 <a name="tag-methods-createTag"></a> 
 
@@ -103,6 +103,5 @@ a simple hierarchical tagging system
       - **required** : true
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

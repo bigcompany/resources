@@ -154,9 +154,9 @@
       - **required** : false
 
 
-<a name="twitter-methods"></a>
+<a name="twitter-methods"></a> 
 
-## methods
+## methods 
 
 <a name="twitter-methods-connect"></a> 
 

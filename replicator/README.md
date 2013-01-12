@@ -27,9 +27,9 @@ provides an application replication API for resource based apps
   - **type** : any
 
 
-<a name="replicator-methods"></a>
+<a name="replicator-methods"></a> 
 
-## methods
+## methods 
 
 <a name="replicator-methods-push"></a> 
 

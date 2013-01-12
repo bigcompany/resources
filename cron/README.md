@@ -56,9 +56,9 @@ for managing cron jobs
   - **description** : metadata to execute the cron with
 
 
-<a name="cron-methods"></a>
+<a name="cron-methods"></a> 
 
-## methods
+## methods 
 
 <a name="cron-methods-run"></a> 
 

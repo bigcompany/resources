@@ -34,15 +34,14 @@ for creating new application scaffolds
   - **description** : the name of the app
 
 
-<a name="scaffold-methods"></a>
+<a name="scaffold-methods"></a> 
 
-## methods
+## methods 
 
 <a name="scaffold-methods-new"></a> 
 
 ### scaffold.new()
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

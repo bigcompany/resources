@@ -44,11 +44,10 @@ for managing permissions
   - **format** : permissions
 
 
-<a name="permissions-methods"></a>
+<a name="permissions-methods"></a> 
 
-## methods
+## methods 
 
 
-## dependencies 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

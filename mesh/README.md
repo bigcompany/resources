@@ -27,9 +27,9 @@ provides a distributed p2p event emitter mesh
   - **type** : any
 
 
-<a name="mesh-methods"></a>
+<a name="mesh-methods"></a> 
 
-## methods
+## methods 
 
 <a name="mesh-methods-connect"></a> 
 
@@ -143,6 +143,6 @@ when an outgoing node connection has been made
 ## dependencies 
 - [engine.io](http://npmjs.org/package/engine.io) v0.3.9
 - [engine.io-client](http://npmjs.org/package/engine.io-client) v0.3.9
-- [eventemitter2](http://npmjs.org/package/eventemitter2) v*
+- [eventemitter2](http://npmjs.org/package/eventemitter2)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
