@@ -33,9 +33,9 @@ for interacting with the operating system
   - **type** : any
 
 
-<a name="system-methods"></a> 
+<a name="system-methods"></a>
 
-## methods 
+## methods
 
 <a name="system-methods-info"></a> 
 

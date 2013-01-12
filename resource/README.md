@@ -46,9 +46,9 @@ meta-resource for describing and creating new resources
   - **type** : object
 
 
-<a name="resource-methods"></a> 
+<a name="resource-methods"></a>
 
-## methods 
+## methods
 
 
 ## dependencies 

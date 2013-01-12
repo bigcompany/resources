@@ -52,9 +52,9 @@ example resource for creatures like dragons, unicorns, and ponies
   - **default** : 10
 
 
-<a name="creature-methods"></a> 
+<a name="creature-methods"></a>
 
-## methods 
+## methods
 
 <a name="creature-methods-poke"></a> 
 

@@ -21,9 +21,9 @@ for sending provisioners
   - **type** : any
 
 
-<a name="provisioner-methods"></a> 
+<a name="provisioner-methods"></a>
 
-## methods 
+## methods
 
 <a name="provisioner-methods-provision"></a> 
 
@@ -41,6 +41,6 @@ sends an provisioner
 
 
 ## dependencies 
-- [pkgcloud](http://npmjs.org/package/pkgcloud)
+- [pkgcloud](http://npmjs.org/package/pkgcloud) v*
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

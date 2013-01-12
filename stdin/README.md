@@ -21,9 +21,9 @@ allows application to listen for input from STDIN
   - **type** : any
 
 
-<a name="stdin-methods"></a> 
+<a name="stdin-methods"></a>
 
-## methods 
+## methods
 
 <a name="stdin-methods-start"></a> 
 

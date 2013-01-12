@@ -44,9 +44,9 @@ for managing permissions
   - **format** : permissions
 
 
-<a name="permissions-methods"></a> 
+<a name="permissions-methods"></a>
 
-## methods 
+## methods
 
 
 ## dependencies 

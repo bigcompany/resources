@@ -34,9 +34,9 @@ for creating new application scaffolds
   - **description** : the name of the app
 
 
-<a name="scaffold-methods"></a> 
+<a name="scaffold-methods"></a>
 
-## methods 
+## methods
 
 <a name="scaffold-methods-new"></a> 
 

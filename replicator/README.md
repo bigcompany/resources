@@ -27,9 +27,9 @@ provides an application replication API for resource based apps
   - **type** : any
 
 
-<a name="replicator-methods"></a> 
+<a name="replicator-methods"></a>
 
-## methods 
+## methods
 
 <a name="replicator-methods-push"></a> 
 
@@ -117,6 +117,6 @@ starts a listening replicator service capable of recieving push requests
 
 
 ## dependencies 
-- [pushover](http://npmjs.org/package/pushover)
+- [pushover](http://npmjs.org/package/pushover) v1.1.0
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

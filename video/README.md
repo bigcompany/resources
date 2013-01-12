@@ -64,9 +64,9 @@ for managing online digital videos
   - **description** : the tag id of the video
 
 
-<a name="video-methods"></a> 
+<a name="video-methods"></a>
 
-## methods 
+## methods
 
 <a name="video-methods-play"></a> 
 
