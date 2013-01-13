@@ -7,6 +7,8 @@ var resource = require('resource'),
 
 permissions.schema.description = "for managing permissions";
 
+permissions.persist('memory');
+
 permissions.property("accountID", {
   "type":"string",
   "default": "my title",
