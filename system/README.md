@@ -41,6 +41,8 @@ for interacting with the operating system
 
 ### system.info()
 
+provides information about current operating system
+
 <a name="system-methods-useradd"></a> 
 
 ### system.useradd(options, callback)
@@ -190,6 +192,8 @@ lists members of a group
 <a name="system-methods-kill"></a> 
 
 ### system.kill()
+
+
 
 
 

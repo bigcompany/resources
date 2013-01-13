@@ -49,7 +49,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Sat Jan 12 2013 23:28:42 GMT+0530 (IST)
+  - **default** : Sun Jan 13 2013 19:38:45 GMT+0530 (IST)
 
 - **source** 
 
@@ -98,7 +98,7 @@ create a new replication
 
       - **type** : string
 
-      - **default** : Sat Jan 12 2013 23:28:42 GMT+0530 (IST)
+      - **default** : Sun Jan 13 2013 19:38:45 GMT+0530 (IST)
 
     - **source** 
 
@@ -244,7 +244,7 @@ updates a replication by id
 
       - **type** : string
 
-      - **default** : Sat Jan 12 2013 23:28:42 GMT+0530 (IST)
+      - **default** : Sun Jan 13 2013 19:38:45 GMT+0530 (IST)
 
     - **source** 
 

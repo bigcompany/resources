@@ -31,9 +31,13 @@ provides a command line interface
 
 ### cli.start()
 
+starts the big command line interface
+
 <a name="cli-methods-createRouter"></a> 
 
 ### cli.createRouter()
+
+
 
 
 ## dependencies 

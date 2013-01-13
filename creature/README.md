@@ -238,6 +238,8 @@ destroys a creature by id
 
 ### creature.poke()
 
+
+
 <a name="creature-methods-fire"></a> 
 
 ### creature.fire(options)

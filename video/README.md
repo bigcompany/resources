@@ -72,9 +72,13 @@ for managing online digital videos
 
 ### video.play()
 
+
+
 <a name="video-methods-stop"></a> 
 
 ### video.stop()
+
+
 
 
 
