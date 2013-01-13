@@ -45,15 +45,6 @@ twitter.property('user', {
 });
 
 //
-// Many methods require a specified user in addition to other properties
-//
-function withUser(schema) {
-  schema.properties = schema.properties || {};
-  schema.properties.user = twitter.schema.properties.user;
-  return schema;
-}
-
-//
 // We keep track of both screenNames and ids for users that have active
 // authenticated client instances
 //
@@ -164,9 +155,12 @@ function connect (options, callback) {
 twitter.method('disconnect', disconnect, {
   description: 'disconnects from twitter',
   properties: {
-    options: withUser({
-      type: 'object'
-    }),
+    options: {
+      type: 'object',
+      properties: {
+        user: twitter.schema.properties.user
+      }
+    },
     callback: {
       type: 'function',
       default: function () {}
@@ -218,11 +212,12 @@ function disconnect (options, callback) {
 twitter.method('addStream', addStream, {
   description: 'starts listening to a twitter stream',
   properties: {
-    options: withUser({
+    options: {
       properties: {
+        user: twitter.schema.properties.user,
         stream: twitter.schema.properties.stream
       }
-    }),
+    },
     callback: {
       type: 'function',
       default: function (error, options, stream) {}
@@ -273,14 +268,15 @@ function addStream (options, callback) {
 twitter.method('getStream', getStream, {
   description: 'gets an active twitter stream',
   properties: {
-    options: withUser({
+    options: {
       type: 'object',
       properties: {
+        user: twitter.schema.properties.user,
         streamId: {
           type: 'string'
         }
       }
-    }),
+    },
     callback: {
       type: 'function'
     }
@@ -303,14 +299,15 @@ function getStream (options, callback) {
 twitter.method('removeStream', removeStream, {
   description: 'stops listening to a twitter stream',
   properties: {
-    object: withUser({
+    object: {
       type: 'object',
       properties: {
+        user: twitter.schema.properties.user,
         streamId: {
           type: 'string'
         }
       }
-    }),
+    },
     callback: {
       type: 'function',
       default: function (error, options) {}
@@ -377,12 +374,13 @@ function onError (error, callback) {
 twitter.method('send', send, {
   description: 'sends a tweet (updates your status)',
   properties: {
-    options: withUser({
+    options: {
       type: 'object',
       properties: {
+        user: twitter.schema.properties.user,
         tweet: twitter.schema.properties.tweet
       }
-    }),
+    },
     callback: {
       default: function () {
         resource.logger.info('sent tweet: ');
@@ -432,8 +430,9 @@ function receive (options, callback) {
 twitter.method('follow', follow, {
   description: 'follows a twitter user',
   properties: {
-    options: withUser({
+    options: {
       properties: {
+        user: twitter.schema.properties.user,
         screenName: {
           type: 'string',
           required: false
@@ -442,7 +441,7 @@ twitter.method('follow', follow, {
           required: false
         }
       }
-    }),
+    },
     callback: {
       type: 'function',
       default: function () {
@@ -464,8 +463,9 @@ function follow (options, callback) {
 twitter.method('unfollow', unfollow, {
   description: 'unfollows a twitter user',
   properties: {
-    options: withUser({
+    options: {
       properties: {
+        user: twitter.schema.properties.user,
         screenName: {
           type: 'string',
           required: false
@@ -474,7 +474,7 @@ twitter.method('unfollow', unfollow, {
           required: false
         }
       }
-    }),
+    },
     callback: {
       type: 'function',
       default: function () {
@@ -497,8 +497,9 @@ function unfollow (options, callback) {
 twitter.method('block', block, {
   description: 'blocks a twitter user',
   properties: {
-    options: withUser({
+    options: {
       properties: {
+        user: twitter.schema.properties.user,
         screenName: {
           type: 'string',
           required: false
@@ -507,7 +508,7 @@ twitter.method('block', block, {
           required: false
         }
       }
-    }),
+    },
     callback: {
       type: 'function',
       default: function () {
@@ -529,8 +530,9 @@ function block (options, callback) {
 twitter.method('report', report, {
   description: 'reports a twitter user',
   properties: {
-    options: withUser({
+    options: {
       properties: {
+        user: twitter.schema.properties.user,
         screenName: {
           type: 'string',
           required: false
@@ -539,7 +541,7 @@ twitter.method('report', report, {
           required: false
         }
       }
-    }),
+    },
     callback: {
       type: 'function',
       default: function () {
@@ -561,8 +563,9 @@ function report (options, callback) {
 twitter.method('showUser', showUser, {
   description: 'shows information on a twitter user',
   properties: {
-    options: withUser({
+    options: {
       properties: {
+        user: twitter.schema.properties.user,
         screenName: {
           type: 'string',
           required: false
@@ -571,7 +574,7 @@ twitter.method('showUser', showUser, {
           required: false
         }
       }
-    }),
+    },
     callback: {
       type: 'function'
     }
