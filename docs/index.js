@@ -139,7 +139,7 @@ function resourceMethods (resource) {
 
 var schemaToHTML = docs.schemaToHTML = function (schema) {
 
-  var str = schemaToTable(schema)
+  var str = schemaToTable(schema);
   var view = new view.View({
     template: str,
     input: "markdown"
@@ -191,13 +191,15 @@ var schemaToTable = docs.schemaToTable = function (schema) {
     });
     return str;
   };
-  
-  if(typeof schema === 'object' && typeof schema.properties === 'object' ) {
+
+  if(typeof schema === 'object'){
     str += ( schema.description || '' ) + "\n\n";
-    str += props(schema.properties, 0);
+    if(typeof schema.properties === 'object' ) {
+      str += props(schema.properties, 0);
+    }
   }
   return str;
-  
+
 };
 
 function resourceUsage (resource) {
