@@ -29,6 +29,8 @@ allows application to listen for input from STDIN
 
 ### stdin.start()
 
+listens for STDIN on the process and attempts to eval it as JavaScript
+
 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

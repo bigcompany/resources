@@ -42,6 +42,8 @@ for creating new application scaffolds
 
 ### scaffold.new()
 
+creates a new application
+
 
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -258,9 +258,13 @@ destroys a cron by id
 
 ### cron.run()
 
+runs / starts a cron job
+
 <a name="cron-methods-start"></a> 
 
 ### cron.start()
+
+starts the cron resource ( which will run all cron jobs )
 
 
 ## dependencies 

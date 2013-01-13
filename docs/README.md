@@ -49,6 +49,8 @@ generates markdown documentation for a single resource
 
 ### docs.build()
 
+builds README.md files for all resources
+
 
 ## dependencies 
 - [swig](http://npmjs.org/package/swig)

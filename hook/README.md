@@ -258,9 +258,13 @@ destroys a hook by id
 
 ### hook.start()
 
+loads all hooks into memory
+
 <a name="hook-methods-bind"></a> 
 
 ### hook.bind()
+
+
 
 
 
