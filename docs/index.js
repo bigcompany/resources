@@ -301,14 +301,14 @@ function build () {
   });
 
   //
-  // Then generate a README file for the core project
+  // Generate a "global" README file for all resources
   //
-  var str = '# resources \n\n';
+  var str = '# resources - prerelease \n\n';
   str += 'resources for any occasion \n\n'
   Object.keys(_resources).forEach(function(r) {
     str += ' - [' + r + '](https://github.com/bigcompany/resources/tree/master/' + r +') ' + resource.resources[r].schema.description + '\n';
   });
-  fs.writeFileSync(__dirname + '/../README.md', str);
+  fs.writeFileSync(resourcesPath + '/README.md', str);
   resource.logger.info('wrote to core resource README.md file');
 }
 
