@@ -26,12 +26,10 @@ function run (_cron) {
   resource.emit(_cron.event, _cron.with);
 };
 
-cron.method('run', run);
+cron.method('run', run, {
+  "description": "runs / starts a cron job"
+});
 
-//
-// TODO: add test case for using .before and .after methods during a resource definition
-// TODO: remove process.next line ( should not be needed )
-//
 cron.after('create', function(result){
   var cronJob = require('cron').CronJob;
   new cronJob(result.pattern, function() {
@@ -54,7 +52,9 @@ function start () {
   });
 };
 
-cron.method('start', start);
+cron.method('start', start, {
+  "description": "starts the cron resource ( which will run all cron jobs )"
+});
 
 exports.dependencies = {
   "cron": "1.0.1"
