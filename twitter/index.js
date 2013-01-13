@@ -1,6 +1,8 @@
 var resource = require('resource'),
     twitter = resource.define('twitter');
 
+twitter.schema.description = "for interacting with the Twitter API";
+
 twitter.property('credentials', {
   description: 'credentials for logging into twitter',
   properties: {
