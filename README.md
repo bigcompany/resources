@@ -19,10 +19,10 @@ resources for any occasion
  - [irc](https://github.com/bigcompany/resources/tree/master/irc) for managing communication with irc
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) provides a distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes
- - [oauth](https://github.com/bigcompany/resources/tree/master/oauth) 
+ - [oauth](https://github.com/bigcompany/resources/tree/master/oauth) for managing oauth logins and tokens
  - [permissions](https://github.com/bigcompany/resources/tree/master/permissions) for managing permissions
  - [provisioner](https://github.com/bigcompany/resources/tree/master/provisioner) for sending provisioners
- - [repl](https://github.com/bigcompany/resources/tree/master/repl) 
+ - [repl](https://github.com/bigcompany/resources/tree/master/repl) enables an interactive Read-Eval-Print-Loop ( REPL )
  - [replication](https://github.com/bigcompany/resources/tree/master/replication) for managing and keeping track of replication events
  - [replicator](https://github.com/bigcompany/resources/tree/master/replicator) provides an application replication API for resource based apps
  - [resource](https://github.com/bigcompany/resources/tree/master/resource) meta-resource for describing and creating new resources
@@ -33,7 +33,7 @@ resources for any occasion
  - [stdout](https://github.com/bigcompany/resources/tree/master/stdout) outputs all events as new-line delimited JSON fragments to STDOUT
  - [system](https://github.com/bigcompany/resources/tree/master/system) for interacting with the operating system
  - [tag](https://github.com/bigcompany/resources/tree/master/tag) a simple hierarchical tagging system
- - [twitter](https://github.com/bigcompany/resources/tree/master/twitter) 
+ - [twitter](https://github.com/bigcompany/resources/tree/master/twitter) for interacting with the Twitter API
  - [video](https://github.com/bigcompany/resources/tree/master/video) for managing online digital videos
  - [view](https://github.com/bigcompany/resources/tree/master/view) for managing views
  - [virtualhost](https://github.com/bigcompany/resources/tree/master/virtualhost) provides virtual hosts
