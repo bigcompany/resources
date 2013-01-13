@@ -1,6 +1,6 @@
 # repl
 
-
+enables an interactive Read-Eval-Print-Loop ( REPL )
 
 ## API
 
@@ -14,7 +14,7 @@
   - [start](#repl-methods-start) ()
 
 
-
+enables an interactive Read-Eval-Print-Loop ( REPL )
 
 - **id** 
 

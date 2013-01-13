@@ -1,6 +1,6 @@
 # twitter
 
-
+for interacting with the Twitter API
 
 ## API
 
@@ -51,7 +51,7 @@
 <a name="twitter-properties"></a>
 
 ## properties 
-
+for interacting with the Twitter API
 
 - **id** 
 
