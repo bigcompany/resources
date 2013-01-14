@@ -84,12 +84,6 @@ function listen (options, callback) {
   });
   */
 
-  if(typeof options.root !== 'undefined') {
-    app
-      .use(connect.static(options.root))
-      .use(connect.directory(options.root));
-  }
-
   app
     .use(connect.favicon(__dirname + '/favicon.png'))
     .use(connect.logger('dev'))
@@ -104,13 +98,22 @@ function listen (options, callback) {
     }));
   }
 
+  if(typeof options.root !== 'undefined') {
+    //
+    // Use http root passed in through options
+    //
+    app
+      .use(connect.static(options.root));
+  }
+
+  //
+  // Use the default http root that ships with resources
+  //
+  app
+    .use(connect.static(__dirname + '/public'));
 
   http.server = server = require('http').createServer(app).listen(options.port, options.host, function () {
    callback(null, server);
-  });
-
-  app.get('/', function (req, res){
-    res.end('home');
   });
 
   //
