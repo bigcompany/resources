@@ -1,6 +1,8 @@
 var resource = require('resource'),
     cli = resource.define('cli');
 
+var logger = resource.logger;
+
 cli.schema.description = "provides a command line interface";
 cli.started = false;
 
@@ -9,14 +11,14 @@ cli.method('start', start, {
 });
 
 function start (callback) {
-  console.log('welcome to big');
+  logger.info('welcome to big');
 
   //
   // Don't allow a user to use the cli to call it's own start method
   //
   if(cli.started) {
-    console.log('it looks like you are trying to start the cli inside the cli');
-    console.log("i can't allow you to do that");
+    logger.warn('it looks like you are trying to start the cli inside the cli');
+    logger.warn("i can't allow you to do that");
     process.exit();
   }
   //
@@ -29,8 +31,6 @@ function start (callback) {
 };
 
 exports.cli = cli;
-
-var logger = resource.logger;
 
 //
 // Miniature cli router which works sufficiently for our use cases
