@@ -69,6 +69,7 @@ function getUser(options) {
 
 twitter.property('tweet', {
   description: 'a twitter tweet',
+  type: 'object',
   properties: {
     message: {
       type: 'string',
