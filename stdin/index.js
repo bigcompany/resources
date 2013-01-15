@@ -17,7 +17,7 @@ function start () {
       if (line) {
         //
         // Evaluate all STDIN in current context
-        // WARNING: This will not attempt to parse parse STDIN at all
+        // WARNING: This will not attempt to parse STDIN at all
         // If you don't control the STDIN for this process, don't big.use('stdin').
         //
         try {
