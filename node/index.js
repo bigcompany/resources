@@ -91,7 +91,7 @@ node.method('sh', sh, {
 
 //
 // Before any nodes are created...
-// If they do not have a name, create a new named based on the host port tuple
+// If they do not have a name, create a new name based on the host port tuple
 //
 node.before('create', function(data, next){
   if(typeof data.name !== 'undefined') {
