@@ -7,7 +7,7 @@ http.schema.description = "provides an HTTP API";
 http.property("port", {
   "type": "number",
   "default": 8888,
-  "description": "the port to listen on "
+  "description": "the port to listen on"
 });
 
 http.property("host", {
