@@ -17,6 +17,4 @@ resource.property('methods', { type: "object"});
 resource.property('schema', { type: "object"});
 resource.property('config', { type: "object"});
 
-console.log(resource)
-
 exports.resource = resource;
