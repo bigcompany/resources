@@ -1,6 +1,5 @@
-var resource   = require('resource'),
-    stdout = resource.define('stdout'),
-    resource = require('resource');
+var resource = require('resource'),
+    stdout = resource.define('stdout');
 
 stdout.schema.description = "outputs all events as new-line delimited JSON fragments to STDOUT";
 
