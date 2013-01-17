@@ -10,13 +10,13 @@ datasource.property('status', {
   description: "the status of the datasource",
   enum: ['online', 'offline', 'error'],
   format: 'status',
-  default: "inactive"
+  default: "offline"
 });
 
 datasource.property('type', {
   type: "string",
   description: "The type of the datasource",
-  enum: ["couch", "file-system", "memory", "mongo", "mysql", "redis"],
+  enum: ["couch", "fs", "memory", "mongo", "mysql", "redis"],
   required: true,
   message: "datasource type must be valid"
 });
@@ -82,8 +82,8 @@ function test (id, callback) {
       case 'memory':
         result = true;
       break;
-      case 'file-system':
-        // TODO: check for for existend of fs database location
+      case 'fs':
+        // TODO: check for existence of fs database location
         result = true;
       break;
       case 'couch':
