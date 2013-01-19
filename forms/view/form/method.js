@@ -4,7 +4,6 @@ var layout = require('./layout'),
 module['exports'] = function (options, callback) {
 
   options = options || {};
-
   var $ = this.$,
     self = this,
     output = '',
@@ -39,9 +38,31 @@ module['exports'] = function (options, callback) {
         return callback(null, $.html());
       }
     }
-    if(Object.keys(options.data) > 0) {
-      method.call(this, options.data, cb);
+
+    //
+    // If any form data was passed in
+    //
+    if(Object.keys(options.data).length > 0) {
+      //
+      // If an options hash is expected as part of the resource method schema
+      //
+      if(method.schema.properties.options) {
+        method.call(this, options.data, cb);
+      } else {
+        //
+        // If no options hash is expected, curry the arguments left to right into an array
+        //
+        var args = [];
+        for(var p in options.data) {
+          args.push(options.data[p]);
+        }
+        args.push(cb);
+        method.apply(this, args);
+      }
     } else {
+      //
+      // No form data was passed in, execute the resource metho with no data
+      //
       method.call(this, cb);
     }
   } else {
@@ -51,7 +72,6 @@ module['exports'] = function (options, callback) {
 
   function showForm (data, errors) {
     data = data || {};
-
     if(typeof method.schema.properties !== 'undefined') {
       var _props = method.schema.properties || {};
 
@@ -62,7 +82,7 @@ module['exports'] = function (options, callback) {
       $('h1').html(entity + ' - create');
       $('input[type="submit"]').attr('value', options.method);
 
-      cont = function(err, result) {
+      var cont = function(err, result) {
         if (result) {
           output += result;
         }
