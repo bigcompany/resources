@@ -162,6 +162,9 @@ function listen (options, callback) {
       };
     }
 
+    //
+    // If an options hash is expected in the resource method
+    //
     if(_method.schema.properties && typeof _method.schema.properties.options !== 'undefined') {
       props = _method.schema.properties.options.properties;
     }
@@ -170,6 +173,10 @@ function listen (options, callback) {
         if(typeof req.param(prop) !== 'undefined') {
           data[prop] = req.param(prop);
         }
+        //
+        // If the resource method argument is expected to be a Number,
+        // attempt to coerce incoming data to a Number
+        //
         if(props[prop].type === "number") {
           data[prop] = Number(req.param(prop));
           if(data[prop].toString() === "NaN") {
@@ -178,6 +185,25 @@ function listen (options, callback) {
         }
       });
     }
+
+    //
+    // Iterate through all the request.body values and merge them in with schema data
+    //
+    //
+    //
+    // TODO: also merge in query string values?
+    //
+    Object.keys(req.body).forEach(function(p){
+      data[p] = req.body[p];
+      //
+      // It's possible the incoming form data should be a Number,
+      // attempt to coerce it
+      //
+      var numbery = Number(data[p]);
+      if(numbery.toString() !== "NaN") {
+        data[p] = numbery;
+      }
+    });
 
     view.method.render();
 
@@ -237,6 +263,7 @@ function listen (options, callback) {
     });
 
     view.method.render();
+
     view.method.present({
       resource: req.param('_resource'),
       method: req.param('_method'),
