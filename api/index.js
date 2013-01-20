@@ -15,11 +15,15 @@ api.property('version', {
 });
 
 /*
-api.property('resources', {
-  "description": "the resources represented by the api",
-  "type": "object",
-  "default": resource.resources.creature
-});
+  //
+  // TODO: better setting of resources to expose through API,
+  // currently hard-coded to use all resource.resources
+  //
+  api.property('resources', {
+    "description": "the resources represented by the api",
+    "type": "object",
+    "default": resource.resources.creature
+  });
 */
 api.method('listen', listen, {
   "description": "when the api resource starts",
@@ -27,6 +31,11 @@ api.method('listen', listen, {
     "options": {
       "type": "object",
       "properties": api.schema.properties
+    },
+    "callback": {
+      "description": "the callback executed after server listen",
+      "type": "function",
+      "required": false
     }
   }
 });
@@ -35,10 +44,12 @@ function listen (options, callback) {
 
   var resources = options.resources;
 
-  resource.http.app.get('/api', function(req, res){
-    res.end('api home page');
+  resource.http.app.get('/api/:resource', function(req, res) {
+    handle({
+      resource: req.param('resource'),
+      action: "GET"
+      }, req, res);
   });
-
   resource.http.app.get('/api/:resource/:method', function(req, res) {
     handle({ 
       resource: req.param('resource'),
@@ -46,6 +57,7 @@ function listen (options, callback) {
       action: "GET"
       }, req, res);
   });
+
   resource.http.app.get('/api/:resource/:method/:id', function(req, res) {
     handle({ 
       resource: req.param('resource'),
@@ -62,6 +74,7 @@ function listen (options, callback) {
       action: "POST"
     }, req, res);
   });
+
   resource.http.app.post('/api/:resource/:method/:id', function(req, res) {
     handle({ 
       resource: req.param('resource'),
@@ -94,26 +107,50 @@ function listen (options, callback) {
     var _resource = resource.resources[options.resource],
         _method   = _resource.methods[options.method];
 
-    
-    // todo: populate with data from request
     var data = {};
-    
+
     // todo: alter _method based on options.action
-    
-    _resource.methods[_method](data, function(err, result){
-      req.end(JSON.stringify(result));
-    })
-    
+    if (typeof _method === 'undefined') {
+      var str = "<h1>Methods Available</h1> \n\n";
+      var rs = resource.resources;
+      for (var m in _resource.methods) {
+        str += ('&nbsp;&nbsp;' + m + '<br/>'); // rs[r].methods[m]
+      }
+      res.end(str);
+    } else {
+      //
+      // Merge query and form data into a common scope
+      //
+      for(var p in req.query) {
+        data[p] = req.query[p];
+      }
+      if (Object.keys(data).length > 0) {
+        _resource.methods[options.method](data.id, function (err, result){
+          console.log(err, result)
+          res.end(JSON.stringify(result));
+        });
+      } else {
+        _resource.methods[options.method](function (err, result){
+          res.end(JSON.stringify(result));
+        });
+      }
+    }
   };
 
-  /*
-  Object.keys(resources).forEach(function(r){
-    // for every resource, create routes for all methods
-  });
-  */
-
   resource.http.app.get('/api', function (req, res, next) {
-    res.end('welcome to the api explorer');
+    //
+    // TODO: Add better HTML view for rendering resource methods as routes
+    //
+    //var str = JSON.stringify(resource.http.app.routes, true, 2);
+    var str = "";
+    var rs = resource.resources;
+    for(var r in rs) {
+      str += ('<a href="/api/' + r + '">' + r + '</a><br/>');
+      for (var m in rs[r].methods) {
+        str += ('&nbsp;&nbsp; <a href="/api/' + r + '/' + m + '">' + m + '</a><br/>');
+      }
+    }
+    res.end(str);
   });
 
   resource.http.app.get('/api/' + options.version, function (req, res, next) {
