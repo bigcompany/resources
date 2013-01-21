@@ -1,10 +1,9 @@
 {
     "name": "resources",
     "description": "resources for any occasion",
-    "version": "0.1.0",
-    "author": "Marak",
+    "version": "0.3.0",
     "dependencies": {
-      "resource": "0.2.x"
+      "resource": "0.3.x"
     },
     "main": "./index",
     "engine": [
