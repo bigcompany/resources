@@ -63,6 +63,13 @@ module['exports'] = function(options, callback) {
         }
 
         //
+        // Obfuscate properties named "password"
+        //
+        if (property === "password") {
+          value = '********';
+        }
+
+        //
         // Render null values as an empty space
         //
         if(value === null) {
