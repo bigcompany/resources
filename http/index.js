@@ -63,26 +63,49 @@ function listen (options, callback) {
     app.use(resource.virtualhost.middle);
   }
 
-  /* TODO: finish resource.view middleware
-  app.use(function (req, res, next) {
-  });
-  var view = resource.view.create({ path: process.cwd() + '/view'});
-  view.load();
+  //
+  // TODO: move to resource.view middleware
+  //
+  if (resource.view) {
+    //
+    // Create a new view assumming there is a ./view/ directory
+    //
+    var view = resource.view.create({ path: process.cwd() + '/view'});
 
-  //console.log(view);
-  //console.log(req.url);
-  var name = "index";
-  if (req.url === "/") {
-    name = "index";
+    //
+    // Load the view synchronously
+    //
+    view.load();
+
+    //
+    // View middleware for serving views
+    //
+    app.use(function (req, res, next) {
+      var name = "index";
+      if (req.url === "/") {
+        name = "index";
+      } else {
+        var parts = req.url.split('/');
+        parts.shift();
+        var _view = view;
+        parts.forEach(function(part){
+          _view = _view[part];
+        });
+      }
+      if(typeof _view === "undefined") {
+        resource.logger.error('invalid view name ' + name);
+        return next();
+      }
+      var str = _view.render({});
+      if (typeof _view.present === "function") {
+        _view.present({}, function (err, rendered) {
+          res.end(rendered);
+        });
+      } else {
+        res.end(str);
+      }
+    });
   }
-  if(typeof view[name] === "undefined") {
-    return next();
-  }
-  var str = view[name].render({});
-  str = view[name].present({}, function (err, str) {
-    res.end(str);
-  });
-  */
 
   app
     .use(connect.favicon(__dirname + '/favicon.png'))
