@@ -120,7 +120,8 @@ View.prototype._loadSync = function () {
   var self = this;
 
   if (!fs.existsSync(self.viewPath)) {
-    throw new Error( 'invalid path ' + self.viewPath)
+    console.log('invalid view path ' + self.viewPath + ' unable to load view');
+    return;
   }
 
   var root = self.viewPath;
@@ -163,12 +164,27 @@ View.prototype._loadSync = function () {
           var _present = root +  '/' + _path.replace(ext, '');
           presenter = require(_present);
         } catch(ex) {
-          console.log(ex.stack)
-          presenter = function () {
-            return this.$.html();
-          };
-          //throw ex;
+          //
+          // TODO: better handling and reporting of presenter load failure
+          //
+          //
+          // No valid presenter was found,
+          // perhaps there was a syntax error in require
+          //
+          // console.log(ex.stack)
+          // throw ex;
           // console.log(_present, ex);
+
+          //
+          // Create a default presenter that will return the view's current HTML content
+          //
+          presenter = function (data, callback) {
+            if(typeof callback === "function") {
+              callback(null, this.$.html());
+            } else {
+              return this.$.html();
+            }
+          };
         }
 
         //console.log(subViewName, typeof self[subViewName] )
