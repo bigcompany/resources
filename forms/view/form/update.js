@@ -45,7 +45,6 @@ module['exports'] = function (options, callback) {
         //$('.message').html('Updated!');
         //$('form').remove();
         self.parent.get.present({ resource: options.resource, id: result.id }, function(err, re){
-          console.log(err, re);
           return callback(null, re);
         });
       }

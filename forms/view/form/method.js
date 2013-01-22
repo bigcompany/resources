@@ -33,7 +33,6 @@ module['exports'] = function (options, callback) {
         return showForm(options.data, err.errors);
       } else {
         $('form').remove();
-        console.log(result)
         $('.result').html(JSON.stringify(result, true, 2));
         return callback(null, $.html());
       }
