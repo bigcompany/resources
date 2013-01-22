@@ -50,7 +50,8 @@ datasource.property('username', {
 
 datasource.property('password', {
   type: "string",
-  description: "the password used to connect to the datasource"
+  description: "the password used to connect to the datasource",
+  format: "password"
 });
 
 datasource.method('test', test, {
