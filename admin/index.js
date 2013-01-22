@@ -178,7 +178,7 @@ function listen (options, callback) {
         // attempt to coerce incoming data to a Number
         //
         if(props[prop].type === "number") {
-          data[prop] = Number(req.param(prop));
+          data[prop] = parseFloat(req.param(prop), 10);
           if(data[prop].toString() === "NaN") {
             data[prop] = req.param(prop);
           }
@@ -199,7 +199,7 @@ function listen (options, callback) {
       // It's possible the incoming form data should be a Number,
       // attempt to coerce it
       //
-      var numbery = Number(data[p]);
+      var numbery = parseFloat(data[p], 10);
       if(numbery.toString() !== "NaN") {
         data[p] = numbery;
       }
