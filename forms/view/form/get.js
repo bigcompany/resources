@@ -62,10 +62,7 @@ module['exports'] = function(options, callback) {
           value = value + '<iframe width="560" height="315" src="' + embed + '" frameborder="0" allowfullscreen></iframe>';
         }
 
-        //
-        // Obfuscate properties named "password"
-        //
-        if (property === "password") {
+        if (prop.format === "password") {
           value = '********';
         }
 
