@@ -20,8 +20,8 @@ module['exports'] = function (options, callback) {
   // is to check that Object.keys(options.data) === 1, but this breaks when
   // properties are keyed but have undefined values.
   //
-  shouldGet = Object.keys(_props).every(function (k) {
-    var idAndIsSet = options.data && (k === 'id' && typeof options.data.id !== 'undefined'),
+  shouldGet = (typeof options.id !== 'undefined') || Object.keys(_props).every(function (k) {
+    var idAndIsSet = (options.data && (k === 'id' && typeof options.data.id !== 'undefined')),
         notSet = options.data && typeof options.data[k] === 'undefined';
 
     return idAndIsSet || notSet;
@@ -30,7 +30,7 @@ module['exports'] = function (options, callback) {
   $('legend').html(r.methods.update.schema.description);
 
   if (shouldGet) {
-    r.get(options.id, function(err, record) {
+    r.get(options.id || options.data.id, function(err, record) {
       showForm(record);
     });
   }
