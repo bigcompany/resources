@@ -24,6 +24,6 @@ _resources = _resources.filter(function (val) {
 //
 // For every resource, attempt to require it
 //
-_resources.forEach(function(r){
-  resources[r] = require('./' + r);
+_resources.forEach(function (r) {
+  resource.use(r);
 });
