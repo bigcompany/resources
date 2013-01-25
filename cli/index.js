@@ -95,7 +95,7 @@ var router = {
 
 var createRouter = function (resources, options) {
 
-  var prompt      = require('prompt'),
+  var prompt      = require('prompt-lite'),
       _resource    = require('resource'),
       colors      = require('colors'),
       controller  = require('./lib/controller')
@@ -241,7 +241,7 @@ function promptToList (resource, callback) {
 exports.route = router.route;
 
 exports.dependencies = {
-  "prompt": "0.2.9",
+  "prompt-lite": "0.1.0",
   "optimist": "0.3.5",
   "colors": "*"
 };
