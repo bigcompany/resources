@@ -25,7 +25,3 @@ function generate (options, callback) {
 };
 
 exports.forms = forms;
-
-var mappings = {
-  "all": "list"
-};
