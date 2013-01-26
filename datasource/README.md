@@ -65,7 +65,7 @@ perists resources to data storage engines
 
   - **format** : status
 
-  - **default** : inactive
+  - **default** : offline
 
 - **type** 
 
@@ -77,7 +77,7 @@ perists resources to data storage engines
 
     - 0 : *couch*
 
-    - 1 : *file-system*
+    - 1 : *fs*
 
     - 2 : *memory*
 
@@ -135,6 +135,8 @@ perists resources to data storage engines
 
   - **description** : the password used to connect to the datasource
 
+  - **format** : password
+
 
 <a name="datasource-methods"></a> 
 
@@ -172,7 +174,7 @@ create a new datasource
 
       - **format** : status
 
-      - **default** : inactive
+      - **default** : offline
 
     - **type** 
 
@@ -184,7 +186,7 @@ create a new datasource
 
         - 0 : *couch*
 
-        - 1 : *file-system*
+        - 1 : *fs*
 
         - 2 : *memory*
 
@@ -241,6 +243,8 @@ create a new datasource
       - **type** : string
 
       - **description** : the password used to connect to the datasource
+
+      - **format** : password
 
 - **callback** 
 
@@ -410,7 +414,7 @@ updates a datasource by id
 
       - **format** : status
 
-      - **default** : inactive
+      - **default** : offline
 
     - **type** 
 
@@ -422,7 +426,7 @@ updates a datasource by id
 
         - 0 : *couch*
 
-        - 1 : *file-system*
+        - 1 : *fs*
 
         - 2 : *memory*
 
@@ -479,6 +483,8 @@ updates a datasource by id
       - **type** : string
 
       - **description** : the password used to connect to the datasource
+
+      - **format** : password
 
 - **callback** 
 

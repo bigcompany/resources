@@ -19,6 +19,8 @@ provides an application replication API for resource based apps
 
   - [listen](#replicator-methods-listen) (callback)
 
+  - [start](#replicator-methods-start) (callback)
+
 
 provides an application replication API for resource based apps
 
@@ -108,6 +110,16 @@ checks out a local git repo into a directory
 <a name="replicator-methods-listen"></a> 
 
 ### replicator.listen(callback)
+
+starts a listening replicator service capable of recieving push requests
+
+- **callback** 
+
+  - **type** : function
+
+<a name="replicator-methods-start"></a> 
+
+### replicator.start(callback)
 
 starts a listening replicator service capable of recieving push requests
 

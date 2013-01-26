@@ -25,7 +25,7 @@ for interacting with the Twitter API
 
   - [addStream](#twitter-methods-addStream) (options, callback)
 
-  - [getStream](#twitter-methods-getStream) (object, callback)
+  - [getStream](#twitter-methods-getStream) (options, callback)
 
   - [removeStream](#twitter-methods-removeStream) (object, callback)
 
@@ -44,6 +44,8 @@ for interacting with the Twitter API
   - [block](#twitter-methods-block) (options, callback)
 
   - [report](#twitter-methods-report) (options, callback)
+
+  - [showUser](#twitter-methods-showUser) (options, callback)
 
   - [tweetLength](#twitter-methods-tweetLength) (options, callback)
 
@@ -109,6 +111,8 @@ for interacting with the Twitter API
 
   - **description** : a twitter tweet
 
+  - **type** : object
+
   - **properties**
 
     - **message** 
@@ -116,18 +120,6 @@ for interacting with the Twitter API
       - **type** : string
 
       - **default** : I am big.
-
-    - **screenName** 
-
-      - **type** : string
-
-      - **required** : false
-
-    - **id** 
-
-      - **type** : string
-
-      - **required** : false
 
 - **stream** 
 
@@ -141,13 +133,19 @@ for interacting with the Twitter API
 
       - **required** : true
 
-    - **screenName** 
+    - **follow** 
 
       - **type** : string
 
       - **required** : false
 
-    - **id** 
+    - **track** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **locations** 
 
       - **type** : string
 
@@ -214,17 +212,21 @@ disconnects from twitter
 
   - **properties**
 
-    - **screenName** 
+    - **user** 
 
-      - **type** : string
+      - **description** : a twitter user
 
-      - **required** : false
+      - **properties**
 
-    - **id** 
+        - **id** 
 
-      - **type** : string
+          - **required** : false
 
-      - **required** : false
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
 
 - **callback** 
 
@@ -240,27 +242,53 @@ starts listening to a twitter stream
 
 - **options** 
 
-  - **description** : a twitter stream
-
   - **properties**
 
-    - **method** 
+    - **user** 
 
-      - **type** : string
+      - **description** : a twitter user
 
-      - **required** : true
+      - **properties**
 
-    - **screenName** 
+        - **id** 
 
-      - **type** : string
+          - **required** : false
 
-      - **required** : false
+        - **screenName** 
 
-    - **id** 
+          - **type** : string
 
-      - **type** : string
+          - **required** : false
 
-      - **required** : false
+    - **stream** 
+
+      - **description** : a twitter stream
+
+      - **properties**
+
+        - **method** 
+
+          - **type** : string
+
+          - **required** : true
+
+        - **follow** 
+
+          - **type** : string
+
+          - **required** : false
+
+        - **track** 
+
+          - **type** : string
+
+          - **required** : false
+
+        - **locations** 
+
+          - **type** : string
+
+          - **required** : false
 
 - **callback** 
 
@@ -270,37 +298,39 @@ starts listening to a twitter stream
 
 <a name="twitter-methods-getStream"></a> 
 
-### twitter.getStream(object, callback)
+### twitter.getStream(options, callback)
 
 gets an active twitter stream
 
-- **object** 
+- **options** 
 
   - **type** : object
 
-  - **streamId**
-
-    - type : *string*
-
   - **properties**
 
-    - **screenName** 
+    - **user** 
+
+      - **description** : a twitter user
+
+      - **properties**
+
+        - **id** 
+
+          - **required** : false
+
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
+
+    - **streamId** 
 
       - **type** : string
-
-      - **required** : false
-
-    - **id** 
-
-      - **type** : string
-
-      - **required** : false
 
 - **callback** 
 
   - **type** : function
-
-  - **required** : true
 
 <a name="twitter-methods-removeStream"></a> 
 
@@ -312,23 +342,27 @@ stops listening to a twitter stream
 
   - **type** : object
 
-  - **streamId**
-
-    - type : *string*
-
   - **properties**
 
-    - **screenName** 
+    - **user** 
+
+      - **description** : a twitter user
+
+      - **properties**
+
+        - **id** 
+
+          - **required** : false
+
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
+
+    - **streamId** 
 
       - **type** : string
-
-      - **required** : false
-
-    - **id** 
-
-      - **type** : string
-
-      - **required** : false
 
 - **callback** 
 
@@ -360,8 +394,6 @@ collects error events from twitter
 
 - **error** 
 
-  - **type** : object
-
 - **callback** 
 
   - **type** : function
@@ -376,34 +408,46 @@ sends a tweet (updates your status)
 
 - **options** 
 
-  - **description** : a twitter tweet
+  - **type** : object
 
   - **properties**
 
-    - **message** 
+    - **user** 
 
-      - **type** : string
+      - **description** : a twitter user
 
-      - **default** : I am big.
+      - **properties**
 
-    - **screenName** 
+        - **id** 
 
-      - **type** : string
+          - **required** : false
 
-      - **required** : false
+        - **screenName** 
 
-    - **id** 
+          - **type** : string
 
-      - **type** : string
+          - **required** : false
 
-      - **required** : false
+    - **tweet** 
+
+      - **description** : a twitter tweet
+
+      - **type** : object
+
+      - **properties**
+
+        - **message** 
+
+          - **type** : string
+
+          - **default** : I am big.
 
 - **callback** 
 
   - **default** : function () {
-        console.log('sent tweet: ');
+        resource.logger.info('sent tweet: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
 
@@ -417,6 +461,8 @@ receives tweets from activated streams
 
   - **description** : a twitter tweet
 
+  - **type** : object
+
   - **properties**
 
     - **message** 
@@ -425,24 +471,12 @@ receives tweets from activated streams
 
       - **default** : I am big.
 
-    - **screenName** 
-
-      - **type** : string
-
-      - **required** : false
-
-    - **id** 
-
-      - **type** : string
-
-      - **required** : false
-
 - **callback** 
 
   - **default** : function () {
-        console.log('received tweet: ');
+        resource.logger.info('received tweet: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
 
@@ -454,25 +488,23 @@ follows a twitter user
 
 - **options** 
 
-  - **type** : object
-
-  - **user**
-
-    - description : *a twitter user*
-
-    - **properties** 
-
-      - **id**
-
-        - required : *false*
-
-      - **screenName**
-
-        - type : *string*
-
-        - required : *false*
-
   - **properties**
+
+    - **user** 
+
+      - **description** : a twitter user
+
+      - **properties**
+
+        - **id** 
+
+          - **required** : false
+
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
 
     - **screenName** 
 
@@ -482,8 +514,6 @@ follows a twitter user
 
     - **id** 
 
-      - **type** : string
-
       - **required** : false
 
 - **callback** 
@@ -491,9 +521,9 @@ follows a twitter user
   - **type** : function
 
   - **default** : function () {
-        console.log('followed: ');
+        resource.logger.info('followed: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
 
@@ -505,25 +535,23 @@ unfollows a twitter user
 
 - **options** 
 
-  - **type** : object
-
-  - **user**
-
-    - description : *a twitter user*
-
-    - **properties** 
-
-      - **id**
-
-        - required : *false*
-
-      - **screenName**
-
-        - type : *string*
-
-        - required : *false*
-
   - **properties**
+
+    - **user** 
+
+      - **description** : a twitter user
+
+      - **properties**
+
+        - **id** 
+
+          - **required** : false
+
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
 
     - **screenName** 
 
@@ -533,8 +561,6 @@ unfollows a twitter user
 
     - **id** 
 
-      - **type** : string
-
       - **required** : false
 
 - **callback** 
@@ -542,9 +568,9 @@ unfollows a twitter user
   - **type** : function
 
   - **default** : function () {
-        console.log('unfollowed: ');
+        resource.logger.info('unfollowed: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
 
@@ -556,17 +582,31 @@ blocks a twitter user
 
 - **options** 
 
-  - **description** : a twitter user
-
   - **properties**
 
-    - **id** 
+    - **user** 
 
-      - **required** : false
+      - **description** : a twitter user
+
+      - **properties**
+
+        - **id** 
+
+          - **required** : false
+
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
 
     - **screenName** 
 
       - **type** : string
+
+      - **required** : false
+
+    - **id** 
 
       - **required** : false
 
@@ -575,9 +615,9 @@ blocks a twitter user
   - **type** : function
 
   - **default** : function () {
-        console.log('blocked: ');
+        resource.logger.info('blocked: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
 
@@ -589,17 +629,31 @@ reports a twitter user
 
 - **options** 
 
-  - **description** : a twitter user
-
   - **properties**
 
-    - **id** 
+    - **user** 
 
-      - **required** : false
+      - **description** : a twitter user
+
+      - **properties**
+
+        - **id** 
+
+          - **required** : false
+
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
 
     - **screenName** 
 
       - **type** : string
+
+      - **required** : false
+
+    - **id** 
 
       - **required** : false
 
@@ -608,11 +662,51 @@ reports a twitter user
   - **type** : function
 
   - **default** : function () {
-        console.log('reported: ');
+        resource.logger.warn('reported:');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.warn(i + ': ' + arg);
         });
       }
+
+<a name="twitter-methods-showUser"></a> 
+
+### twitter.showUser(options, callback)
+
+shows information on a twitter user
+
+- **options** 
+
+  - **properties**
+
+    - **user** 
+
+      - **description** : a twitter user
+
+      - **properties**
+
+        - **id** 
+
+          - **required** : false
+
+        - **screenName** 
+
+          - **type** : string
+
+          - **required** : false
+
+    - **screenName** 
+
+      - **type** : string
+
+      - **required** : false
+
+    - **id** 
+
+      - **required** : false
+
+- **callback** 
+
+  - **type** : function
 
 <a name="twitter-methods-tweetLength"></a> 
 
@@ -624,6 +718,8 @@ gets the length of a tweet
 
   - **description** : a twitter tweet
 
+  - **type** : object
+
   - **properties**
 
     - **message** 
@@ -631,18 +727,6 @@ gets the length of a tweet
       - **type** : string
 
       - **default** : I am big.
-
-    - **screenName** 
-
-      - **type** : string
-
-      - **required** : false
-
-    - **id** 
-
-      - **type** : string
-
-      - **required** : false
 
 - **callback** 
 
@@ -653,5 +737,6 @@ gets the length of a tweet
 
 ## dependencies 
 - [ntwitter](http://npmjs.org/package/ntwitter) v0.5.0
+- [twitter-text](http://npmjs.org/package/twitter-text) v1.5.2
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
