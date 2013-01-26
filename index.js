@@ -4,7 +4,8 @@
 var resources = exports;
 
 var resource = require('resource'),
-    fs = require('fs');
+    fs = require('fs'),
+    path = require('path');
 
 //
 // Read "/resources/" directory
@@ -15,10 +16,18 @@ var _resources = fs.readdirSync(__dirname);
 // Filter out any potential non-resource files / folders
 //
 _resources = _resources.filter(function (val) {
-  if (["index.js", "package.json", "node_modules", ".git", ".DS_Store", ".gitignore", "README.md", ".npmignore"].indexOf(val) !== -1) {
-    return false;
+  var isResource = false;
+
+  try {
+    isResource = fs.statSync(path.join(__dirname, val)).isDirectory() &&
+      fs.statSync(path.join(__dirname, val, 'index.js')).isFile;
   }
-  return true;
+  catch (err) {
+    if (err.code !== 'ENOENT') {
+      throw err;
+    }
+  }
+  return isResource;
 });
 
 //
