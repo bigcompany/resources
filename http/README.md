@@ -39,7 +39,7 @@ provides an HTTP API
 
   - **default** : 8888
 
-  - **description** : the port to listen on 
+  - **description** : the port to listen on
 
 - **host** 
 
@@ -78,7 +78,7 @@ starts a listening http server
 
       - **default** : 8888
 
-      - **description** : the port to listen on 
+      - **description** : the port to listen on
 
     - **host** 
 
@@ -126,7 +126,7 @@ starts a listening http server
 
       - **default** : 8888
 
-      - **description** : the port to listen on 
+      - **description** : the port to listen on
 
     - **host** 
 
