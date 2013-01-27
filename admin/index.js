@@ -39,7 +39,6 @@ function listen (options, callback) {
 
   resource.http.app.use(connect.static(__dirname + '/public'));
   var view = resource.view.create({ path: __dirname + '/view'});
-  view.load();
 
   //
   // TODO: cleanup route handlers / make into common methods
