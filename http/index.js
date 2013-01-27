@@ -74,11 +74,6 @@ function listen (options, callback) {
     var view = resource.view.create({ path: process.cwd() + '/view'});
 
     //
-    // Load the view synchronously
-    //
-    view.load();
-
-    //
     // View middleware for serving views
     //
     app.use(function (req, res, next) {

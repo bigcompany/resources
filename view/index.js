@@ -58,6 +58,7 @@ function create (options, callback) {
       output: options.ouput
     });
   }
+  view.load();
   return view;
 }
 
