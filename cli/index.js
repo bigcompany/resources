@@ -96,7 +96,7 @@ var router = {
 var createRouter = function (resources, options) {
 
   var prompt      = require('prompt-lite'),
-      _resource    = require('resource'),
+      _resource   = require('resource'),
       colors      = require('colors'),
       controller  = require('./lib/controller')
       argv        = require('optimist').argv;
