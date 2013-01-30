@@ -15,11 +15,16 @@ virtualhost.middle = function(req, res, next) {
   host = host[0];
   resource.virtualhost.find({ host: host }, function (err, results) {
     if (err || results.length === 0) {
-      resource.virtualhost.all(function (err, hosts) {
+      if (process.env.NODE_ENV === 'production') {
         resource.logger.warn('unknown host: ' + host);
-        resource.logger.warn('available hosts are ' + JSON.stringify(hosts, true, 2));
         next();
-      });
+      } else {
+        resource.virtualhost.all(function (err, hosts) {
+          resource.logger.warn('unknown host: ' + host);
+          resource.logger.warn('available hosts are ' + JSON.stringify(hosts, true, 2));
+          next();
+        });
+      }
     } else {
       connect.static(path.resolve(process.cwd() + results[0].path))(req, res, next);
     }
