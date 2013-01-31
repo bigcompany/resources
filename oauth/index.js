@@ -1,103 +1,156 @@
+
 var resource = require('resource'),
     oauth = resource.define('oauth');
 
-oauth.schema.description = "for managing oauth logins and tokens";
-
-oauth.property('service', {
-  description: 'the name of the service associated with this oauth token',
-  type: "string"
+oauth.property('credentials', {
+  description: 'credentials for an oauth endpoint',
+  properties: {
+    requestUrl: {
+      description: 'the requested service url',
+      type: 'string',
+      required: true
+    },
+    accessUrl: {
+      description: 'the access url for said service',
+      type: 'string',
+      required: true
+    },
+    consumerKey: {
+      type: 'string',
+      required: true
+    },
+    consumerSecret: {
+      type: 'string',
+      required: true
+    },
+    version: {
+      type: "string",
+      required: true
+    },
+    authorize_callback: {
+      description: "url to be sent back to on authorization",
+      type: "string",
+      required: true
+    },
+    signatureMethod: {
+      type: "string",
+      required: true
+    }
+  }
 });
 
-oauth.property('requestUrl', {
-  description: 'the requested service url',
-  type: "string",
+oauth.method('consumer', consumer, {
+  description: 'creates oauth consumer',
+  properties: {
+    options: {
+      type: "object",
+      required: true,
+        requestUrl: {
+        description: 'the requested service url',
+        type: 'string',
+        required: true
+      },
+      accessUrl: {
+        description: 'the access url for said service',
+        type: 'string',
+        required: true
+      },
+      consumerKey: {
+        type: 'string',
+        required: true
+      },
+      consumerSecret: {
+        type: 'string',
+        required: true
+      },
+      version: {
+        type: "string",
+        required: true
+      },
+      authorize_callback: {
+        description: "url to be sent back to on authorization",
+        type: "string",
+        required: true
+      },
+      signatureMethod: {
+        type: "string",
+        required: true
+      }
+    }
+  }
 });
-
-oauth.property('accessUrl', {
-  description: 'the access url for said service',
-  type: "string",
-});
-
-oauth.property('consumerKey', {
-  type: "string",
-});
-
-oauth.property('consumerSecret', {
-  type: "string",
-});
-
-oauth.property('version', {
-  type: "string",
-});
-
-oauth.property('authorize_callback', {
-  description: "url to be sent back to on authorization",
-  type: "string",
-});
-
-oauth.property('signatureMethod', {
-  type: "string",
-  default: "HMAC-SHA1"
-});
-
 
 //A container for the generate oauth object
-oauth.container = null;
+oauth.container = undefined;
 
-oauth.method('start', start, {
-  description: 'create an oauth object for authentication and requesting purposes',
-  properties: {
-    options: oauth.schema.properties,
-    callback: {
-      required: false,
-      default: function () {}
-    }
+function consumer (options) {
+  if(oauth.container === undefined) {
+    var OAuthWrapper = require('oauth').OAuth;
+    resource.logger.info('creating oauth wrapper...');
+    oauth.container = new OAuthWrapper(
+      options.requestUrl,
+      options.accessUrl,
+      options.consumerKey,
+      options.consumerSecret,
+      options.version,
+      options.authorize_callback,
+      options.signatureMethod
+    );
   }
-});
-
-function start (options, callback) {
-  require('node-oauth').OAuth;
-  oauth.container = new OAuth(
-    options.requestUrl,
-    options.accessUrl,
-    options.consumerKey,
-    options.consumerSecret,
-    options.version,
-    options.authorize_callback,
-    options.signatureMethod
-  );
-  callback(null, options);
+  return oauth.container;
 }
 
-oauth.method('authorize', authorize, {
+oauth.before('create', function(options, callback){
+  oauth.requestToken(options, callback);
+});
+
+oauth.method('requestToken', requestToken, {
   description: 'authorize by oauth',
   properties: {
-    options: oauth.schema.properties,
     callback: {
-      required: false,
-      default: function () {}
+      required: true,
+      "default": function (error, oauthToken, oauthTokenSecret, results) {
+        if(error) {
+          console.log(error);
+        } else {
+          console.log(oauthToken);
+          console.log(oauthTokenSecret);
+        }
+      }
     }
   }
 });
 
-function authorize (options, callback) {
-  oauth.container.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
-    if(error) {
-      console.log(error);
-    }
-    else {
-      oa.getOAuthAccessToken(oauth_token, oauth_token_secret, function(error, oauth_access_token, oauth_access_token_secret, results2) {
-        var data= "";
-        console.log(oauth_access_token);
-        console.log(oauth_access_token_secret);
-      });
-    }
+function requestToken (options, callback) {
+  consumer(options).getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results){
+    callback(error, oauthToken, oauthTokenSecret, results);
   });
-  callback(null, options);
 }
 
+oauth.method('accessToken', accessToken, {
+  description: 'get oauth Access Token',
+  properties: {
+    callback: {
+      required: true,
+      "default": function (error, accessToken, accessTokenSecrest, results) {
+        if(error) {
+          console.log(error);
+        } else {
+          console.log(accessToken);
+          console.log(accessTokenSecrest);
+        }
+      }
+    }
+  }
+});
+
+function accessToken (requestToken, requestTokenSecret, callback) {
+  consumer().getOAuthAccessToken(requestToken, requestTokenSecret, function(error, oauthAccessToken, oauthAccessTokenSecret, results){
+    callback(error, oauthAccessToken, oauthAccessTokenSecret, results);
+  });
+}
 
 exports.oauth = oauth;
 exports.dependencies = {
-  "node-oauth": "*"
+  "oauth": "*"
 };
