@@ -141,9 +141,12 @@ View.prototype._loadSync = function () {
         input,
         subViewName;
 
-    subViewName = _path.replace(ext, '');
+    subViewName = _path;
 
     if(type === "file") {
+
+      subViewName = _path.replace(ext, '');
+
       //
       // load the file as the current template
       //
@@ -250,9 +253,13 @@ View.prototype._loadAsync = function (cb) {
     var ext = self.detect(_path),
         input,
         subViewName;
-    subViewName = _path.replace(ext, '');
 
-    if(type === "file") {
+    subViewName = _path;
+
+    if (type === "file") {
+
+      subViewName = _path.replace(ext, '');
+
       //
       // increase the callback count
       //
