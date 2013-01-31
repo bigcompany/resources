@@ -128,4 +128,17 @@ test("requestToken returns request token in call back", function (t) {
     });
   });
 
+  test("accessToken can take an optional verifier url", function (t) {
+    oauth.consumer(credentials);
+    oauth.accessToken('requestkey', 'requestsecret', 'verifer', function(error, oauthToken, oauthTokenSecret, results){
+        if (error) {
+          logger.error(error.message);
+          logger.error(error.stack);
+        } else {
+      t.equal(oauthTokenSecret, 'accesssecret');
+      t.end();
+    }
+    });
+  });
+
 });
