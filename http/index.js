@@ -67,7 +67,7 @@ function listen (options, callback) {
   // TODO: finish view middleware
   // TODO: move to resource.view middleware
   //
-  if (resource.view && false) {
+  if (resource.view) {
     //
     // Create a new view assumming there is a ./view/ directory
     //
@@ -78,18 +78,20 @@ function listen (options, callback) {
     //
     app.use(function (req, res, next) {
       var _view = view;
-      if (req.url === "/") {
-        _view = view['index'];
-      } else {
-        var parts = req.url.split('/');
-        parts.shift();
-        parts.forEach(function(part){
+      var parts = req.url.split('/');
+      parts.shift();
+      parts.forEach(function(part) {
+        if(part.length > 0 && typeof _view !== 'undefined') {
           _view = _view[part];
-        });
+        }
+      });
+      if (_view && _view['index']) {
+        _view = _view['index'];
       }
       if(typeof _view === "undefined") {
         resource.logger.error('invalid view ' + req.url);
-        return next();
+        var _path = path.resolve(process.cwd() + req.virtualpath);
+        return connect.static(_path)(req, res, next);
       }
       var str = _view.render({});
       if (typeof _view.present === "function") {
