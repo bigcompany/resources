@@ -37,9 +37,10 @@ module['exports'] = function(options, callback) {
           var _methods = Object.keys(r.methods);
           _methods.sort();
           _methods.forEach(function(m){
-            var desc = r.methods[m].schema.description || '&nbsp;';
+            var desc = r.methods[m].schema.description || '&nbsp;',
+                leading = options.unscoped ? '../' : '../../';
             output += ('<tr>'
-                   +     '<td><a href="/admin/resources/' + r.name + '/' + m + '/' + options.id  + '">' + m + '</a></td><td>' + desc + '</td>'
+                   +     '<td><a href="' + leading + r.name + '/' + m + '/' + options.id  + '">' + m + '</a></td><td>' + desc + '</td>'
                    +   '</tr>');
           });
           $('.records').html(output);
