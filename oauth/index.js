@@ -144,7 +144,10 @@ oauth.method('accessToken', accessToken, {
   }
 });
 
-function accessToken (requestToken, requestTokenSecret, callback) {
+function accessToken (requestToken, requestTokenSecret, oauth_verifier, callback) {
+  if( typeof oauth_verifier == "function" ) {
+    callback= oauth_verifier;
+  }
   consumer().getOAuthAccessToken(requestToken, requestTokenSecret, function(error, oauthAccessToken, oauthAccessTokenSecret, results){
     callback(error, oauthAccessToken, oauthAccessTokenSecret, results);
   });
