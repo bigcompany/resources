@@ -17,7 +17,9 @@ virtualhost.middle = function(req, res, next) {
         return res.end('unknown host: ' + host + ' \n' + 'available hosts are ' + JSON.stringify(hosts, true, 2));
       });
     } else {
-      connect.static(path.resolve(process.cwd() + results[0].path))(req, res, next);
+      req.url = "/" + host + req.url;
+      req.virtualpath = results[0].path;
+      next();
     }
   });
 };
