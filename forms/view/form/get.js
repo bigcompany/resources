@@ -38,7 +38,15 @@ module['exports'] = function(options, callback) {
           _methods.sort();
           _methods.forEach(function(m){
             var desc = r.methods[m].schema.description || '&nbsp;',
-                leading = options.unscoped ? '../' : '../../';
+                leading;
+
+            if (options.unscoped) {
+              leading = '../';
+            }
+            else {
+              leading = '../../';
+            }
+
             output += ('<tr>'
                    +     '<td><a href="' + leading + r.name + '/' + m + '/' + options.id  + '">' + m + '</a></td><td>' + desc + '</td>'
                    +   '</tr>');
