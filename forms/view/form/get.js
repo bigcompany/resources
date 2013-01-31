@@ -39,7 +39,7 @@ module['exports'] = function(options, callback) {
           _methods.forEach(function(m){
             var desc = r.methods[m].schema.description || '&nbsp;';
             output += ('<tr>'
-                   +     '<td><a href="../' + m + '/' + options.id  + '">' + m + '</a></td><td>' + desc + '</td>'
+                   +     '<td><a href="/admin/resources/' + r.name + '/' + m + '/' + options.id  + '">' + m + '</a></td><td>' + desc + '</td>'
                    +   '</tr>');
           });
           $('.records').html(output);
