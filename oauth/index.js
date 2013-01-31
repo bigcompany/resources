@@ -165,14 +165,17 @@ function requestToken (options, callback) {
 oauth.method('accessToken', accessToken, {
   description: 'get oauth Access Token',
   properties: {
-    requestToken: {
-      required: true
-    },
-    requestTokenSecret: {
-      required: true
-    },
-    oauthVerifier: {
-      required: false
+    options: {
+      required: true,
+      requestToken: {
+        required: true
+      },
+      requestTokenSecret: {
+        required: true
+      },
+      oauthVerifier: {
+        required: false
+      }
     },
     callback: {
       required: true,
@@ -188,11 +191,8 @@ oauth.method('accessToken', accessToken, {
   }
 });
 
-function accessToken (requestToken, requestTokenSecret, oauthVerifier, callback) {
-  if( typeof oauthVerifier == "function" ) {
-    callback= oauthVerifier;
-  }
-  consumer().getOAuthAccessToken(requestToken, requestTokenSecret, function(error, oauthAccessToken, oauthAccessTokenSecret, results){
+function accessToken (options, callback) {
+  consumer().getOAuthAccessToken(options.requestToken, options.requestTokenSecret, options.oauthVerifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results){
     callback(error, oauthAccessToken, oauthAccessTokenSecret, results);
   });
 }

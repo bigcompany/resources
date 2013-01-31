@@ -14,6 +14,11 @@ var credentials = {
     signatureMethod: "HMAC-SHA1"
 };
 
+var requestTokens = {
+  requestToken: 'requestkey',
+  requestTokenSecret: "requestsecret"
+};
+
 test("container should be undefined to start", function (t) {
   t.equal(oauth.container, undefined);
   t.end();
@@ -104,10 +109,10 @@ test("requestToken returns request token in call back", function (t) {
 
   test("accessToken returns access token in call back", function (t) {
     oauth.consumer(credentials);
-    oauth.accessToken('requestkey', 'requestsecret', function(error, oauthToken, oauthTokenSecret, results){
+    oauth.accessToken(requestTokens, function(error, oauthToken, oauthTokenSecret, results){
         if (error) {
-          logger.error(error.message);
-          logger.error(error.stack);
+          console.log(error.message);
+          console.log(error.stack);
         } else {
       t.equal(oauthToken, 'accesskey');
       t.end();
@@ -117,10 +122,10 @@ test("requestToken returns request token in call back", function (t) {
 
   test("accessToken returns access token in call back", function (t) {
     oauth.consumer(credentials);
-    oauth.accessToken('requestkey', 'requestsecret', function(error, oauthToken, oauthTokenSecret, results){
+    oauth.accessToken(requestTokens, function(error, oauthToken, oauthTokenSecret, results){
         if (error) {
-          logger.error(error.message);
-          logger.error(error.stack);
+          console.log(error.message);
+          console.log(error.stack);
         } else {
       t.equal(oauthTokenSecret, 'accesssecret');
       t.end();
@@ -130,10 +135,11 @@ test("requestToken returns request token in call back", function (t) {
 
   test("accessToken can take an optional verifier url", function (t) {
     oauth.consumer(credentials);
-    oauth.accessToken('requestkey', 'requestsecret', 'verifer', function(error, oauthToken, oauthTokenSecret, results){
+    requestTokens['oauthVerifier'] = 'http://www.example.com';
+    oauth.accessToken(requestTokens, function(error, oauthToken, oauthTokenSecret, results){
         if (error) {
-          logger.error(error.message);
-          logger.error(error.stack);
+          console.log(error.message);
+          console.log(error.stack);
         } else {
       t.equal(oauthTokenSecret, 'accesssecret');
       t.end();
