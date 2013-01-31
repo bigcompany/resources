@@ -107,6 +107,41 @@ oauth.before('create', function(options, callback){
 oauth.method('requestToken', requestToken, {
   description: 'authorize by oauth',
   properties: {
+    options: {
+      type: "object",
+      required: true,
+        requestUrl: {
+        description: 'the requested service url',
+        type: 'string',
+        required: true
+      },
+      accessUrl: {
+        description: 'the access url for said service',
+        type: 'string',
+        required: true
+      },
+      consumerKey: {
+        type: 'string',
+        required: true
+      },
+      consumerSecret: {
+        type: 'string',
+        required: true
+      },
+      version: {
+        type: "string",
+        required: true
+      },
+      authorize_callback: {
+        description: "url to be sent back to on authorization",
+        type: "string",
+        required: true
+      },
+      signatureMethod: {
+        type: "string",
+        required: true
+      }
+    },
     callback: {
       required: true,
       "default": function (error, oauthToken, oauthTokenSecret, results) {
@@ -130,6 +165,15 @@ function requestToken (options, callback) {
 oauth.method('accessToken', accessToken, {
   description: 'get oauth Access Token',
   properties: {
+    requestToken: {
+      required: true
+    },
+    requestTokenSecret: {
+      required: true
+    },
+    oauthVerifier: {
+      required: false
+    },
     callback: {
       required: true,
       "default": function (error, accessToken, accessTokenSecrest, results) {
@@ -144,9 +188,9 @@ oauth.method('accessToken', accessToken, {
   }
 });
 
-function accessToken (requestToken, requestTokenSecret, oauth_verifier, callback) {
-  if( typeof oauth_verifier == "function" ) {
-    callback= oauth_verifier;
+function accessToken (requestToken, requestTokenSecret, oauthVerifier, callback) {
+  if( typeof oauthVerifier == "function" ) {
+    callback= oauthVerifier;
   }
   consumer().getOAuthAccessToken(requestToken, requestTokenSecret, function(error, oauthAccessToken, oauthAccessTokenSecret, results){
     callback(error, oauthAccessToken, oauthAccessTokenSecret, results);
