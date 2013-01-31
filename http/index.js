@@ -56,6 +56,20 @@ function listen (options, callback) {
 
   var app = express();
 
+  app
+    .use(connect.favicon(__dirname + '/favicon.png'))
+    .use(connect.logger('dev'))
+    .use(connect.cookieParser())
+    .use(connect.session({ secret: 'my secret here' }));
+
+  if(options.enableUploads === true) {
+    app
+    .use(express.bodyParser({
+      uploadDir: __dirname + '/uploads',
+      keepExtensions: true
+    }));
+  }
+
   //
   // Basic virtual host support
   //
@@ -102,20 +116,6 @@ function listen (options, callback) {
         res.end(str);
       }
     });
-  }
-
-  app
-    .use(connect.favicon(__dirname + '/favicon.png'))
-    .use(connect.logger('dev'))
-    .use(connect.cookieParser())
-    .use(connect.session({ secret: 'my secret here' }));
-
-  if(options.enableUploads === true) {
-    app
-    .use(express.bodyParser({
-      uploadDir: __dirname + '/uploads',
-      keepExtensions: true
-    }));
   }
 
   if(typeof options.root !== 'undefined') {
