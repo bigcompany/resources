@@ -180,40 +180,32 @@ function listen (options, callback) {
         if(_method.schema.properties && typeof _method.schema.properties.options !== 'undefined') {
           props = _method.schema.properties.options.properties;
         }
-        if(typeof props === 'object') {
-          Object.keys(props).forEach(function(prop) {
-            if(typeof req.param(prop) !== 'undefined') {
-              data[prop] = req.param(prop);
-            }
-            //
-            // If the resource method argument is expected to be a Number,
-            // attempt to coerce incoming data to a Number
-            //
-            if(props[prop].type === "number") {
-              data[prop] = parseFloat(req.param(prop), 10);
-              if(data[prop].toString() === "NaN") {
-                data[prop] = req.param(prop);
-              }
-            }
-          });
-        }
 
         //
-        // Iterate through all the request.body values and merge them in with schema data
+        // Iterate through all the querystring and request.body values and
+        // merge them into a single "data" argument
         //
-        //
-        //
-        // TODO: also merge in query string values?
-        //
-        Object.keys(req.body).forEach(function(p){
+        Object.keys(req.params).forEach(function (p) {
+          data[p] = req.param(p);
+        });
+
+        Object.keys(req.body).forEach(function (p) {
           data[p] = req.body[p];
-          //
-          // It's possible the incoming form data should be a Number,
-          // attempt to coerce it
-          //
-          var numbery = parseFloat(data[p], 10);
-          if(numbery.toString() !== "NaN") {
-            data[p] = numbery;
+        });
+
+        //
+        // If a value is supposed to be a number, attempt to coerce it
+        //
+        // TODO: How should this behave for "any" cases? Keep in mind that
+        // ip addresses will successfully parse as floats.
+        //
+        Object.keys(data).forEach(function (p) {
+          if (props && props[p] && props[p].type === 'number') {
+            var coerced = parseFloat(data[p], 10);
+
+            if (coerced.toString() !== 'NaN') {
+              data[p] = coerced;
+            }
           }
         });
 
