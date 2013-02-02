@@ -9,24 +9,6 @@ mesh.schema.description = "provides a distributed p2p event emitter mesh";
 resource.use('node', { datasource: 'fs' });
 resource.use('system');
 
-/*
-
-TODO: mesh events should bubble up to the mesh resource itself
-
-var EventEmitter = require('eventemitter2').EventEmitter2;
-
-var ee = new EventEmitter({
-  wildcard: true, // event emitter should use wildcards ( * )
-  delimiter: '::', // the delimiter used to segment namespaces
-  maxListeners: 20, // the max number of listeners that can be assigned to an event
-});
-mesh.emit = ee.emit;
-mesh.on = ee.on;
-mesh.onAny = ee.onAny;
-
-*/
-
-
 mesh.method('connect', connect, {
   "description": "connect to the big mesh",
   "properties": {
@@ -103,7 +85,7 @@ function downlink (socket, callback) {
     //
     //msg.payload.host = socket.remoteAddress.host;
     //msg.payload.port = socket.remoteAddress.port;
-    resource.emit(msg.event, msg.payload, false)
+    mesh.emit(msg.event, msg.payload, false)
   });
 
   socket.on('disconnect', function(data){
@@ -136,7 +118,7 @@ function uplink (options, callback) {
   mesh.client.on('message', function(data){
     var msg = JSON.parse(data);
     console.log('uplink sending', msg)
-    resource.emit(msg.event, msg.payload, false)
+    mesh.emit(msg.event, msg.payload, false)
   })
 
   //
