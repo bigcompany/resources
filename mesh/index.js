@@ -8,6 +8,7 @@ mesh.schema.description = "provides a distributed p2p event emitter mesh";
 
 resource.use('node', { datasource: 'fs' });
 resource.use('system');
+resource.use('http');
 
 mesh.method('connect', connect, {
   "description": "connect to the big mesh",
@@ -178,21 +179,32 @@ function connect (options, callback) {
 
 function listen (options, callback) {
   var engine = require('engine.io');
-  if(typeof resource.http.server !== 'object') {
-    console.log('cold not find http')
+  if (typeof resource.http.server === 'object') {
+    attach();
   }
-  //
-  // Remark: mesh.server is the same as http.server
-  //
-  mesh.server = engine.attach(resource.http.server);
-  mesh.server.on('connection', function(socket){
-    mesh.downlink(socket, function(err, result){
+  else {
+    resource.http.listen(options, function (err) {
       if (err) {
-        throw err;
+        return callback(err);
       }
+      attach();
     });
-  });
-  callback(null, mesh.server);
+  }
+
+  function attach() {
+    //
+    // Remark: mesh.server is the same as http.server
+    //
+    mesh.server = engine.attach(resource.http.server);
+    mesh.server.on('connection', function(socket){
+      mesh.downlink(socket, function(err, result){
+        if (err) {
+          throw err;
+        }
+      });
+    });
+    callback(null, mesh.server);
+  }
 };
 
 exports.dependencies = {
