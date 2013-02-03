@@ -78,6 +78,12 @@ function listen (options, callback) {
   }
 
   //
+  // Explicitly use the app.router middleware here so that routes take
+  // precedence over the view middleware
+  //
+  app.use(app.router);
+
+  //
   // TODO: finish view middleware
   // TODO: move to resource.view middleware
   //
