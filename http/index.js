@@ -109,7 +109,6 @@ function listen (options, callback) {
         _view = _view['index'];
       }
       if(typeof _view === "undefined") {
-        resource.logger.error('invalid view ' + req.url);
         var _path = path.resolve(process.cwd() + req.virtualpath);
         return connect.static(_path)(req, res, next);
       }
