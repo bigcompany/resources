@@ -27,6 +27,7 @@ virtualhost.middle = function(req, res, next) {
       }
     } else {
       req.url = "/" + host + req.url;
+      req.virtualhost = results[0].host;
       req.virtualpath = results[0].path;
       next();
     }
