@@ -98,7 +98,12 @@ function listen (options, callback) {
     //
     app.use(function (req, res, next) {
       var _view = view;
-      var parts = req.url.split('/');
+      var parts;
+      if(typeof req.virtualhost !== 'undefined' && typeof req.virtualpath !== 'undefined') {
+        parts = req.url.replace(req.virtualhost, req.virtualpath).split('/');
+      } else {
+        parts = req.url.split('/');
+      }
       parts.shift();
       parts.forEach(function(part) {
         if(part.length > 0 && typeof _view !== 'undefined') {
