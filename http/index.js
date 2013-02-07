@@ -114,7 +114,10 @@ function listen (options, callback) {
         _view = _view['index'];
       }
       if(typeof _view === "undefined") {
-        var _path = path.resolve(process.cwd() + req.virtualpath);
+        var _path = path.resolve(process.cwd() + '/' + req.virtualpath);
+        if(typeof req.virtualhost !== 'undefined' && typeof req.virtualpath !== 'undefined') {
+          req.url = req.url.replace(req.virtualhost, req.virtualpath);
+        }
         return connect.static(_path)(req, res, next);
       }
       var str = _view.render({});
