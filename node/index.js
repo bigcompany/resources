@@ -94,7 +94,7 @@ node.method('sh', sh, {
 // If they do not have a name, create a new name based on the host port tuple
 //
 node.before('create', function(data, next){
-  if(typeof data.name !== 'undefined') {
+  if(typeof data.name === 'undefined') {
     data.name = data.host + ":" + data.port;
   }
   next(null, data);
