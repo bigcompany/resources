@@ -4,11 +4,42 @@
 var resource = require('resource'),
     mesh = resource.define('mesh');
 
+var EventEmitter = require('eventemitter2').EventEmitter2;
+
 mesh.schema.description = "provides a distributed p2p event emitter mesh";
 
 resource.use('node', { datasource: 'fs' });
 resource.use('system');
 resource.use('http');
+
+//
+// Any events emitted on this eventEmitter will be broadcast to the mesh
+// by listeners added by the uplink and downlink methods
+//
+var meshEmitter = new EventEmitter({
+  wildcard: true,
+  delimiter: '::',
+  maxListeners: 0
+});
+
+//
+// When emitting on the mesh resource, also emit to the meshEmitter so that
+// the event is broadcast to other nodes. The standard resource emit is called
+// internally by the mesh resource in order to emit events without broadcasting.
+//
+var emit = mesh.emit;
+mesh.emit = function (event, payload) {
+  //
+  // Emit the event over the mesh
+  //
+  meshEmitter.emit(event, payload);
+
+  //
+  // Do the regular emit
+  //
+  return emit(event, payload);
+};
+
 
 mesh.method('connect', connect, {
   "description": "connect to the big mesh",
@@ -78,6 +109,16 @@ mesh.method('uplink', uplink, {
 
 
 function downlink (socket, callback) {
+
+  var handler = function (data) {
+    socket.send(JSON.stringify({
+      event: this.event,
+      payload: data
+    }));
+  };
+
+  meshEmitter.onAny(handler);
+
   socket.on('message', function(data){
     var msg = JSON.parse(data);
     msg.payload.id = socket.id;
@@ -86,10 +127,21 @@ function downlink (socket, callback) {
     //
     //msg.payload.host = socket.remoteAddress.host;
     //msg.payload.port = socket.remoteAddress.port;
-    mesh.emit(msg.event, msg.payload, false)
+
+    //
+    // Any mesh client events should be rebroadcasted locally,
+    // but they should not be re-emitted
+    //
+    emit(msg.event, msg.payload, false);
   });
 
+  //
+  // TODO: Do a `get` first!
+  //
   socket.on('disconnect', function(data){
+
+    meshEmitter.removeListener(handler);
+
     resource.node.create({
       id: socket.id,
       lastSeen: new Date().toString(),
@@ -112,21 +164,33 @@ function downlink (socket, callback) {
 
 function uplink (options, callback) {
 
+  var handler = function (data) {
+    mesh.client.send(JSON.stringify({
+      event: this.event,
+      payload: data
+    }));
+  };
+
+  meshEmitter.onAny(handler);
+
   //
   // Any mesh client events should be rebroadcasted locally,
   // but they should not be re-emitted
   //
   mesh.client.on('message', function(data){
     var msg = JSON.parse(data);
-    console.log('uplink sending', msg)
-    mesh.emit(msg.event, msg.payload, false)
+    emit(msg.event, msg.payload, false);
   })
+
+  mesh.client.on('disconnect', function() {
+    meshEmitter.removeListener(handler);
+  });
 
   //
   // Send a friendly phone-home message
   // Feel free to comment this line out at any time
   //
-  mesh.client.send(JSON.stringify({ event: 'node::ohai', payload: resource.system.info() }));
+  mesh.emit('node::ohai', resource.system.info());
 
   //
   // Continue with information about the newly connected to node
