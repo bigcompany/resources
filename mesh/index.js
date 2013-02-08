@@ -4,41 +4,49 @@
 var resource = require('resource'),
     mesh = resource.define('mesh');
 
-var EventEmitter = require('eventemitter2').EventEmitter2;
-
 mesh.schema.description = "provides a distributed p2p event emitter mesh";
 
 resource.use('node', { datasource: 'fs' });
 resource.use('system');
 resource.use('http');
 
-//
-// Any events emitted on this eventEmitter will be broadcast to the mesh
-// by listeners added by the uplink and downlink methods
-//
-var meshEmitter = new EventEmitter({
-  wildcard: true,
-  delimiter: '::',
-  maxListeners: 0
-});
+var emit, meshEmitter;
+function events() {
+  if (emit && meshEmitter) {
+    return;
+  }
 
-//
-// When emitting on the mesh resource, also emit to the meshEmitter so that
-// the event is broadcast to other nodes. The standard resource emit is called
-// internally by the mesh resource in order to emit events without broadcasting.
-//
-var emit = mesh.emit;
-mesh.emit = function (event, payload) {
-  //
-  // Emit the event over the mesh
-  //
-  meshEmitter.emit(event, payload);
+  var EventEmitter = require('eventemitter2').EventEmitter2;
 
   //
-  // Do the regular emit
+  // Any events emitted on this eventEmitter will be broadcast to the mesh
+  // by listeners added by the uplink and downlink methods
   //
-  return emit(event, payload);
-};
+  meshEmitter = new EventEmitter({
+    wildcard: true,
+    delimiter: '::',
+    maxListeners: 0
+  });
+
+  //
+  // When emitting on the mesh resource, also emit to the meshEmitter so that
+  // the event is broadcast to other nodes. The standard resource emit is called
+  // internally by the mesh resource in order to emit events without
+  // broadcasting.
+  //
+  emit = mesh.emit;
+  mesh.emit = function (event, payload) {
+    //
+    // Emit the event over the mesh
+    //
+    meshEmitter.emit(event, payload);
+
+    //
+    // Do the regular emit
+    //
+    return emit(event, payload);
+  };
+}
 
 
 mesh.method('connect', connect, {
@@ -109,6 +117,7 @@ mesh.method('uplink', uplink, {
 
 
 function downlink (socket, callback) {
+  events();
 
   var handler = function (data) {
     socket.send(JSON.stringify({
@@ -163,6 +172,7 @@ function downlink (socket, callback) {
 }
 
 function uplink (options, callback) {
+  events();
 
   var handler = function (data) {
     mesh.client.send(JSON.stringify({
@@ -210,6 +220,8 @@ function uplink (options, callback) {
 // Connects to a Big mesh to broadcast and listen for events
 //
 function connect (options, callback) {
+  events();
+
   //
   // Since the mesh is just now connecting, set all previous uplink nodes to disconnected
   //
@@ -242,6 +254,8 @@ function connect (options, callback) {
 };
 
 function listen (options, callback) {
+  events();
+
   var engine = require('engine.io');
   if (typeof resource.http.server === 'object') {
     attach();
