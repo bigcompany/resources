@@ -66,7 +66,7 @@ calc.method("subtract", subtract, {
         "a":{
           "type": "number"
         },
-	"b": {
+        "b": {
           "type": "number"
         }
       }
@@ -89,7 +89,8 @@ var multiply = function (options, callback) {
   } else {
     return result;
   }
-}
+};
+
 calc.method("multiply", multiply, {
   "description": "returns the product of two numbers",
   "properties": {
@@ -99,7 +100,7 @@ calc.method("multiply", multiply, {
         "a":{
           "type": "number"
         },
-       	"b": {
+        "b": {
           "type": "number"
         }
       }
@@ -122,7 +123,8 @@ var divide = function (options, callback) {
   } else {
     return result;
   }
-}
+};
+
 calc.method("divide", divide, {
   "description": "returns the result by dividing two numbers",
   "properties": {
@@ -132,7 +134,7 @@ calc.method("divide", divide, {
         "a":{
          "type": "number"
         },
-	"b": {
+        "b": {
           "type": "number"
         }
       }
@@ -155,7 +157,8 @@ var power = function (options, callback) {
   } else {
     return result;
   }
-}  
+};
+ 
 calc.method("power", power, {
   "description": "returns the raised power of two numbers",
   "properties": {
@@ -219,7 +222,8 @@ var cuberoot = function (options, callback) {
   } else {
     return result;
   }
-}
+};
+
 calc.method("cuberoot", cuberoot, {
   "description": "returns the cuberoot of number",
   "properties": {
@@ -238,8 +242,6 @@ calc.method("cuberoot", cuberoot, {
   }
 });
 
-
-
 //
 // define the nthroot method
 //
@@ -250,7 +252,8 @@ var nthroot = function (options, callback) {
   } else {
     return result;
   }
-}
+};
+
 calc.method("nthroot", nthroot, {
   "description": "returns the nthroot of number",
   "properties": {
@@ -286,7 +289,8 @@ var factorial = function (options, callback) {
  } else {
    return result;
  }
-}
+};
+
 calc.method("factorial", factorial, {
   "description": "returns the factorial of number",
   "properties": {
@@ -295,7 +299,7 @@ calc.method("factorial", factorial, {
       "properties": {
         "a":{
           "type": "number"
-       	}
+        }
       }
     },
     "callback": {
@@ -340,9 +344,6 @@ calc.method("isEven", isEven, {
   }
 });
 
-
-
-
 //
 //define the isOdd method
 //
@@ -358,7 +359,8 @@ var isOdd = function (options, callback) {
   } else {
     return result;
   }
-}
+};
+
 calc.method("isOdd", isOdd, {
   "description": "returns the result of number as odd",
   "properties": {
@@ -377,29 +379,4 @@ calc.method("isOdd", isOdd, {
   }
 });
 
-
-
-console.log(calc);
-console.log(calc.add(2, 4));
-console.log(calc.subtract(2, 4));
-console.log(calc.multiply(2, 4));
-console.log(calc.divide(2, 4));
-console.log(calc.power(6, 3));
-console.log(calc.squareroot(64));
-console.log(calc.cuberoot(27));
-console.log(calc.factorial(5));
-console.log(calc.isEven(10, 5));
-console.log(calc.isOdd(9, 3));
-
-
-// square root (a)
-// cube root (a)
-// factorial 5!, 5+4+3+2+1 (a)
-// isOdd (a)
-// isEven (a)
-//
-//resource.use("admin"); 
-//resource.admin.listen();
 exports.calculator = calc;
-
-
