@@ -91,44 +91,46 @@ function listen (options, callback) {
     //
     // Create a new view assumming there is a ./view/ directory
     //
-    var view = resource.view.create({ path: process.cwd() + '/view'});
+    var view;
+    try {
+      view = resource.view.create({ path: process.cwd() + '/view'});
+    }
+    catch (err) {
+      resource.logger.warn(err.message);
+    }
 
-    //
-    // View middleware for serving views
-    //
-    app.use(function (req, res, next) {
-      var _view = view;
-      var parts;
-      if(typeof req.virtualhost !== 'undefined' && typeof req.virtualpath !== 'undefined') {
-        parts = req.url.replace(req.virtualhost, req.virtualpath).split('/');
-      } else {
-        parts = req.url.split('/');
-      }
-      parts.shift();
-      parts.forEach(function(part) {
-        if(part.length > 0 && typeof _view !== 'undefined') {
-          _view = _view[part];
+    if (view) {
+      //
+      // View middleware for serving views
+      //
+      app.use(function (req, res, next) {
+        var _view = view;
+        var parts = req.url.split('/');
+        parts.shift();
+        parts.forEach(function(part) {
+          if(part.length > 0 && typeof _view !== 'undefined') {
+            _view = _view[part];
+          }
+        });
+        if (_view && _view['index']) {
+          _view = _view['index'];
+        }
+        if(typeof _view === "undefined") {
+          resource.logger.error('invalid view ' + req.url);
+          var _path = path.resolve(process.cwd() + req.virtualpath);
+          return connect.static(_path)(req, res, next);
+        }
+
+        var str = _view.render({});
+        if (typeof _view.present === "function") {
+          _view.present({}, function (err, rendered) {
+            res.end(rendered);
+          });
+        } else {
+          res.end(str);
         }
       });
-      if (_view && _view['index']) {
-        _view = _view['index'];
-      }
-      if(typeof _view === "undefined") {
-        var _path = path.resolve(process.cwd() + '/' + req.virtualpath);
-        if(typeof req.virtualhost !== 'undefined' && typeof req.virtualpath !== 'undefined') {
-          req.url = req.url.replace(req.virtualhost, req.virtualpath);
-        }
-        return connect.static(_path)(req, res, next);
-      }
-      var str = _view.render({});
-      if (typeof _view.present === "function") {
-        _view.present({}, function (err, rendered) {
-          res.end(rendered);
-        });
-      } else {
-        res.end(str);
-      }
-    });
+    }
   }
 
   if(typeof options.root !== 'undefined') {
