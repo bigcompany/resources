@@ -120,8 +120,7 @@ View.prototype._loadSync = function () {
   var self = this;
 
   if (!fs.existsSync(self.viewPath)) {
-    console.log('invalid view path ' + self.viewPath + ' unable to load view');
-    return;
+    throw new Error('invalid view path ' + self.viewPath + ' unable to load view');
   }
 
   var root = self.viewPath;
