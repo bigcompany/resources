@@ -68,6 +68,37 @@ irc.property('command', {
   }
 });
 
+irc.method('wrapColors', wrapColors, {
+  description: 'wraps text in an irc color code',
+  properties: {
+    color: {
+      enum: [
+        'white',
+        'black',
+        'dark_blue',
+        'dark_green',
+        'light_red',
+        'dark_red',
+        'magenta',
+        'orange',
+        'yellow',
+        'light_green',
+        'cyan',
+        'light_cyan',
+        'light_blue',
+        'light_magenta',
+        'gray',
+        'light_gray',
+        'reset'
+      ]
+    },
+    message: { type: 'string' }
+  }
+});
+function wrapColors(color, message) {
+  return require('irc').colors.wrap(color, message);
+}
+
 //
 // A lookup table of irc connections
 //
