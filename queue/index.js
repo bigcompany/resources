@@ -29,7 +29,12 @@ queue.property('queue', {
 //
 // Basic push/shift methods for queue
 //
-// TODO: Implement as ring queue?
+// Remark: Typically, array shifts are considered expensive, and there is
+// a way to optimize this by offsetting the index instead of shifting,
+// reusing earlier elements in the array, and then resizing the array (only
+// here would slicing be used) and resetting the offsets when the array becomes
+// full. That said, this is probably negligible compared to the overhead of
+// persisting the queue to a datasource anyway.
 //
 queue.method('push', push, {
   description: 'push an element onto the queue',
@@ -37,7 +42,7 @@ queue.method('push', push, {
     queue: queue.schema,
     job: {
       properties: {
-        name: {
+        method: {
           type: 'string'
         },
         with: {
@@ -64,24 +69,24 @@ function shift(q) {
   return q.queue.shift();
 }
 
-//
-// Exposing a global list of job methods
-// TODO: Scope to instances
-//
-var jobs = {};
-queue.method('jobs', addJobs, {
-  description: 'expose worker methods',
+queue.method('take', take, {
+  description: 'take `n` element off the queue',
   properties: {
-    jobs: { type: 'object' }
+    options: {
+      properties: queue.schema.properties
+    },
+    n: { type: 'number' }
   }
 });
-function addJobs(js) {
-  jobs = js;
-  return queue;
+function take(q, n) {
+  var xs = q.queue.slice(0, n);
+  q.queue = q.queue.slice(n);
+  return xs;
 }
 
 //
-// Run a single job
+// Run a single job by executing the specified method with the specified
+// metadata
 //
 queue.method('run', run, {
   description: 'run a job',
@@ -89,7 +94,7 @@ queue.method('run', run, {
   properties: {
     job: {
       properties: {
-        name: {
+        method: {
           type: 'string'
         },
         with: {
@@ -104,13 +109,34 @@ queue.method('run', run, {
   }
 });
 function run(j, callback) {
-  if (!jobs[j.name]) {
-    return callback(new Error('could not execute job of type `' + j.method + '`'));
+  var properties = j.method.split('::'),
+      method = resource,
+      err;
+
+  properties.forEach(function (p) {
+    if (typeof method[p] !== 'undefined') {
+      method = method[p];
+    }
+    else if (!err) {
+      err = new Error('could not execute method `' + j.method + '`');
+    }
+  });
+
+  if (typeof method == 'undefined' ) {
+    err = new Error('could not execute method `' + j.method + '`');
   }
 
-  jobs[j.name](j.with, callback);
+  if (err) {
+    return callback(err);
+  }
+
+  method(j.with, callback);
 }
 
+//
+// This method takes q.concurrency elements off the front of the queue and
+// `queue.run`s them.
+//
 queue.method('process', process, {
   description: 'process elements off the queue',
   properties: {
@@ -123,13 +149,7 @@ queue.method('process', process, {
 function process(q, callback) {
   var async = require('async');
 
-  //
-  // TODO: Implement smarter queue push/shift methods
-  //
-  var js = [];
-  while ((js.length < q.concurrency) && q.queue.length) {
-    js.push(queue.shift(q));
-  }
+  var js = queue.take(q, q.concurrency);
 
   //
   // Run the slice of jobs concurrently
