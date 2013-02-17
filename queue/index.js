@@ -70,7 +70,7 @@ function shift(q) {
 }
 
 queue.method('take', take, {
-  description: 'take `n` element off the queue',
+  description: 'take `n` elements off the queue',
   properties: {
     options: {
       properties: queue.schema.properties
