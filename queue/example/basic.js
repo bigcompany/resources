@@ -33,7 +33,7 @@ function longJob(options, callback) {
 var self = {
   interval: 1200,
   concurrency: 2,
-  elements: []
+  queue: []
 };
 
 //
