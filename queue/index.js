@@ -147,15 +147,32 @@ queue.method('process', process, {
   }
 });
 function process(q, callback) {
-  var async = require('async');
-
-  var js = queue.take(q, q.concurrency);
-
   //
-  // Run the slice of jobs concurrently
+  // Process the top q.concurrency elements at once. Compatible with
+  // async.forEach
   //
-  async.forEach(js, queue.run, function (err) {
-    callback(err, q);
+  var elements = queue.take(q, q.concurrency);
+
+  if (!elements.length) {
+    return callback();
+  }
+
+  var i = elements.length,
+          error;
+
+  elements.forEach(function (elem) {
+    queue.run(elem, function (err) {
+      if (err && !error) {
+        callback(err);
+        error = err;
+      }
+
+      i--;
+
+      if (!i) {
+        callback();
+      }
+    });
   });
 }
 
@@ -215,6 +232,3 @@ function load(q) {
 }
 
 exports.queue = queue;
-exports.dependencies = {
-  "async": "*"
-};
