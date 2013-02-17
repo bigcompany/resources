@@ -231,4 +231,69 @@ function load(q) {
   }
 }
 
+//
+// after hooks to add methods to instances of queue
+//
+queue.after('create', addMethods);
+queue.after('get', addMethods);
+queue.after('updateOrCreate', addMethods);
+queue.after('all', addMethods);
+queue.after('find', addMethods);
+function addMethods (instance, next) {
+  //
+  // In cases of 'all' and 'find', "instance" will actually be an *array* of
+  // queue instances.
+  //
+  if (Array.isArray(instance)) {
+    //
+    // Use "some" to short
+    //
+    instance.some(function (q, i) {
+      var err;
+      //
+      // Remark: addMethods runs synchronously
+      //
+      addMethods(q, function (e, _q) {
+        if (e) {
+          err = e;
+          return;
+        }
+        instance[i] = _q;
+      });
+
+      if (err) {
+        next(err);
+      }
+
+      //
+      // If err is truthy, this will short-circuit the .some method
+      //
+      return err;
+    });
+
+    return next(null, instance);
+  }
+
+  //
+  // Assuming instance is *not* an array, add all the bound methods to
+  // the instance
+  //
+  [
+    'push',
+    'shift',
+    'take',
+    'process',
+    'load'
+  ].forEach(function (m) {
+    instance[m] = queue[m].bind(queue, instance);
+  });
+
+  //
+  // Alias "start" to "load" at the instance level
+  //
+  instance.start = instance.load;
+
+  next(null, instance);
+}
+
 exports.queue = queue;
