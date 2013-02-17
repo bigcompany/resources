@@ -59,7 +59,7 @@ queue.method('push', push, {
           type: 'string'
         },
         with: {
-          type: 'object',
+          type: 'any',
           default: {}
         }
       }
@@ -157,7 +157,7 @@ queue.method('run', run, {
           required: true
         },
         with: {
-          type: 'object',
+          type: 'any',
           default: {}
         }
       }
