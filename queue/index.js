@@ -21,7 +21,7 @@ queue.property('wait', {
   default: true
 });
 
-queue.property('queue', {
+queue.property('elements', {
   type: 'array',
   default: []
 });
@@ -54,7 +54,7 @@ queue.method('push', push, {
   }
 });
 function push(q, job) {
-  return q.queue.push(job);
+  return q.elements.push(job);
 }
 
 queue.method('shift', shift, {
@@ -66,7 +66,7 @@ queue.method('shift', shift, {
   }
 });
 function shift(q) {
-  return q.queue.shift();
+  return q.elements.shift();
 }
 
 queue.method('take', take, {
@@ -79,8 +79,8 @@ queue.method('take', take, {
   }
 });
 function take(q, n) {
-  var xs = q.queue.slice(0, n);
-  q.queue = q.queue.slice(n);
+  var xs = q.elements.slice(0, n);
+  q.elements = q.elements.slice(n);
   return xs;
 }
 
