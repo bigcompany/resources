@@ -113,6 +113,35 @@ function take(q, n) {
 }
 
 //
+// Lists in python have an analogous method of the same name
+// http://docs.python.org/2/library/stdtypes.html#typesseq-mutable
+//
+queue.method('extend', extend, {
+  description: 'extend the queue with an array of elements',
+  properties: {
+    instance: {
+      properties: queue.schema.properties
+    },
+    elems: {
+      type: 'any'
+    }
+  }
+});
+function extend(q, xs) {
+  //
+  // This method suffers the same problems with modifying objects in-place,
+  // as explained in the `take` method. Here, we get around this in a
+  // similar technique.
+  //
+  xs.forEach(function (elem) {
+    q.elements.push(elem);
+  });
+
+  return q.elements;
+}
+
+
+//
 // Run a single job by executing the specified method with the specified
 // metadata
 //
@@ -211,13 +240,7 @@ function process(q, callback) {
     // back onto the queue
     //
     if (q.repeat && elements.length) {
-      //
-      // TODO: Make "take" analog for pushing
-      // Remark: This method is due to the same problems that .take has
-      //
-      elements.forEach(function (elem) {
-        q.elements.push(elem);
-      });
+      queue.extend(q, elements);
     }
 
     //
@@ -343,6 +366,7 @@ function addMethods (instance, next) {
     'push',
     'shift',
     'take',
+    'extend',
     'process',
     'load'
   ].forEach(function (m) {
