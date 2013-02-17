@@ -3,29 +3,41 @@ var resource = require('resource');
 var queue = resource.use('queue');
 
 //
-// The queue can call resource methods with call signature (options, callback)
-// Here I just define a new resource as an example.
+// The queue can call resource methods with call signature (options, callback).
+// We will use creature.fire for an example.
 //
-var jobs = resource.define('jobs');
-
-var i = 0;
-jobs.method('count', count);
-function count(options, callback) {
-  i++;
-  resource.logger.info(options.message, i, i);
-  callback(null);
-}
+var creature = resource.use('creature');
 
 //
-// Create an instance of queue.
+// Observe when methods on creature are called
+//
+creature.onAny(function (data) {
+  resource.logger.info(this.event.magenta + ': ', data);
+});
+
+//
+// Any methods on the queue resource which take a queue instance as the first
+// argument are bound to the instance after any persistance method which
+// returns such instances is called.
 //
 queue.create({
   interval: 500
 }, function (err, _queue) {
+
+  //
+  // Push five jobs onto the instance of this queue
+  //
   for (var j = 0; j < 5; j++) {
+    //
+    // These specify a resource method to call and metadata to call it
+    // with.
+    //
     _queue.push({
-      method: 'jobs::count',
-      with: { 'message': '%d! %d times!' }
+      method: 'creature::fire',
+      with: {
+        power: 10 * (j + 1),
+        direction: ['down', 'left', 'up', 'down', 'right'][j]
+      }
     });
   }
 
