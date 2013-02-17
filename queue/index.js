@@ -104,8 +104,9 @@ function take(q, n) {
   //
   // This should probably be considered a bug in the resource engine.
   //
-  while (n) {
-    xs.push(q.elements.shift());
+  while (n && q.elements.length) {
+    var elem = q.elements.shift();
+    xs.push(elem);
     n--;
   }
 
@@ -220,18 +221,21 @@ function process(q, callback) {
           error;
 
   elements.forEach(function (elem) {
-    queue.run(elem, function (err) {
-      if (err && !error) {
-        callback(err);
-        error = err;
-      }
+    if (!error) {
+      queue.run(elem, function (err) {
+        if (err) {
+          callback(err);
+          error = err;
+          return;
+        }
 
-      i--;
+        i--;
 
-      if (!i) {
-        finish();
-      }
-    });
+        if (!i) {
+          finish();
+        }
+      });
+    }
   });
 
   function finish () {
