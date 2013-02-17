@@ -10,13 +10,13 @@ var jobs = resource.define('jobs');
 
 jobs.method('shortJob', shortJob);
 function shortJob(options, callback) {
-  big.logger.info('short job: %j', options);
+  resource.logger.info('short job: %j', options);
   setTimeout(callback, 50);
 }
 
 jobs.method('longJob', longJob);
 function longJob(options, callback) {
-  big.logger.info('long job: %j', options);
+  resource.logger.info('long job: %j', options);
   setTimeout(callback, 1000);
 }
 
@@ -33,7 +33,7 @@ function longJob(options, callback) {
 var self = {
   interval: 1200,
   concurrency: 2,
-  queue: []
+  elements: []
 };
 
 //
