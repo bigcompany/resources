@@ -21,7 +21,20 @@ queue.property('wait', {
   default: true
 });
 
+queue.property('repeat', {
+  description: 'automatically push completed elements back onto the queue',
+  type: 'boolean',
+  default: false
+});
+
+queue.property('autosave', {
+  description: 'automatically save the queue after a processing step',
+  type: 'boolean',
+  default: true
+});
+
 queue.property('elements', {
+  description: 'the elements currently inside the queue',
   type: 'array',
   default: []
 });
@@ -75,12 +88,27 @@ queue.method('take', take, {
     options: {
       properties: queue.schema.properties
     },
-    n: { type: 'number' }
+    n: {
+      type: 'number',
+      default: 1
+    }
   }
 });
 function take(q, n) {
-  var xs = q.elements.slice(0, n);
-  q.elements = q.elements.slice(n);
+  var xs = [];
+
+  //
+  // We do this instead of a concat because q is actually a different object
+  // and not a direct reference. However, the underlying array methods are still
+  // bound to the original argument.
+  //
+  // This should probably be considered a bug in the resource engine.
+  //
+  while (n) {
+    xs.push(q.elements.shift());
+    n--;
+  }
+
   return xs;
 }
 
@@ -95,7 +123,8 @@ queue.method('run', run, {
     job: {
       properties: {
         method: {
-          type: 'string'
+          type: 'string',
+          required: true
         },
         with: {
           type: 'object',
@@ -109,6 +138,7 @@ queue.method('run', run, {
   }
 });
 function run(j, callback) {
+
   var properties = j.method.split('::'),
       method = resource,
       err;
@@ -170,10 +200,41 @@ function process(q, callback) {
       i--;
 
       if (!i) {
-        callback();
+        finish();
       }
     });
   });
+
+  function finish () {
+    //
+    // If element repeating is turned on, concat the just-processed elements
+    // back onto the queue
+    //
+    if (q.repeat && elements.length) {
+      //
+      // TODO: Make "take" analog for pushing
+      // Remark: This method is due to the same problems that .take has
+      //
+      elements.forEach(function (elem) {
+        q.elements.push(elem);
+      });
+    }
+
+    //
+    // If autosave is turned on, save the current queue.
+    //
+    if (q.autosave) {
+      queue.updateOrCreate(q, function (err, _q) {
+        if (err) {
+          return callback(err);
+        }
+        callback(null, _q);
+      });
+    }
+    else {
+      callback(null, q);
+    }
+  }
 }
 
 //
