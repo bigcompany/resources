@@ -21,38 +21,38 @@ function longJob(options, callback) {
 }
 
 //
-// Queue states are represented by objects which can/will be
-// instantiated/persisted.
+// Create an instance of queue.
 //
-// I call this "self" here in order to emphasize that this is (potentially) an
-// instance of the queue resource, and because the call signatures for
-// queue.push, queue.shift and queue.take mirror those of python-style methods,
-// where the instance of the class is explicitly the first argument of the
-// method.
-//
-var self = {
+queue.create({
   interval: 1200,
-  concurrency: 2,
-  queue: []
-};
+  concurrency: 2
+}, function (err, q) {
 
-//
-// This function "starts" the particular queue. I didn't call it "start" because
-// I think "start" should get all persisted queues and "load" them
-//
-queue.load(self);
+  //
+  // Any methods on the queue resource which take a queue instance as the first
+  // argument are bound to the instance after any persistance method which
+  // returns such instances is called
+  //
 
-//
-// Push elements onto the queue with a resource method to call and an options
-// hash to call it with.
-//
-setInterval(function () {
-  queue.push(self, {
-    method: 'jobs::shortJob',
-    with: { foo: 'bar' }
-  });
-  queue.push(self, {
-    method: 'jobs::longJob',
-    with: { baz: 'quux' }
-  });
-}, 1000);
+  //
+  // q.start is an alias for q.load for instances
+  //
+  q.start();
+
+  //
+  // Push elements onto the queue with a resource method to call and an options
+  // hash to call it with.
+  //
+  setInterval(function () {
+    q.push({
+      method: 'jobs::shortJob',
+      with: { foo: 'bar' }
+    });
+
+    q.push({
+      method: 'jobs::longJob',
+      with: { baz: 'quux' }
+    });
+  }, 1000);
+
+});
