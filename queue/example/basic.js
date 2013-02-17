@@ -25,34 +25,29 @@ function longJob(options, callback) {
 //
 queue.create({
   interval: 1200,
-  concurrency: 2
-}, function (err, q) {
-
+  concurrency: 2,
+  repeat: true
+}, function (err, _queue) {
   //
   // Any methods on the queue resource which take a queue instance as the first
   // argument are bound to the instance after any persistance method which
-  // returns such instances is called
+  // returns such instances is called. Here, we push "jobs" to the instance
+  // of queue which specify a resource method to call and metadata to call it
+  // with.
   //
+  // Because repeat is set to true, we only have to push these jobs once.
+  //
+  _queue.push({
+    method: 'jobs::shortJob',
+    with: { foo: 'bar' }
+  });
+  _queue.push({
+    method: 'jobs::longJob',
+    with: { baz: 'quux' }
+  });
 
+  // 
+  // On instances, the start method is an alias for the load method.
   //
-  // q.start is an alias for q.load for instances
-  //
-  q.start();
-
-  //
-  // Push elements onto the queue with a resource method to call and an options
-  // hash to call it with.
-  //
-  setInterval(function () {
-    q.push({
-      method: 'jobs::shortJob',
-      with: { foo: 'bar' }
-    });
-
-    q.push({
-      method: 'jobs::longJob',
-      with: { baz: 'quux' }
-    });
-  }, 1000);
-
+  _queue.start();
 });
