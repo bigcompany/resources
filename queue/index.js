@@ -191,7 +191,7 @@ function load(q) {
       }
     }, q.interval);
 
-    process(q, function (err, result) {
+    queue.process(q, function (err, result) {
       if (err) {
         //
         // Remark: Emit error, keep going (for now, may change behavior)
