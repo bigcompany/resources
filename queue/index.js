@@ -78,7 +78,7 @@ queue.method('shift', shift, {
     }
   }
 });
-function shift(q) {
+function shift (q) {
   return q.elements.shift();
 }
 
@@ -94,9 +94,9 @@ queue.method('take', take, {
     }
   }
 });
-function take(q, n) {
+function take (q) {
+  var n = q.concurrency;
   var xs = [];
-
   //
   // We do this instead of a concat because q is actually a different object
   // and not a direct reference. However, the underlying array methods are still
@@ -206,7 +206,7 @@ queue.method('process', process, {
     }
   }
 });
-function process(q, callback) {
+function process (q, callback) {
   //
   // Process the top q.concurrency elements at once. Compatible with
   // async.forEach
@@ -318,6 +318,11 @@ function load(q) {
     });
   }
 }
+
+queue.on('error', function (error, data) {
+  resource.logger.error(error);
+  resource.logger.data(data);
+});
 
 //
 // after hooks to add methods to instances of queue
