@@ -1,12 +1,13 @@
-var resource = require('resource');
-
-var queue = resource.use('queue');
-
 //
 // The queue can call resource methods with call signature (options, callback).
-// We will use creature.fire for an example.
 //
-var creature = resource.use('creature');
+
+//
+// Example uses `queue` and `creature` resources
+//
+var resource = require('resource'),
+    queue = resource.use('queue'),
+    creature = resource.use('creature');
 
 //
 // Observe when methods on creature are called
@@ -16,33 +17,35 @@ creature.onAny(function (data) {
 });
 
 //
-// Any methods on the queue resource which take a queue instance as the first
-// argument are bound to the instance after any persistance method which
-// returns such instances is called.
+// Create a new queue, with a processing delay of 500 milliseconds ( and default concurency of 1 )
+// This means that items in the queue are processed every 1/2 second
 //
 queue.create({
-  interval: 500
+  interval: 5000,
+  concurrency: 2
 }, function (err, _queue) {
 
   //
-  // Push five jobs onto the instance of this queue
+  // Once the queue is created, push five jobs onto it
   //
   for (var j = 0; j < 5; j++) {
     //
-    // These specify a resource method to call and metadata to call it
-    // with.
+    // Push the resource method "creature.fire"
     //
     _queue.push({
       method: 'creature::fire',
+      //
+      // Jobs on the queue support `with` metadata
+      //
       with: {
-        power: 10 * (j + 1),
+        power: (10 * (j + 1)),
         direction: ['down', 'left', 'up', 'down', 'right'][j]
       }
     });
   }
 
   // 
-  // On instances, the start method is an alias for the load method.
+  // Now that the queue has been created and populated with jobs, start it
   //
   _queue.start();
 });
