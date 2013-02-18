@@ -83,24 +83,27 @@ function shift (q) {
 }
 
 queue.method('take', take, {
-  description: 'take `n` elements off the queue',
+  description: 'take `queue.concurrency` elements off the queue',
   properties: {
     options: {
       properties: queue.schema.properties
-    },
-    n: {
-      type: 'number',
-      default: 1
     }
   }
 });
 function take (q) {
+  //
+  // Most "take" APIs take a number argument. This one should as well, but
+  // there's a currying bug in resource that disallows this. Since taking
+  // elements not equal to concurrency should be very rare, just using
+  // q.concurrency without the argument is sufficient for now.
+  //
   var n = q.concurrency;
+
   var xs = [];
   //
-  // We do this instead of a concat because q is actually a different object
-  // and not a direct reference. However, the underlying array methods are still
-  // bound to the original argument.
+  // We do multiple shifts instead of a concat because q is actually a different
+  // object and not a direct reference. However, the underlying array methods
+  // are still bound to the original argument.
   //
   // This should probably be considered a bug in the resource engine.
   //
@@ -208,8 +211,7 @@ queue.method('process', process, {
 });
 function process (q, callback) {
   //
-  // Process the top q.concurrency elements at once. Compatible with
-  // async.forEach
+  // Process the top q.concurrency elements at once
   //
   var elements = queue.take(q, q.concurrency);
 
