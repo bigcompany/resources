@@ -59,7 +59,14 @@ function create (options, callback) {
         output: options.ouput
       });
     }
-    view.load();
+    //
+    // Remark: View should not attempt to load if no path was entered
+    //
+    // TODO: Should this fix be here or in the View prototype constructor ( viewful.View ) ?
+    //
+    if (typeof options.path === 'string') {
+      view.load();
+    }
   }
   catch (err) {
     if (callback) {
