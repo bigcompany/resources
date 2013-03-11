@@ -40,6 +40,7 @@ function generate (_resource, template, callback) {
   }
 
   template = fs.readFileSync(__dirname + '/template.md').toString();
+
   var _view = view.create({
     template: template, 
     input: "swig"
@@ -248,8 +249,13 @@ function generateFooter() {
 
 function build () {
   var _resources = {};
+
+  //
+  // Attempt to load /resources/ folder from current resources directory
+  //
   var resourcesPath = (path.resolve(require.resolve('resources') + '/../'));
   var dirs = fs.readdirSync(resourcesPath);
+
   //
   // Generate a README file for every resource
   //
@@ -257,21 +263,17 @@ function build () {
     var stat,
         resourcePath,
         resourceModule;
-    try {
-      resourcePath = (resourcesPath + '/' + p + '/');
-      resourceModule =  ("index" + '.js');
-      stat = fs.statSync(resourcePath);
-    } catch(err) {
-      // TODO: better filtering of /resources/ folder to prevent attempts to read .git, .DS_Store, etc
-      console.log(err.stack)
-    }
-    if(stat) {
-      _resources[p] = {};
-      var str = p.substr(0, 1);
-      str = str.toUpperCase();
-      var P = str + p.substr(1, p.length - 1);
-      resource.logger.warn('attempting to require ' + p.magenta)
 
+    resourcePath = resourcesPath + '/' + p;
+
+    //
+    // Check if path is actually a resource
+    //
+    if (resource.isResource(resourcePath)) {
+      // resource.logger.warn('attempting to require ' + resourcePath)
+      //
+      // If file is a resource, then attempt to generate documentation for it
+      //
       try {
 
         var _resource = require(resourcesPath + '/' + p);
@@ -285,17 +287,19 @@ function build () {
           // Generate resource documentation
           //
           var doc = resource.docs.generate(_resource, fs.readFileSync(__dirname + '/template.md').toString());
+
           //
           // Write resource documentation to disk
           //
           var _path = resourcePath + '/README.md';
 
           fs.writeFileSync(_path, doc);
-          resource.logger.info('wrote to ' + path.resolve(_path));
+          resource.logger.info('wrote resource documentation: ' + path.resolve(_path).grey);
         }
       } catch(err) {
         delete _resources[p];
-        console.log(err.stack)
+        resource.logger.error('could not generate documentation for resource: ' + p);
+        console.log(err)
       }
     }
   });
