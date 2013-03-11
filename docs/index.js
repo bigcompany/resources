@@ -277,7 +277,7 @@ function build () {
       try {
 
         var _resource = require(resourcesPath + '/' + p);
-
+        _resources[p] = {};
         if(typeof _resource[p] !== 'undefined') {
           var deps = _resource.dependencies;
           _resource = _resource[p];
