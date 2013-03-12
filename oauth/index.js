@@ -204,5 +204,5 @@ function accessToken (options, callback) {
 
 exports.oauth = oauth;
 exports.dependencies = {
-  "oauth": "*"
+  "oauth": "~0.9.8"
 };
