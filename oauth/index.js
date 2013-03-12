@@ -1,4 +1,3 @@
-
 var resource = require('resource'),
     oauth = resource.define('oauth');
 
@@ -45,36 +44,38 @@ oauth.method('consumer', consumer, {
     options: {
       type: "object",
       required: true,
+      properties: {
         requestUrl: {
-        description: 'the requested service url',
-        type: 'string',
-        required: true
-      },
-      accessUrl: {
-        description: 'the access url for said service',
-        type: 'string',
-        required: true
-      },
-      consumerKey: {
-        type: 'string',
-        required: true
-      },
-      consumerSecret: {
-        type: 'string',
-        required: true
-      },
-      version: {
-        type: "string",
-        required: true
-      },
-      authorize_callback: {
-        description: "url to be sent back to on authorization",
-        type: "string",
-        required: true
-      },
-      signatureMethod: {
-        type: "string",
-        required: true
+          description: 'the requested service url',
+          type: 'string',
+          required: true
+        },
+        accessUrl: {
+          description: 'the access url for said service',
+          type: 'string',
+          required: true
+        },
+        consumerKey: {
+          type: 'string',
+          required: true
+        },
+        consumerSecret: {
+          type: 'string',
+          required: true
+        },
+        version: {
+          type: "string",
+          required: true
+        },
+        authorize_callback: {
+          description: "url to be sent back to on authorization",
+          type: "string",
+          required: true
+        },
+        signatureMethod: {
+          type: "string",
+          required: true
+        }
       }
     }
   }
@@ -110,36 +111,38 @@ oauth.method('requestToken', requestToken, {
     options: {
       type: "object",
       required: true,
+      properties: {
         requestUrl: {
-        description: 'the requested service url',
-        type: 'string',
-        required: true
-      },
-      accessUrl: {
-        description: 'the access url for said service',
-        type: 'string',
-        required: true
-      },
-      consumerKey: {
-        type: 'string',
-        required: true
-      },
-      consumerSecret: {
-        type: 'string',
-        required: true
-      },
-      version: {
-        type: "string",
-        required: true
-      },
-      authorize_callback: {
-        description: "url to be sent back to on authorization",
-        type: "string",
-        required: true
-      },
-      signatureMethod: {
-        type: "string",
-        required: true
+          description: 'the requested service url',
+          type: 'string',
+          required: true
+        },
+        accessUrl: {
+          description: 'the access url for said service',
+          type: 'string',
+          required: true
+        },
+        consumerKey: {
+          type: 'string',
+          required: true
+        },
+        consumerSecret: {
+          type: 'string',
+          required: true
+        },
+        version: {
+          type: "string",
+          required: true
+        },
+        authorize_callback: {
+          description: "url to be sent back to on authorization",
+          type: "string",
+          required: true
+        },
+        signatureMethod: {
+          type: "string",
+          required: true
+        }
       }
     },
     callback: {
@@ -167,14 +170,16 @@ oauth.method('accessToken', accessToken, {
   properties: {
     options: {
       required: true,
-      requestToken: {
-        required: true
-      },
-      requestTokenSecret: {
-        required: true
-      },
-      oauthVerifier: {
-        required: false
+      properties: {
+        requestToken: {
+          required: true
+        },
+        requestTokenSecret: {
+          required: true
+        },
+        oauthVerifier: {
+          required: false
+        }
       }
     },
     callback: {
