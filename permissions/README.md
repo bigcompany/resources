@@ -25,6 +25,8 @@ for managing permissions
 
   - [update](#permissions-methods-update) (options, callback)
 
+  - [updateOrCreate](#permissions-methods-updateOrCreate) (options, callback)
+
   - [destroy](#permissions-methods-destroy) (id, callback)
 
 
@@ -177,6 +179,44 @@ gets all instances of permissions
 ### permissions.update(options, callback)
 
 updates a permissions by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **accountID** 
+
+      - **type** : string
+
+      - **default** : my title
+
+      - **key** : account
+
+      - **description** : the account to apply permission to
+
+    - **event** 
+
+      - **type** : string
+
+      - **description** : the link to the permissions on a third party site
+
+      - **format** : permissions
+
+- **callback** 
+
+  - **type** : function
+
+<a name="permissions-methods-updateOrCreate"></a> 
+
+### permissions.updateOrCreate(options, callback)
+
+updates a permissions by id, and creates if necessary
 
 - **options** 
 

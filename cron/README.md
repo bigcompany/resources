@@ -27,6 +27,8 @@ for managing cron jobs
 
   - [update](#cron-methods-update) (options, callback)
 
+  - [updateOrCreate](#cron-methods-updateOrCreate) (options, callback)
+
   - [destroy](#cron-methods-destroy) (id, callback)
 
   - [run](#cron-methods-run) ()
@@ -199,6 +201,48 @@ gets all instances of cron
 ### cron.update(options, callback)
 
 updates a cron by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **pattern** 
+
+      - **type** : string
+
+      - **default** : */5 * * * * *
+
+      - **description** : the pattern of the cron job
+
+    - **event** 
+
+      - **type** : string
+
+      - **default** : logger::log
+
+      - **description** : the event to be emitted each time the cron runs
+
+    - **with** 
+
+      - **type** : object
+
+      - **description** : metadata to execute the cron with
+
+- **callback** 
+
+  - **type** : function
+
+<a name="cron-methods-updateOrCreate"></a> 
+
+### cron.updateOrCreate(options, callback)
+
+updates a cron by id, and creates if necessary
 
 - **options** 
 
