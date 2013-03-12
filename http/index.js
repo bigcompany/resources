@@ -7,7 +7,7 @@ http.schema.description = "provides an HTTP API";
 http.property("port", {
   "type": "number",
   "default": 8888,
-  "description": "the port to listen on "
+  "description": "the port to listen on"
 });
 
 http.property("host", {
@@ -56,40 +56,6 @@ function listen (options, callback) {
 
   var app = express();
 
-  //
-  // Basic virtual host support
-  //
-  if (resource.virtualhost) {
-    app.use(resource.virtualhost.middle);
-  }
-
-  /* TODO: finish resource.view middleware
-  app.use(function (req, res, next) {
-  });
-  var view = resource.view.create({ path: process.cwd() + '/view'});
-  view.load();
-
-  //console.log(view);
-  //console.log(req.url);
-  var name = "index";
-  if (req.url === "/") {
-    name = "index";
-  }
-  if(typeof view[name] === "undefined") {
-    return next();
-  }
-  var str = view[name].render({});
-  str = view[name].present({}, function (err, str) {
-    res.end(str);
-  });
-  */
-
-  if(typeof options.root !== 'undefined') {
-    app
-      .use(connect.static(options.root))
-      .use(connect.directory(options.root));
-  }
-
   app
     .use(connect.favicon(__dirname + '/favicon.png'))
     .use(connect.logger('dev'))
@@ -104,13 +70,85 @@ function listen (options, callback) {
     }));
   }
 
+  //
+  // Basic virtual host support
+  //
+  if (resource.virtualhost) {
+    app.use(resource.virtualhost.middle);
+  }
+
+  //
+  // Explicitly use the app.router middleware here so that routes take
+  // precedence over the view middleware
+  //
+  app.use(app.router);
+
+  //
+  // TODO: finish view middleware
+  // TODO: move to resource.view middleware
+  //
+  if (resource.view) {
+    //
+    // Create a new view assumming there is a ./view/ directory
+    //
+    var view;
+    try {
+      view = resource.view.create({ path: process.cwd() + '/view'});
+    }
+    catch (err) {
+      resource.logger.warn(err.message);
+    }
+
+    if (view) {
+      //
+      // View middleware for serving views
+      //
+      app.use(function (req, res, next) {
+        var _view = view;
+        var parts = req.url.split('/');
+        parts.shift();
+        parts.forEach(function(part) {
+          if(part.length > 0 && typeof _view !== 'undefined') {
+            _view = _view[part];
+          }
+        });
+        if (_view && _view['index']) {
+          _view = _view['index'];
+        }
+        if(typeof _view === "undefined") {
+          resource.logger.error('invalid view ' + req.url);
+          var _path = path.resolve(process.cwd() + req.virtualpath);
+          return connect.static(_path)(req, res, next);
+        }
+
+        var str = _view.render({});
+        if (typeof _view.present === "function") {
+          _view.present({}, function (err, rendered) {
+            res.end(rendered);
+          });
+        } else {
+          res.end(str);
+        }
+      });
+    }
+  }
+
+  if(typeof options.root !== 'undefined') {
+    //
+    // Use http root passed in through options
+    //
+    app
+      .use(connect.static(options.root));
+  }
+
+  //
+  // Use the default http root that ships with resources
+  //
+  app
+    .use(connect.static(__dirname + '/public'));
 
   http.server = server = require('http').createServer(app).listen(options.port, options.host, function () {
    callback(null, server);
-  });
-
-  app.get('/', function (req, res){
-    res.end('home');
   });
 
   //

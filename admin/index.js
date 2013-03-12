@@ -34,222 +34,255 @@ function listen (options, callback) {
   var auth = connect.basicAuth('admin', 'admin');
 
   if(!resource.http.app) {
-    resource.http.listen(options, function(){}); // TODO: figure out if ignoring this callback is a race condition or not
+    resource.http.listen(options, next);
+  }
+  else {
+    next();
   }
 
-  resource.http.app.use(connect.static(__dirname + '/public'));
-  var view = resource.view.create({ path: __dirname + '/view'});
-  view.load();
+  function next(err) {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-  //
-  // TODO: cleanup route handlers / make into common methods
-  //
+    resource.http.app.use(connect.static(__dirname + '/public'));
+    resource.view.create({ path: __dirname + '/view'}, function (err, view) {
+      if (err) {
+        callback(err);
+        return;
+      }
 
-  resource.http.app.get('/admin', auth, function (req, res, next) {
-    var _r = _resources();
-    view.index.render({
-      system: JSON.stringify(dashboard(), true, 2)
-    });
-    str = view.index.present({ resources: resource.resources });
-    res.end(str);
-  });
+      //
+      // TODO: cleanup route handlers / make into common methods
+      //
 
-  resource.http.app.get('/admin/resources', auth, function (req, res, next) {
-    var str = view.resources.render();
-    str = view.resources.present({ resources: resource.resources });
-    res.end(str);
-  });
+      resource.http.app.get('/admin', auth, function (req, res, next) {
+        var _r = _resources();
+        view.index.render({
+          system: JSON.stringify(dashboard(), true, 2)
+        });
+        str = view.index.present({ resources: resource.resources });
+        res.end(str);
+      });
 
-  resource.http.app.get('/admin/ssh', auth, function (req, res, next) {
-   view.ssh.render({});
-   str = view.ssh.present({});
-   res.end(str);
-  });
+      resource.http.app.get('/admin/resources', auth, function (req, res, next) {
+        var str = view.resources.render();
+        str = view.resources.present({ resources: resource.resources });
+        res.end(str);
+      });
 
-  resource.http.app.get('/admin/mesh', auth, function (req, res, next) {
-   view.mesh.render({});
-   view.mesh.present({}, function(err, str){
-     res.end(str);
-   });
-  });
+      resource.http.app.get('/admin/ssh', auth, function (req, res, next) {
+       view.ssh.render({});
+       str = view.ssh.present({});
+       res.end(str);
+      });
 
-  resource.http.app.get('/admin/docs', auth, function (req, res, next) {
-   view.docs.render({});
-   str = view.docs.present({});
-   res.end(str);
-  });
+      resource.http.app.get('/admin/mesh', auth, function (req, res, next) {
+       view.mesh.render({});
+       view.mesh.present({}, function(err, str){
+         res.end(str);
+       });
+      });
 
-  /*
-    //
-    // Remark: Commented out docs route ( for now )
-    //
-  resource.http.app.get('/admin/docs/resources/:resource', function (req, res, next) {
-    var r = resource.resources[req.param('resource')];
-    var str = resource.docs.generate(r);
-    var view = resource.view.create({
-      template: str,
-      input: "markdown"
-    });
-    str = '<link href="/style.css" rel="stylesheet"/> \n' + view.render();
-    res.end(str);
-  });
-  */
+      resource.http.app.get('/admin/docs', auth, function (req, res, next) {
+       view.docs.render({});
+       str = view.docs.present({});
+       res.end(str);
+      });
 
-  //
-  // TODO: don't add these routes if the resources aren't available
-  //
-    resource.http.app.get('/admin/replicator', auth, function (req, res, next) {
-     view.replicator.render({});
-     view.replicator.present({}, function(err, result){
-       res.end(result);
-     });
-    });
+      /*
+        //
+        // Remark: Commented out docs route ( for now )
+        //
+      resource.http.app.get('/admin/docs/resources/:resource', function (req, res, next) {
+        var r = resource.resources[req.param('resource')];
+        var str = resource.docs.generate(r);
+        var view = resource.view.create({
+          template: str,
+          input: "markdown"
+        });
+        str = '<link href="/style.css" rel="stylesheet"/> \n' + view.render();
+        res.end(str);
+      });
+      */
 
-    resource.http.app.get('/admin/hooks', auth, function (req, res, next) {
-     view.hooks.render({});
-     view.hooks.present({}, function(err, result){
-       res.end(result);
-     });
-    });
-  //
-  // END TODO
-  //
+      //
+      // TODO: don't add these routes if the resources aren't available
+      //
+        resource.http.app.get('/admin/replicator', auth, function (req, res, next) {
+         view.replicator.render({});
+         view.replicator.present({}, function(err, result){
+           res.end(result);
+         });
+        });
 
-  resource.http.app.get('/admin/datasources', auth, function (req, res, next) {
-   view.datasources.render({});
-   resource.datasource.all(function(err, results){
-     str = view.datasources.present({ datasources: results });
-     res.end(str);
-   });
-  });
+        resource.http.app.get('/admin/hooks', auth, function (req, res, next) {
+         view.hooks.render({});
+         view.hooks.present({}, function(err, result){
+           res.end(result);
+         });
+        });
+      //
+      // END TODO
+      //
 
-  resource.http.app.get('/admin/datasources/:datasource', auth, function (req, res, next) {
-   resource.datasource.get(req.param('datasource'), function(err, result){
-     view.datasource.render({});
-     str = view.datasource.present({ datasource: result });
-     res.end(str);
-   });
-  });
+      resource.http.app.get('/admin/datasources', auth, function (req, res, next) {
+       view.datasources.render({});
+       resource.datasource.all(function(err, results){
+         str = view.datasources.present({ datasources: results });
+         res.end(str);
+       });
+      });
 
-  resource.http.app.get('/admin/resources/:resource', auth, function (req, res, next) {
-    view.resource.render({});
-    view.resource.present({
-      resource: req.param('resource')
-    }, function(err, str){
-      res.end(str);
-    });
-  });
+      resource.http.app.get('/admin/datasources/:datasource', auth, function (req, res, next) {
+       resource.datasource.get(req.param('datasource'), function(err, result){
+         view.datasource.render({});
+         str = view.datasource.present({ datasource: result });
+         res.end(str);
+       });
+      });
 
-  resource.http.app.get('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
-    view.method.render();
-    view.method.present({ resource: req.param('_resource'), method: req.param('_method') }, function(err, str){
-      res.end(str);
-    });
-  });
+      resource.http.app.get('/admin/resources/:resource', auth, function (req, res, next) {
+        view.resource.render({});
+        view.resource.present({
+          resource: req.param('resource')
+        }, function(err, str){
+          res.end(str);
+        });
+      });
 
-  resource.http.app.post('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
+      resource.http.app.get('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
+        view.method.render();
+        view.method.present({ resource: req.param('_resource'), method: req.param('_method') }, function(err, str){
+          res.end(str);
+        });
+      });
 
-    var _resource = resource.resources[req.param('_resource')],
-        _method = _resource[req.param('_method')],
-        id = req.param('id'),
-        str,
-        data = {},
+      resource.http.app.post('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
+
+        var _resource = resource.resources[req.param('_resource')],
+            _method = _resource[req.param('_method')],
+            id = req.param('id'),
+            str,
+            data = {},
+            props = _method.schema.properties || {};
+
+        if(typeof _method.schema === 'undefined') {
+          _method.schema = {
+            properties: {}
+          };
+        }
+
+        //
+        // If an options hash is expected in the resource method
+        //
+        if(_method.schema.properties && typeof _method.schema.properties.options !== 'undefined') {
+          props = _method.schema.properties.options.properties;
+        }
+
+        //
+        // Iterate through all the querystring and request.body values and
+        // merge them into a single "data" argument
+        //
+        Object.keys(req.params).forEach(function (p) {
+          data[p] = req.param(p);
+        });
+
+        Object.keys(req.body).forEach(function (p) {
+          data[p] = req.body[p];
+        });
+
+        //
+        // If a value is supposed to be a number, attempt to coerce it
+        //
+        // TODO: How should this behave for "any" cases? Keep in mind that
+        // ip addresses will successfully parse as floats.
+        //
+        Object.keys(data).forEach(function (p) {
+          if (props && props[p] && props[p].type === 'number') {
+            var coerced = parseFloat(data[p], 10);
+
+            if (coerced.toString() !== 'NaN') {
+              data[p] = coerced;
+            }
+          }
+        });
+
+        view.method.render();
+
+        view.method.present({
+          resource: req.param('_resource'),
+          method: req.param('_method'),
+          data: data,
+          action: 'post',
+          id: id
+        }, function(err, str){
+          res.end(str);
+        });
+
+      });
+
+      resource.http.app.get('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
+        var _id = req.param('id');
+        view.method.render();
+        view.method.present({
+          resource: req.param('_resource'),
+          method: req.param('_method'),
+          id: _id
+        }, function(err, str){
+          res.end(str);
+        });
+      });
+
+      resource.http.app.post('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
+
+        var _method = resource.resources[req.param('_resource')].methods[req.param('_method')];
+
+        //
+        // Pull out all the params from the request based on schema
+        //
+        if(typeof _method.schema === 'undefined') {
+          _method.schema = {
+            properties: {}
+          };
+        }
+
+        var props, str, data = {};
+
         props = _method.schema.properties || {};
 
-    if(typeof _method.schema === 'undefined') {
-      _method.schema = {
-        properties: {}
-      };
-    }
-
-    if(_method.schema.properties && typeof _method.schema.properties.options !== 'undefined') {
-      props = _method.schema.properties.options.properties;
-    }
-    if(typeof props === 'object') {
-      Object.keys(props).forEach(function(prop) {
-        if(typeof req.param(prop) !== 'undefined') {
-          data[prop] = req.param(prop);
+        if(typeof _method.schema.properties !== 'undefined' && typeof _method.schema.properties.options !== 'undefined') {
+          props = _method.schema.properties.options.properties;
         }
-        if(props[prop].type === "number") {
-          data[prop] = Number(req.param(prop));
-          if(data[prop].toString() === "NaN") {
-            data[prop] = req.param(prop);
+
+        Object.keys(props).forEach(function(prop) {
+          data[prop] = req.param(prop);
+          if(props[prop].type === "number") {
+            data[prop] = Number(req.param(prop));
+            if(data[prop].toString() === "NaN") {
+              data[prop] = req.param(prop);
+            }
           }
-        }
+        });
+
+        view.method.render();
+
+        view.method.present({
+          resource: req.param('_resource'),
+          method: req.param('_method'),
+          id: req.param('id'),
+          data: data,
+          action: 'post'
+        }, function(err, str){
+          res.end(str);
+        });
+
       });
-    }
 
-    view.method.render();
-
-    view.method.present({
-      resource: req.param('_resource'),
-      method: req.param('_method'),
-      data: data,
-      action: 'post',
-      id: id
-    }, function(err, str){
-      res.end(str);
+      callback(null, resource.http.server);
     });
-
-  });
-
-  resource.http.app.get('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
-    var _id = req.param('id');
-    view.method.render();
-    view.method.present({
-      resource: req.param('_resource'),
-      method: req.param('_method'),
-      id: _id
-    }, function(err, str){
-      res.end(str);
-    });
-  });
-
-  resource.http.app.post('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
-
-    var _method = resource.resources[req.param('_resource')].methods[req.param('_method')];
-
-    //
-    // Pull out all the params from the request based on schema
-    //
-    if(typeof _method.schema === 'undefined') {
-      _method.schema = {
-        properties: {}
-      };
-    }
-
-    var props, str, data = {};
-
-    props = _method.schema.properties || {};
-
-    if(typeof _method.schema.properties !== 'undefined' && typeof _method.schema.properties.options !== 'undefined') {
-      props = _method.schema.properties.options.properties;
-    }
-
-    Object.keys(props).forEach(function(prop) {
-      data[prop] = req.param(prop);
-      if(props[prop].type === "number") {
-        data[prop] = Number(req.param(prop));
-        if(data[prop].toString() === "NaN") {
-          data[prop] = req.param(prop);
-        }
-      }
-    });
-
-    view.method.render();
-    view.method.present({
-      resource: req.param('_resource'),
-      method: req.param('_method'),
-      id: req.param('id'),
-      data: data,
-      action: 'post'
-    }, function(err, str){
-      res.end(str);
-    });
-
-  });
-
-  callback(null, resource.http.server);
+  }
 }
 
 //

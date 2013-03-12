@@ -42,23 +42,45 @@ view.method('create', create, {
 
 function create (options, callback) {
   options = options || {};
-  //
-  // TODO: move this delegation / conditional logic to inside view engine
-  //
-  if(typeof options.template !== 'undefined') {
-    var view = new viewful.View({
-      template: options.template,
-      input: options.input,
-      output: options.ouput
-    });
-  } else {
-    var view = new viewful.View({
-      path: options.path,
-      input: options.input,
-      output: options.ouput
-    });
+  try {
+    //
+    // TODO: move this delegation / conditional logic to inside view engine
+    //
+    if(typeof options.template !== 'undefined') {
+      var view = new viewful.View({
+        template: options.template,
+        input: options.input,
+        output: options.ouput
+      });
+    } else {
+      var view = new viewful.View({
+        path: options.path,
+        input: options.input,
+        output: options.ouput
+      });
+    }
+    //
+    // Remark: View should not attempt to load if no path was entered
+    //
+    // TODO: Should this fix be here or in the View prototype constructor ( viewful.View ) ?
+    //
+    if (typeof options.path === 'string') {
+      view.load();
+    }
   }
-  return view;
+  catch (err) {
+    if (callback) {
+      return callback(err);
+    }
+    throw err;
+  }
+
+  if (callback) {
+    callback(null, view);
+  }
+  else {
+    return view;
+  }
 }
 
 exports.view = view;

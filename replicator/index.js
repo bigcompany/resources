@@ -133,10 +133,11 @@ function listen (callback) {
   });
 
   // TODO: where is the event handler for when this is ready?
-  callback(null);
+  callback(null, resource.http.server);
 
 };
 
+replicator.method('start', listen, replicator.listen.schema);
 
 // pushes current big instance to another
 function push (options, callback) {

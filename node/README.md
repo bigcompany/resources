@@ -41,6 +41,8 @@ for managing nodes
 
   - [update](#node-methods-update) (options, callback)
 
+  - [updateOrCreate](#node-methods-updateOrCreate) (options, callback)
+
   - [destroy](#node-methods-destroy) (id, callback)
 
   - [sh](#node-methods-sh) (options, callback)
@@ -409,6 +411,112 @@ gets all instances of node
 ### node.update(options, callback)
 
 updates a node by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **port** 
+
+      - **type** : number
+
+      - **default** : 7777
+
+      - **description** : the port of the node
+
+    - **host** 
+
+      - **type** : string
+
+      - **default** : 0.0.0.0
+
+      - **description** : the host of the node
+
+    - **name** 
+
+      - **type** : string
+
+      - **description** : the name of the node
+
+    - **events** 
+
+      - **description** : the total amount of events processed by this node
+
+      - **type** : number
+
+    - **username** 
+
+      - **description** : the username used to log into the node
+
+      - **type** : string
+
+      - **default** : root
+
+      - **required** : false
+
+    - **role** 
+
+      - **description** : the role of the node
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *server*
+
+        - 1 : *client*
+
+      - **default** : client
+
+    - **status** 
+
+      - **description** : the status of the node
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *connected*
+
+        - 1 : *disconnected*
+
+      - **default** : disconnected
+
+    - **password** 
+
+      - **description** : the password used to log into the node
+
+      - **type** : string
+
+      - **required** : false
+
+    - **system** 
+
+      - **description** : a dump of the node's system information ( from node.process and require('os') module )
+
+      - **type** : any
+
+    - **lastSeen** 
+
+      - **description** : the last date/time the node was seen
+
+      - **type** : string
+
+- **callback** 
+
+  - **type** : function
+
+<a name="node-methods-updateOrCreate"></a> 
+
+### node.updateOrCreate(options, callback)
+
+updates a node by id, and creates if necessary
 
 - **options** 
 

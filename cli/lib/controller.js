@@ -1,7 +1,7 @@
 var controller = exports;
 
 var resource = require('resource'),
-    prompt = require('prompt');
+    prompt = require('prompt-lite');
 
 //
 // Use the built-in resource console logging utility

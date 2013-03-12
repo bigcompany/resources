@@ -31,6 +31,8 @@ for managing and keeping track of replication events
 
   - [update](#replication-methods-update) (options, callback)
 
+  - [updateOrCreate](#replication-methods-updateOrCreate) (options, callback)
+
   - [destroy](#replication-methods-destroy) (id, callback)
 
 
@@ -49,7 +51,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Sun Jan 13 2013 21:29:01 GMT+0530 (IST)
+  - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
 
 - **source** 
 
@@ -98,7 +100,7 @@ create a new replication
 
       - **type** : string
 
-      - **default** : Sun Jan 13 2013 21:29:01 GMT+0530 (IST)
+      - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
 
     - **source** 
 
@@ -244,7 +246,55 @@ updates a replication by id
 
       - **type** : string
 
-      - **default** : Sun Jan 13 2013 21:29:01 GMT+0530 (IST)
+      - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
+
+    - **source** 
+
+      - **description** : the source of the replication ( where the code is coming from )
+
+      - **type** : string
+
+    - **target** 
+
+      - **description** : the target of the replication ( where the code is going )
+
+      - **type** : string
+
+    - **repo** 
+
+      - **type** : string
+
+    - **branch** 
+
+      - **type** : string
+
+- **callback** 
+
+  - **type** : function
+
+<a name="replication-methods-updateOrCreate"></a> 
+
+### replication.updateOrCreate(options, callback)
+
+updates a replication by id, and creates if necessary
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **time** 
+
+      - **description** : the date and time of the replication
+
+      - **type** : string
+
+      - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
 
     - **source** 
 
