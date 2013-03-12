@@ -29,6 +29,8 @@ for managing accounts
 
   - [update](#account-methods-update) (options, callback)
 
+  - [updateOrCreate](#account-methods-updateOrCreate) (options, callback)
+
   - [destroy](#account-methods-destroy) (id, callback)
 
   - [confirm](#account-methods-confirm) (token)
@@ -251,6 +253,68 @@ gets all instances of account
 ### account.update(options, callback)
 
 updates a account by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **email** 
+
+      - **type** : string
+
+      - **format** : email
+
+      - **required** : true
+
+    - **password** 
+
+      - **type** : string
+
+      - **format** : password
+
+    - **status** 
+
+      - **description** : the current status of the account
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *new*
+
+        - 1 : *active*
+
+        - 2 : *inactive*
+
+        - 3 : *disabled*
+
+      - **default** : new
+
+    - **token** 
+
+      - **description** : unique access token for the account. used for account confirmations and password resets
+
+      - **type** : string
+
+      - **private** : true
+
+      - **default** : 
+
+- **callback** 
+
+  - **type** : function
+
+<a name="account-methods-updateOrCreate"></a> 
+
+### account.updateOrCreate(options, callback)
+
+updates a account by id, and creates if necessary
 
 - **options** 
 

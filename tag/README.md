@@ -25,6 +25,8 @@ a simple hierarchical tagging system
 
   - [update](#tag-methods-update) (options, callback)
 
+  - [updateOrCreate](#tag-methods-updateOrCreate) (options, callback)
+
   - [destroy](#tag-methods-destroy) (id, callback)
 
   - [createTag](#tag-methods-createTag) (options)
@@ -181,6 +183,44 @@ gets all instances of tag
 ### tag.update(options, callback)
 
 updates a tag by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **name** 
+
+      - **type** : string
+
+      - **description** : the name of the tag
+
+      - **required** : true
+
+    - **parentID** 
+
+      - **type** : string
+
+      - **description** : the parent ID of the tag
+
+      - **key** : tag
+
+      - **default** : 
+
+- **callback** 
+
+  - **type** : function
+
+<a name="tag-methods-updateOrCreate"></a> 
+
+### tag.updateOrCreate(options, callback)
+
+updates a tag by id, and creates if necessary
 
 - **options** 
 

@@ -5,6 +5,7 @@ resources for any occasion
  - [account](https://github.com/bigcompany/resources/tree/master/account) for managing accounts
  - [admin](https://github.com/bigcompany/resources/tree/master/admin) a web based admin panel
  - [api](https://github.com/bigcompany/resources/tree/master/api) provides a web API for interacting with resources
+ - [calculator](https://github.com/bigcompany/resources/tree/master/calculator) a basic calculator
  - [cli](https://github.com/bigcompany/resources/tree/master/cli) provides a command line interface
  - [creature](https://github.com/bigcompany/resources/tree/master/creature) example resource for creatures like dragons, unicorns, and ponies
  - [cron](https://github.com/bigcompany/resources/tree/master/cron) for managing cron jobs
@@ -19,6 +20,7 @@ resources for any occasion
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) provides a distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes
  - [permissions](https://github.com/bigcompany/resources/tree/master/permissions) for managing permissions
+ - [queue](https://github.com/bigcompany/resources/tree/master/queue) 
  - [repl](https://github.com/bigcompany/resources/tree/master/repl) enables an interactive Read-Eval-Print-Loop ( REPL )
  - [replication](https://github.com/bigcompany/resources/tree/master/replication) for managing and keeping track of replication events
  - [replicator](https://github.com/bigcompany/resources/tree/master/replicator) provides an application replication API for resource based apps
