@@ -25,6 +25,8 @@ example resource for creatures like dragons, unicorns, and ponies
 
   - [update](#creature-methods-update) (options, callback)
 
+  - [updateOrCreate](#creature-methods-updateOrCreate) (options, callback)
+
   - [destroy](#creature-methods-destroy) (id, callback)
 
   - [poke](#creature-methods-poke) ()
@@ -181,6 +183,46 @@ gets all instances of creature
 ### creature.update(options, callback)
 
 updates a creature by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **type** 
+
+      - **type** : string
+
+      - **enum**
+
+        - 0 : *dragon*
+
+        - 1 : *unicorn*
+
+        - 2 : *pony*
+
+      - **default** : dragon
+
+    - **life** 
+
+      - **type** : number
+
+      - **default** : 10
+
+- **callback** 
+
+  - **type** : function
+
+<a name="creature-methods-updateOrCreate"></a> 
+
+### creature.updateOrCreate(options, callback)
+
+updates a creature by id, and creates if necessary
 
 - **options** 
 

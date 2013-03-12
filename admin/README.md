@@ -45,7 +45,7 @@ start a listening admin web server
 
       - **default** : 8888
 
-      - **description** : the port to listen on 
+      - **description** : the port to listen on
 
     - **host** 
 
@@ -77,7 +77,7 @@ start a listening admin web server
 
       - **default** : 8888
 
-      - **description** : the port to listen on 
+      - **description** : the port to listen on
 
     - **host** 
 

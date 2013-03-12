@@ -22,8 +22,12 @@ github.method('activity', activity, {
 function activity (options, callback) {
   var gh = require('github');
   var conn = new gh({
-      version: "3.0.0"
+    version: "3.0.0"
   });
+
+  if (options.authenticate) {
+    conn.authenticate(options.authenticate);
+  }
   
   //
   // TODO: better conditional logic for determing user / org / project / etc

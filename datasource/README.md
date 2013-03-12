@@ -35,6 +35,8 @@ perists resources to data storage engines
 
   - [update](#datasource-methods-update) (options, callback)
 
+  - [updateOrCreate](#datasource-methods-updateOrCreate) (options, callback)
+
   - [destroy](#datasource-methods-destroy) (id, callback)
 
   - [test](#datasource-methods-test) (datasource)
@@ -65,7 +67,7 @@ perists resources to data storage engines
 
   - **format** : status
 
-  - **default** : inactive
+  - **default** : offline
 
 - **type** 
 
@@ -77,7 +79,7 @@ perists resources to data storage engines
 
     - 0 : *couch*
 
-    - 1 : *file-system*
+    - 1 : *fs*
 
     - 2 : *memory*
 
@@ -135,6 +137,8 @@ perists resources to data storage engines
 
   - **description** : the password used to connect to the datasource
 
+  - **format** : password
+
 
 <a name="datasource-methods"></a> 
 
@@ -172,7 +176,7 @@ create a new datasource
 
       - **format** : status
 
-      - **default** : inactive
+      - **default** : offline
 
     - **type** 
 
@@ -184,7 +188,7 @@ create a new datasource
 
         - 0 : *couch*
 
-        - 1 : *file-system*
+        - 1 : *fs*
 
         - 2 : *memory*
 
@@ -241,6 +245,8 @@ create a new datasource
       - **type** : string
 
       - **description** : the password used to connect to the datasource
+
+      - **format** : password
 
 - **callback** 
 
@@ -410,7 +416,7 @@ updates a datasource by id
 
       - **format** : status
 
-      - **default** : inactive
+      - **default** : offline
 
     - **type** 
 
@@ -422,7 +428,7 @@ updates a datasource by id
 
         - 0 : *couch*
 
-        - 1 : *file-system*
+        - 1 : *fs*
 
         - 2 : *memory*
 
@@ -479,6 +485,116 @@ updates a datasource by id
       - **type** : string
 
       - **description** : the password used to connect to the datasource
+
+      - **format** : password
+
+- **callback** 
+
+  - **type** : function
+
+<a name="datasource-methods-updateOrCreate"></a> 
+
+### datasource.updateOrCreate(options, callback)
+
+updates a datasource by id, and creates if necessary
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **status** 
+
+      - **type** : string
+
+      - **description** : the status of the datasource
+
+      - **enum**
+
+        - 0 : *online*
+
+        - 1 : *offline*
+
+        - 2 : *error*
+
+      - **format** : status
+
+      - **default** : offline
+
+    - **type** 
+
+      - **type** : string
+
+      - **description** : The type of the datasource
+
+      - **enum**
+
+        - 0 : *couch*
+
+        - 1 : *fs*
+
+        - 2 : *memory*
+
+        - 3 : *mongo*
+
+        - 4 : *mysql*
+
+        - 5 : *redis*
+
+      - **required** : true
+
+      - **message** : datasource type must be valid
+
+    - **port** 
+
+      - **type** : number
+
+      - **description** : the port of the datasource
+
+      - **minimum** : 1
+
+      - **maximum** : 65535
+
+      - **message** : port should be valid
+
+    - **host** 
+
+      - **type** : string
+
+      - **description** : the host of the datasource
+
+      - **format** : host-name
+
+      - **minLength** : 1
+
+      - **default** : localhost
+
+    - **uri** 
+
+      - **type** : string
+
+      - **description** : the connection uri to the datasource
+
+      - **default** : 
+
+    - **username** 
+
+      - **type** : string
+
+      - **description** : the username used to connect to the datasource
+
+    - **password** 
+
+      - **type** : string
+
+      - **description** : the password used to connect to the datasource
+
+      - **format** : password
 
 - **callback** 
 

@@ -17,7 +17,7 @@ module['exports'] = function (options, callback) {
       } else {
         $('.message').html('Created!');
         $('form').remove();
-        self.parent.get.present({ resource: options.resource, id: result.id }, function(err, re){
+        self.parent.get.present({ unscoped: true, resource: options.resource, id: result.id }, function(err, re){
           return callback(null, re);
         });
       }

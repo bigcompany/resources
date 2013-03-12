@@ -27,6 +27,8 @@ for managing event hooks ( IF this THEN that )
 
   - [update](#hook-methods-update) (options, callback)
 
+  - [updateOrCreate](#hook-methods-updateOrCreate) (options, callback)
+
   - [destroy](#hook-methods-destroy) (id, callback)
 
   - [start](#hook-methods-start) ()
@@ -199,6 +201,48 @@ gets all instances of hook
 ### hook.update(options, callback)
 
 updates a hook by id
+
+- **options** 
+
+  - **type** : object
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **if** 
+
+      - **type** : string
+
+      - **description** : the if action
+
+      - **required** : true
+
+    - **then** 
+
+      - **type** : string
+
+      - **description** : the then action
+
+      - **required** : true
+
+    - **with** 
+
+      - **type** : object
+
+      - **description** : additional data supplied to `then`
+
+- **callback** 
+
+  - **type** : function
+
+<a name="hook-methods-updateOrCreate"></a> 
+
+### hook.updateOrCreate(options, callback)
+
+updates a hook by id, and creates if necessary
 
 - **options** 
 

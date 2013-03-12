@@ -45,32 +45,19 @@ twitter.property('user', {
 });
 
 //
-// Many methods require a specified user in addition to other properties
-//
-function withScreenNameOrId(schema) {
-  schema.properties = schema.properties || {};
-  schema.properties.screenName = twitter.schema.properties.user.properties.screenName;
-  schema.properties.id = twitter.schema.properties.user.properties.screenName
-  return schema;
-}
-
-//
 // We keep track of both screenNames and ids for users that have active
 // authenticated client instances
 //
-// TODO: Consider cases where the specified user does not have a client.
-// ntwitter should have a method for looking up numerical ids given a
-// screenName.
-//
-function getScreenNameAndId(options) {
-  var screenName, id;
+function getUser(options) {
+  var user = options.user || options,
+      screenName, id;
 
-  if (options.screenName) {
-    screenName = options.screenName;
+  if (user.screenName) {
+    screenName = user.screenName;
     id = twitter.screenNames[screenName];
   }
-  else if (options.id) {
-    id = options.id;
+  else if (user.id) {
+    id = user.id;
     screenName = twitter.ids[id];
   }
 
@@ -82,6 +69,7 @@ function getScreenNameAndId(options) {
 
 twitter.property('tweet', {
   description: 'a twitter tweet',
+  type: 'object',
   properties: {
     message: {
       type: 'string',
@@ -93,7 +81,10 @@ twitter.property('tweet', {
 twitter.property('stream', {
   description: 'a twitter stream',
   properties: {
-    method: { type: 'string', required: true }
+    method: { type: 'string', required: true },
+    follow: { type: 'string', required: false },
+    track: { type: 'string', required: false },
+    locations: { type: 'string', required: false }
   }
 });
 
@@ -101,10 +92,6 @@ twitter.property('stream', {
 // When a user connects, their credentials are verified, their screenName
 // and id are mutually cross-referenced, and the client is namespaced under
 // their screenName
-//
-// TODO: Consider caching username/id pairs for non-authenticated users
-// to avoid making unnecessary API calls, as a separate abstraction from
-// the connections lookup table
 //
 twitter.connections = {};
 twitter.screenNames = {};
@@ -124,18 +111,18 @@ function connect (options, callback) {
   var Twitter = require('ntwitter');
 
   var client = new Twitter(options);
-  client.verifyCredentials(function (err, data) {
+  client.verifyCredentials(function (err, user) {
     if (err) {
       return callback(err);
     }
 
-    data.screenName = data.screen_name;
+    user.screenName = user.screen_name;
 
-    twitter.screenNames[data.screen_name] = data.id;
-    twitter.ids[data.id] = data.screen_name;
-    twitter.connections[data.screen_name] = {
+    twitter.screenNames[user.screen_name] = user.id;
+    twitter.ids[user.id] = user.screen_name;
+    twitter.connections[user.screen_name] = {
       client: client,
-      metadata: data,
+      user: user,
       streams: options.streams || {}
     };
 
@@ -146,7 +133,7 @@ function connect (options, callback) {
         i = closedStreams.length;
 
     if (i) {
-      return closedStreams.forEach(function (streamId) {
+      closedStreams.forEach(function (streamId) {
         var opts = options.streams[streamId].options;
         twitter.addStream(opts, function (err) {
           if (err) {
@@ -155,22 +142,26 @@ function connect (options, callback) {
 
           i--;
           if (i <= 0) {
-            callback(null, data);
+            callback(null, user);
           }
         });
       })
     }
-
-    callback(null, data);
+    else {
+      callback(null, user);
+    }
   });
 };
 
 twitter.method('disconnect', disconnect, {
   description: 'disconnects from twitter',
   properties: {
-    options: withScreenNameOrId({
-      type: 'object'
-    }),
+    options: {
+      type: 'object',
+      properties: {
+        user: twitter.schema.properties.user
+      }
+    },
     callback: {
       type: 'function',
       default: function () {}
@@ -178,7 +169,7 @@ twitter.method('disconnect', disconnect, {
   }
 });
 function disconnect (options, callback) {
-  var user = getScreenNameAndId(options),
+  var user = getUser(options),
       screenName = user.screenName,
       id = user.id;
 
@@ -188,34 +179,46 @@ function disconnect (options, callback) {
   var openStreams = Object.keys(twitter.connections[screenName].streams),
       i = openStreams.length;
 
-  openStreams.forEach(function (streamId) {
-    twitter.removeStream({
-      screenName: screenName,
-      streamId: streamId
-    }, function (err) {
-      if (err) {
-        return callback(err);
-      }
+  if (i) {
+    openStreams.forEach(function (streamId) {
+      twitter.removeStream({
+        user: {
+          screenName: screenName
+        },
+        streamId: streamId
+      }, function (err) {
+        if (err) {
+          return callback(err);
+        }
 
-      i--;
-      if (i <= 0) {
-        //
-        // Clean up user from lookup tables
-        //
-        delete twitter.connections[screenName];
-        delete twitter.screenNames[screenName];
-        delete twitter.ids[userdata.id];
+        i--;
+        if (i <= 0) {
+          //
+          // Clean up user from lookup tables
+          //
+          delete twitter.connections[screenName];
+          delete twitter.screenNames[screenName];
+          delete twitter.ids[id];
 
-        callback(null, true);
-      }
+          callback(null, true);
+        }
+      });
     });
-  });
+  }
+  else {
+    callback(null, true);
+  }
 }
 
 twitter.method('addStream', addStream, {
   description: 'starts listening to a twitter stream',
   properties: {
-    options: withScreenNameOrId(twitter.schema.properties.stream),
+    options: {
+      properties: {
+        user: twitter.schema.properties.user,
+        stream: twitter.schema.properties.stream
+      }
+    },
     callback: {
       type: 'function',
       default: function (error, options, stream) {}
@@ -224,28 +227,18 @@ twitter.method('addStream', addStream, {
 });
 function addStream (options, callback) {
   var params = {},
-      user = getScreenNameAndId(options);
+      user = getUser(options),
+      method = options.stream.method;
 
-  //
-  // TODO: Consider cases where there's a namespace collision between
-  // authenticated user screenName/id versus non-authenticated user stream
-  // parameters
-  //
-  Object.keys(options).forEach(function (k) {
-    if (k === 'method') {
+  Object.keys(options.stream).forEach(function (k) {
+    if (k === 'method' || k === 'user') {
       return;
     }
-    if (k === 'screenName') {
-      return;
-    }
-    if (k === 'id') {
-      return;
-    }
-    params[k] = options[k];
+    params[k] = options.stream[k];
   });
 
-  twitter.connections[user.screenName].client.stream(options.method, params, function (stream) {
-    var uuid = options.method + '-' + resource.uuid();
+  twitter.connections[user.screenName].client.stream(method, params, function (stream) {
+    var uuid = options.stream.method + '-' + resource.uuid();
 
     twitter.connections[user.screenName].streams[uuid] = {
       stream: stream,
@@ -253,12 +246,18 @@ function addStream (options, callback) {
     };
 
     stream.on('data', function (data) {
+      data.message = data.text;
+      data.user.screenName = data.user.screen_name;
       twitter.receive(data);
     });
     stream.on('limit', function (data) {
       twitter.limit(data);
     });
-    stream.on('error', function (err) {
+    stream.on('error', function (err, code) {
+      if (typeof err == 'string' && typeof code !== 'undefined') {
+        err = new Error(err + ' ' + code);
+        err.code = code;
+      }
       twitter.error(err);
     });
 
@@ -270,21 +269,24 @@ function addStream (options, callback) {
 twitter.method('getStream', getStream, {
   description: 'gets an active twitter stream',
   properties: {
-    object: withScreenNameOrId({
+    options: {
       type: 'object',
-      streamId: {
-        type: 'string'
+      properties: {
+        user: twitter.schema.properties.user,
+        streamId: {
+          type: 'string'
+        }
       }
-    }),
+    },
     callback: {
-      type: 'function',
-      required: true
+      type: 'function'
     }
   }
 });
-function getStream (object, callback) {
+function getStream (options, callback) {
+
   var stream,
-      screenName = getScreenNameAndId(options).screenName;
+      screenName = getUser(options).screenName;
 
   try {
     stream = twitter.connections[screenName].streams[options.streamId];
@@ -298,12 +300,15 @@ function getStream (object, callback) {
 twitter.method('removeStream', removeStream, {
   description: 'stops listening to a twitter stream',
   properties: {
-    object: withScreenNameOrId({
+    object: {
       type: 'object',
-      streamId: {
-        type: 'string'
+      properties: {
+        user: twitter.schema.properties.user,
+        streamId: {
+          type: 'string'
+        }
       }
-    }),
+    },
     callback: {
       type: 'function',
       default: function (error, options) {}
@@ -311,13 +316,17 @@ twitter.method('removeStream', removeStream, {
   }
 });
 function removeStream (options, callback) {
+  var screenName = getUser(options).screenName;
+
   twitter.getStream(options, function (err, stream) {
+
     if (err) {
       return callback(err);
     }
-    stream.destroy();
-    stream.on('destroy', function () {
-      delete twitter.streams[id];
+
+    stream.stream.destroy();
+    stream.stream.on('destroy', function () {
+      delete twitter.connections[screenName].streams[options.streamId];
       callback(null, options);
     });
   });
@@ -337,16 +346,14 @@ twitter.method('limit', limit, {
   }
 });
 function limit (callback) {
-  console.log('limit: ', data);
+  resource.logger.warn('limit: ', data);
   callback(data);
 };
 
 twitter.method('error', onError, {
   description: 'collects error events from twitter',
   properties: {
-    error: {
-      type: 'object'
-    },
+    error: {},
     callback: {
       type: 'function',
       default: function () {}
@@ -354,9 +361,12 @@ twitter.method('error', onError, {
   }
 });
 function onError (error, callback) {
-  console.log('error: ', error);
-  console.log(error.stack);
-  callback(err);
+  if (typeof error === 'string') {
+    error = new Error(error);
+  }
+  resource.logger.error(error.message);
+  resource.logger.error(error.stack);
+  callback(error);
 };
 
 //
@@ -365,12 +375,18 @@ function onError (error, callback) {
 twitter.method('send', send, {
   description: 'sends a tweet (updates your status)',
   properties: {
-    options: withScreenNameOrId(twitter.schema.properties.tweet),
+    options: {
+      type: 'object',
+      properties: {
+        user: twitter.schema.properties.user,
+        tweet: twitter.schema.properties.tweet
+      }
+    },
     callback: {
       default: function () {
-        console.log('sent tweet: ');
+        resource.logger.info('sent tweet: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
     }
@@ -382,8 +398,8 @@ function send (options, callback) {
   // TODO: "true" replies
   // These will probably be separate methods.
 
-  var screenName = getScreenNameAndId(options).screenName,
-      tweet = options.message;
+  var screenName = getUser(options).screenName,
+      tweet = options.tweet.message;
 
   // TODO: Intelligent trimming of tweet?
   twitter.connections[screenName].client.updateStatus(tweet, function (err, result) {
@@ -400,9 +416,9 @@ twitter.method('receive', receive, {
     options: twitter.schema.properties.tweet,
     callback: {
       default: function () {
-        console.log('received tweet: ');
+        resource.logger.info('received tweet: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
     }
@@ -415,90 +431,189 @@ function receive (options, callback) {
 twitter.method('follow', follow, {
   description: 'follows a twitter user',
   properties: {
-    options: withScreenNameOrId({
-      type: 'object',
-      user: twitter.schema.properties.user
-    }),
+    options: {
+      properties: {
+        user: twitter.schema.properties.user,
+        screenName: {
+          type: 'string',
+          required: false
+        },
+        id: {
+          required: false
+        }
+      }
+    },
     callback: {
       type: 'function',
       default: function () {
-        console.log('followed: ');
+        resource.logger.info('followed: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
     }
   }
 });
 function follow (options, callback) {
-  var screenName = getScreenNameAndId(options).screenName;
+  var screenName = getUser(options).screenName,
+      id = options.id || options.screenName;
 
-  irc.connections[screenName].client.createFriendship(options.id, callback);
+  twitter.connections[screenName].client.createFriendship(id, callback);
 };
 
 twitter.method('unfollow', unfollow, {
   description: 'unfollows a twitter user',
   properties: {
-    options: withScreenNameOrId({
-      type: 'object',
-      user: twitter.schema.properties.user
-    }),
+    options: {
+      properties: {
+        user: twitter.schema.properties.user,
+        screenName: {
+          type: 'string',
+          required: false
+        },
+        id: {
+          required: false
+        }
+      }
+    },
     callback: {
       type: 'function',
       default: function () {
-        console.log('unfollowed: ');
+        resource.logger.info('unfollowed: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
     }
   }
 });
 function unfollow (options, callback) {
-  irc.client.destroyFriendship(options.id, callback);
+  var screenName = getUser(options).screenName,
+      id = options.id || options.screenName;
+
+  twitter.connections[screenName].client.destroyFriendship(id, callback);
 };
 
 // TODO: unblock
 twitter.method('block', block, {
   description: 'blocks a twitter user',
   properties: {
-    options: twitter.schema.properties.user,
+    options: {
+      properties: {
+        user: twitter.schema.properties.user,
+        screenName: {
+          type: 'string',
+          required: false
+        },
+        id: {
+          required: false
+        }
+      }
+    },
     callback: {
       type: 'function',
       default: function () {
-        console.log('blocked: ');
+        resource.logger.info('blocked: ');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.info(i + ': ' + arg);
         });
       }
     }
   }
 });
 function block (options, callback) {
-  var screenName = getScreenNameAndId(options).screenName;
+  var screenName = getUser(options).screenName,
+      id = options.id || options.screenName;
 
-  irc.connections[screenName].client.createBlock(options.id, callback);
+  twitter.connections[screenName].client.createBlock(id, callback);
 };
 
 twitter.method('report', report, {
   description: 'reports a twitter user',
   properties: {
-    options: twitter.schema.properties.user,
+    options: {
+      properties: {
+        user: twitter.schema.properties.user,
+        screenName: {
+          type: 'string',
+          required: false
+        },
+        id: {
+          required: false
+        }
+      }
+    },
     callback: {
       type: 'function',
       default: function () {
-        console.log('reported: ');
+        resource.logger.warn('reported:');
         [].slice.call(arguments).forEach(function (arg, i) {
-          console.log(i + ': ' + arg);
+          resource.logger.warn(i + ': ' + arg);
         });
       }
     }
   }
 });
 function report (options, callback) {
-  var screenName = getScreenNameAndId(options).screenName;
+  var screenName = getUser(options).screenName,
+      id = options.id || options.screenName;
 
-  twitter.connections[screenName].client.reportSpam(options.id, callback);
+  twitter.connections[screenName].client.reportSpam(id, callback);
+};
+
+twitter.method('showUser', showUser, {
+  description: 'shows information on a twitter user',
+  properties: {
+    options: {
+      properties: {
+        user: twitter.schema.properties.user,
+        screenName: {
+          type: 'string',
+          required: false
+        },
+        id: {
+          required: false
+        }
+      }
+    },
+    callback: {
+      type: 'function'
+    }
+  }
+});
+function showUser (options, callback) {
+  var user = getUser(options),
+      lookup;
+
+  if (options.screenName) {
+    lookup = options.screenName;
+  }
+  else if (options.id) {
+    lookup = options.id;
+  }
+
+  twitter.connections[user.screenName].client.showUser(lookup, function (err, users) {
+    if (err) {
+      return callback(err);
+    }
+
+    //
+    // showUser returns an array of users, instead of a single user, despite
+    // only looking up one user. This array should only have one element.
+    // If it doesn't, we have no choice but to return the whole array.
+    //
+    users.forEach(function (u) {
+      u.screenName = u.screen_name;
+    });
+
+    if (users.length == 1) {
+      callback(null, users[0]);
+    }
+    else {
+      resource.logger.warn('twitter.showUser() resulted in multiple users');
+      callback(null, users);
+    }
+  });
 };
 
 twitter.method('tweetLength', tweetLength, {
@@ -524,5 +639,6 @@ function tweetLength (options, callback) {
 
 exports.twitter = twitter;
 exports.dependencies = {
-  "ntwitter": "0.5.0"
+  "ntwitter": "0.5.0",
+  "twitter-text": "1.5.2"
 };

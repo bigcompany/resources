@@ -1,6 +1,8 @@
 var resource = require('resource'),
     cli = resource.define('cli');
 
+var logger = resource.logger;
+
 cli.schema.description = "provides a command line interface";
 cli.started = false;
 
@@ -9,14 +11,14 @@ cli.method('start', start, {
 });
 
 function start (callback) {
-  console.log('welcome to big');
+  logger.info('welcome to big');
 
   //
   // Don't allow a user to use the cli to call it's own start method
   //
   if(cli.started) {
-    console.log('it looks like you are trying to start the cli inside the cli');
-    console.log("i can't allow you to do that");
+    logger.warn('it looks like you are trying to start the cli inside the cli');
+    logger.warn("i can't allow you to do that");
     process.exit();
   }
   //
@@ -29,8 +31,6 @@ function start (callback) {
 };
 
 exports.cli = cli;
-
-var logger = resource.logger;
 
 //
 // Miniature cli router which works sufficiently for our use cases
@@ -95,8 +95,8 @@ var router = {
 
 var createRouter = function (resources, options) {
 
-  var prompt      = require('prompt'),
-      _resource    = require('resource'),
+  var prompt      = require('prompt-lite'),
+      _resource   = require('resource'),
       colors      = require('colors'),
       controller  = require('./lib/controller')
       argv        = require('optimist').argv;
@@ -241,7 +241,7 @@ function promptToList (resource, callback) {
 exports.route = router.route;
 
 exports.dependencies = {
-  "prompt": "0.2.9",
+  "prompt-lite": "0.1.0",
   "optimist": "0.3.5",
   "colors": "*"
 };

@@ -23,6 +23,8 @@ for managing communication with irc
 
 #### [methods](#irc-methods)
 
+  - [wrapColors](#irc-methods-wrapColors) (color, message)
+
   - [connect](#irc-methods-connect) (options)
 
   - [disconnect](#irc-methods-disconnect) (options)
@@ -173,6 +175,54 @@ for managing communication with irc
 <a name="irc-methods"></a> 
 
 ## methods 
+
+<a name="irc-methods-wrapColors"></a> 
+
+### irc.wrapColors(color, message)
+
+wraps text in an irc color code
+
+- **color** 
+
+  - **enum**
+
+    - 0 : *white*
+
+    - 1 : *black*
+
+    - 2 : *dark_blue*
+
+    - 3 : *dark_green*
+
+    - 4 : *light_red*
+
+    - 5 : *dark_red*
+
+    - 6 : *magenta*
+
+    - 7 : *orange*
+
+    - 8 : *yellow*
+
+    - 9 : *light_green*
+
+    - 10 : *cyan*
+
+    - 11 : *light_cyan*
+
+    - 12 : *light_blue*
+
+    - 13 : *light_magenta*
+
+    - 14 : *gray*
+
+    - 15 : *light_gray*
+
+    - 16 : *reset*
+
+- **message** 
+
+  - **type** : string
 
 <a name="irc-methods-connect"></a> 
 

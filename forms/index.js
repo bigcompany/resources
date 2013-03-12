@@ -17,7 +17,6 @@ forms.method("generate", generate, {
 
 function generate (options, callback) {
   var view = resource.view.create({ path: __dirname + '/view', input: "html"});
-  view.load();
   var str = '', form;
   form = view.form[options.method] || view.form['method'];
   form.render();
@@ -25,7 +24,3 @@ function generate (options, callback) {
 };
 
 exports.forms = forms;
-
-var mappings = {
-  "all": "list"
-};
