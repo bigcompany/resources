@@ -148,11 +148,12 @@ oauth.method('requestToken', requestToken, {
     callback: {
       required: true,
       "default": function (error, oauthToken, oauthTokenSecret, results) {
-        if(error) {
-          console.log(error);
-        } else {
-          console.log(oauthToken);
-          console.log(oauthTokenSecret);
+        if (error) {
+          logger.error(error);
+        }
+        else {
+          logger.info('oauth token:', oauthToken);
+          logger.info('oauth token secret:', oauthTokenSecret);
         }
       }
     }
@@ -166,7 +167,7 @@ function requestToken (options, callback) {
 }
 
 oauth.method('accessToken', accessToken, {
-  description: 'get oauth Access Token',
+  description: 'get oauth access token',
   properties: {
     options: {
       required: true,
@@ -184,12 +185,13 @@ oauth.method('accessToken', accessToken, {
     },
     callback: {
       required: true,
-      "default": function (error, accessToken, accessTokenSecrest, results) {
-        if(error) {
-          console.log(error);
-        } else {
-          console.log(accessToken);
-          console.log(accessTokenSecrest);
+      "default": function (error, accessToken, accessTokenSecret, results) {
+        if (error) {
+          logger.error(error);
+        }
+        else {
+          logger.info('oauth access token:', accessToken);
+          logger.info('oauth access token secret:', accessTokenSecret);
         }
       }
     }
