@@ -121,9 +121,16 @@ var createRouter = function (resources, options) {
   //
 
   //
-  // Root, run when no arguments are passed in
+  // Root, run when no known resources are passed in
   //
-  router.on("", function(){
+  router.on("", function() {
+    // check to see if any arguments exist
+    if (argv._.length > 0) {
+      // attempt to use that argument as a resource
+      var name = argv._[0];
+      resource.use(name);
+    }
+
     logger.info('resources'.magenta + ' available:');
     // sort resources by name
     resources.sort(function(a,b){
@@ -174,18 +181,22 @@ var createRouter = function (resources, options) {
       // The root level of a resource,
       // show all immediate child commands
       //
-      logger.info(resource.name.magenta + ' methods:')
-      for (var m in resource.methods) {
-        if(typeof resource.methods[m] === "function") {
-          var self = this,
-              desc = '';
-          if(typeof resource.methods[m].schema !== 'undefined' && resource.methods[m].schema.description !== 'undefined') {
-            desc = resource.methods[m].schema.description || '';
+      if (Object.keys(resource.methods).length === 0) {
+        logger.warn('no methods available for ' + resource.name.magenta);
+      } else {
+        logger.info(resource.name.magenta + ' methods:')
+        for (var m in resource.methods) {
+          if(typeof resource.methods[m] === "function") {
+            var self = this,
+                desc = '';
+            if(typeof resource.methods[m].schema !== 'undefined' && resource.methods[m].schema.description !== 'undefined') {
+              desc = resource.methods[m].schema.description || '';
+            }
+            logger.info(' - ' + m.magenta + ' ' + desc.grey );
           }
-          logger.info(' - ' + m.magenta + ' ' + desc.grey );
         }
+        logger.help('type the ' + 'method'.magenta + ' name');
       }
-      logger.help('type the ' + 'method'.magenta + ' name');
     });
 
     //
