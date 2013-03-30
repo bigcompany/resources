@@ -95,7 +95,7 @@ node.method('sh', sh, {
 //
 node.before('create', function(data, next){
   if(typeof data.name === 'undefined') {
-    data.name = data.host + ":" + data.port;
+    data.name = data.host + "-" + data.port;
   }
   next(null, data);
 })
