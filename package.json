@@ -2,7 +2,7 @@
     "name": "resources",
     "description": "resources for any occasion",
     "version": "0.3.5",
-    "dependencies": {
+    "peerDependencies": {
       "resource": "0.3.x"
     },
     "main": "./index",
