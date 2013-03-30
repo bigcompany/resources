@@ -10,19 +10,25 @@ var resource = require('resource'),
 //
 // Read "/resources/" directory
 //
-var _resources = fs.readdirSync(__dirname);
+var npmResourcesPath = require.resolve('resources').replace('index.js', '');
+
+var _resources = fs.readdirSync(npmResourcesPath);
+
 //
 // Filter out any potential non-resource files / folders
 //
 _resources = _resources.filter(function (val) {
   var isResource = false;
+  val = npmResourcesPath + val;
   isResource = resource.isResource(val);
   return isResource;
 });
 
 //
-// For every resource, attempt to require it
+// For every resource, attempt to use it
 //
 _resources.forEach(function (r) {
   resource.use(r);
 });
+
+exports.resources = _resources;
