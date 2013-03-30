@@ -4,6 +4,7 @@ resources for any occasion
 
  - [account](https://github.com/bigcompany/resources/tree/master/account) for managing accounts
  - [admin](https://github.com/bigcompany/resources/tree/master/admin) a web based admin panel
+ - [analytics](https://github.com/bigcompany/resources/tree/master/analytics) real-time analytics by google
  - [api](https://github.com/bigcompany/resources/tree/master/api) provides a web API for interacting with resources
  - [calculator](https://github.com/bigcompany/resources/tree/master/calculator) a basic calculator
  - [cli](https://github.com/bigcompany/resources/tree/master/cli) provides a command line interface
@@ -19,8 +20,9 @@ resources for any occasion
  - [irc](https://github.com/bigcompany/resources/tree/master/irc) for managing communication with irc
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) provides a distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes
+ - [oauth](https://github.com/bigcompany/resources/tree/master/oauth) for managing oauth providers and sessions
  - [permissions](https://github.com/bigcompany/resources/tree/master/permissions) for managing permissions
- - [queue](https://github.com/bigcompany/resources/tree/master/queue) 
+ - [queue](https://github.com/bigcompany/resources/tree/master/queue) a queue for resource events
  - [repl](https://github.com/bigcompany/resources/tree/master/repl) enables an interactive Read-Eval-Print-Loop ( REPL )
  - [replication](https://github.com/bigcompany/resources/tree/master/replication) for managing and keeping track of replication events
  - [replicator](https://github.com/bigcompany/resources/tree/master/replicator) provides an application replication API for resource based apps

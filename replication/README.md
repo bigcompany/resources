@@ -51,7 +51,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
+  - **default** : Fri Mar 29 2013 22:33:04 GMT-0700 (PDT)
 
 - **source** 
 
@@ -100,7 +100,7 @@ create a new replication
 
       - **type** : string
 
-      - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
+      - **default** : Fri Mar 29 2013 22:33:04 GMT-0700 (PDT)
 
     - **source** 
 
@@ -246,7 +246,7 @@ updates a replication by id
 
       - **type** : string
 
-      - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
+      - **default** : Fri Mar 29 2013 22:33:04 GMT-0700 (PDT)
 
     - **source** 
 
@@ -294,7 +294,7 @@ updates a replication by id, and creates if necessary
 
       - **type** : string
 
-      - **default** : Mon Mar 11 2013 14:40:07 GMT+0530 (IST)
+      - **default** : Fri Mar 29 2013 22:33:04 GMT-0700 (PDT)
 
     - **source** 
 
