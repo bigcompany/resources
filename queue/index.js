@@ -1,6 +1,8 @@
 var resource = require('resource'),
     queue = resource.define('queue');
 
+queue.schema.description = "a queue for resource events";
+
 queue.persist('memory');
 
 queue.property('concurrency', {
