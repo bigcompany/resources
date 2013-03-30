@@ -73,7 +73,7 @@ function listen (options, callback) {
   //
   // Basic virtual host support
   //
-  if (resource.virtualhost) {
+  if(resource.virtualhost) {
     app.use(resource.virtualhost.middle);
   }
 
@@ -87,76 +87,81 @@ function listen (options, callback) {
   // TODO: finish view middleware
   // TODO: move to resource.view middleware
   //
-  if (resource.view) {
+  if(resource.view) {
     //
     // Create a new view assumming there is a ./view/ directory
     //
     var view;
-    try {
-      view = resource.view.create({ path: process.cwd() + '/view'});
-    }
-    catch (err) {
-      resource.logger.warn(err.message);
-    }
 
-    if (view) {
-      //
-      // View middleware for serving views
-      //
-      app.use(function (req, res, next) {
-        var _view = view;
-        var parts = req.url.split('/');
-        parts.shift();
-        parts.forEach(function(part) {
-          if(part.length > 0 && typeof _view !== 'undefined') {
-            _view = _view[part];
+    resource.view.create({ path: process.cwd() + '/view'}, function (err, view) {
+      if(err) {
+        resource.logger.warn(err.message);
+      }
+      if(view) {
+        //
+        // View middleware for serving views
+        //
+        app.use(function (req, res, next) {
+          var _view = view;
+          var parts = req.url.split('/');
+          parts.shift();
+          parts.forEach(function(part) {
+            if(part.length > 0 && typeof _view !== 'undefined') {
+              _view = _view[part];
+            }
+          });
+          if (_view && _view['index']) {
+            _view = _view['index'];
+          }
+          if(typeof _view === "undefined") {
+            resource.logger.error('invalid view ' + req.url);
+            var _path = path.resolve(process.cwd() + req.virtualpath);
+            return connect.static(_path)(req, res, next);
+          }
+
+          var str = _view.render({});
+          if (typeof _view.present === "function") {
+            _view.present({}, function (err, rendered) {
+              res.end(rendered);
+            });
+          } else {
+            res.end(str);
           }
         });
-        if (_view && _view['index']) {
-          _view = _view['index'];
-        }
-        if(typeof _view === "undefined") {
-          resource.logger.error('invalid view ' + req.url);
-          var _path = path.resolve(process.cwd() + req.virtualpath);
-          return connect.static(_path)(req, res, next);
-        }
+      }
 
-        var str = _view.render({});
-        if (typeof _view.present === "function") {
-          _view.present({}, function (err, rendered) {
-            res.end(rendered);
-          });
-        } else {
-          res.end(str);
-        }
-      });
-    }
+      finish();
+    });
+  }
+  else {
+    finish();
   }
 
-  if(typeof options.root !== 'undefined') {
+  function finish() {
+    if(typeof options.root !== 'undefined') {
+      //
+      // Use http root passed in through options
+      //
+      app
+        .use(connect.static(options.root));
+    }
+
     //
-    // Use http root passed in through options
+    // Use the default http root that ships with resources
     //
     app
-      .use(connect.static(options.root));
+      .use(connect.static(__dirname + '/public'));
+
+    http.server = server = require('http').createServer(app).listen(options.port, options.host, function () {
+     callback(null, server);
+    });
+
+    //
+    // Bind app instance to http resource
+    //
+    http.app = app;
+    http.server = server;
   }
-
-  //
-  // Use the default http root that ships with resources
-  //
-  app
-    .use(connect.static(__dirname + '/public'));
-
-  http.server = server = require('http').createServer(app).listen(options.port, options.host, function () {
-   callback(null, server);
-  });
-
-  //
-  // Bind app instance to http resource
-  //
-  http.app = app;
-  http.server = server;
-
 }
 
 //
