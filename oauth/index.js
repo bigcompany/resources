@@ -1,6 +1,8 @@
 var resource = require('resource'),
     oauth = resource.define('oauth');
 
+oauth.schema.description = "for managing oauth providers and sessions";
+
 oauth.property('credentials', {
   description: 'credentials for an oauth endpoint',
   properties: {
