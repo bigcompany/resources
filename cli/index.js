@@ -109,10 +109,12 @@ var createRouter = function (resources, options) {
   options = options || {};
 
   if(typeof resources === 'object' && !Array.isArray(resources)) {
-    var arr = []
-    for (var r in resources) {
-      arr.push(resources[r]);
-    }
+    var arr = [];
+    var keys = Object.keys(resources);
+    keys = keys.sort();
+    keys.forEach(function(key){
+      arr.push(resources[key]);
+    });
     resources = arr;
    }
 
@@ -132,10 +134,7 @@ var createRouter = function (resources, options) {
     }
 
     logger.info('resources'.magenta + ' available:');
-    // sort resources by name
-    resources.sort(function(a,b){
-      return a.name > b.name;
-    });
+
     resources.forEach(function (resource) {
       logger.info(' - ' + resource.name.magenta + ' ' + (resource.schema.description || '').grey);
     });
