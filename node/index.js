@@ -78,7 +78,7 @@ node.method('sh', sh, {
         "recipe": {
           "description": "name to the shell script to run remotely",
           "type": "string",
-          "default": __dirname + "/recipes/ls-test" // TODO: ability to load by name, not just path
+          "default": "ls-test" // TODO: ability to load by name, not just path
         }
       }
     },
