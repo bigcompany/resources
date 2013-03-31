@@ -46,14 +46,14 @@ cd ..
 # remove the update-motd
 # rm -rf /etc/update-motd.d/*.*
 
-# clone big from big-0
-git clone http://biginternetcompany.net:8888/big
+# clone big from github
+git clone git://github.com/bigcompany/big.git
 
-# clone resource from big-0
-git clone http://biginternetcompany.net:8888/resources
+# clone resource from github
+git clone git://github.com/bigcompany/resource.git
 
-# clone resources from big-0
-git clone http://biginternetcompany.net:8888/resource
+# clone resources from github
+git clone git://github.com/bigcompany/resources.git
 
 
 # mon
