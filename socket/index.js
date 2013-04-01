@@ -18,7 +18,7 @@ function start (options, callback) {
   options = options || {};
   var server;
   var socketful = require('socketful');
-  socket.server = server = socketful.createServer(big.resources, { server: big.http.server });
+  socket.server = server = socketful.createServer(resource.resources, { server: resource.http.server });
 }
 
 exports.socket = socket;
