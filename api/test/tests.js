@@ -162,8 +162,6 @@ tap.test("strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        console.log('this is the body:', body);
-
         t.type(body, 'string', 'result is a string');
 
         t.end();
@@ -602,19 +600,18 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/create')
       .send({ id: 'leila' })
-      .expect(200)
+      .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.id, 'leila', 'id is leila');
-        t.equal(creature.life, 10, 'life is 10');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.id, 'leila', 'id is leila');
+        t.equal(body.life, 10, 'life is 10');
 
         t.end();
       })
@@ -628,15 +625,14 @@ tap.test("non-strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.id, 'leila', 'id is leila');
-        t.equal(creature.life, 10, 'life is 10');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.id, 'leila', 'id is leila');
+        t.equal(body.life, 10, 'life is 10');
 
         t.end();
       })
@@ -651,16 +647,15 @@ tap.test("non-strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.id, 'leila', 'id is leila');
-        t.equal(creature.type, 'dragon', 'type is unicorn');
-        t.equal(creature.life, 10, 'life is 10');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.id, 'leila', 'id is leila');
+        t.equal(body.type, 'dragon', 'type is unicorn');
+        t.equal(body.life, 10, 'life is 10');
 
         t.end();
       })
@@ -703,9 +698,8 @@ tap.test("non-strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.id, 'chi-chi', 'id is chi-chi');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.id, 'chi-chi', 'id is chi-chi');
 
         t.end();
       })
@@ -724,19 +718,18 @@ tap.test("non-strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.id, 'chi-chi', 'id is chi-chi');
-        t.equal(creature.life, 10, 'life is 10');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.id, 'chi-chi', 'id is chi-chi');
+        t.equal(body.life, 10, 'life is 10');
 
         t.end();
       })
     ;
   });
 
-  t.test("update creature by posting to /api/creature/chi-chi", function (t) {
+  t.test("update creature by posting to /api/creature/chi-chi/update", function (t) {
     supertest(server)
-      .post('/api/creature/chi-chi')
+      .post('/api/creature/chi-chi/update')
       .send({ id: 'nibblet', type: 'dragon' })
       .expect(200)
       .end(function (err, res) {
@@ -747,10 +740,9 @@ tap.test("non-strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.id, 'nibblet', 'id is nibblet');
-        t.equal(creature.type, 'dragon', 'type is dragon');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.id, 'nibblet', 'id is nibblet');
+        t.equal(body.type, 'dragon', 'type is dragon');
 
         t.end();
       })
@@ -780,9 +772,8 @@ tap.test("non-strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.id, 'nibblet', 'id is nibblet');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.id, 'nibblet', 'id is nibblet');
 
         t.end();
       })
@@ -801,7 +792,7 @@ tap.test("non-strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.ok(Array.isArray(body.creature), 'creature is array');
+        t.ok(Array.isArray(body), 'creature is array');
 
         t.end();
       })
@@ -820,7 +811,7 @@ tap.test("non-strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.ok(Array.isArray(body.creature), 'creature is array');
+        t.ok(Array.isArray(body), 'creature is array');
 
         t.end();
       })
@@ -839,12 +830,13 @@ tap.test("non-strict api tests with creature", function (t) {
         t.doesNotThrow(function () {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
-        var creatures = body.creature || null;
-        t.ok(Array.isArray(creatures), 'creature is array');
 
-        for (var creature in creatures) {
-          t.equal(creature.type, 'dragon', 'creature is dragon');
-        }
+        t.doesNotThrow(function () {
+          body.forEach(function (creature) {
+            t.type(creature, 'object', 'creature is an object');
+            t.equal(creature.type, 'dragon', 'creature is a dragon');
+          });
+        }, 'body is array');
 
         t.end();
       })
@@ -862,17 +854,20 @@ tap.test("non-strict api tests with creature", function (t) {
         t.doesNotThrow(function () {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
-        var creatures = body.creature || null;
-        t.ok(Array.isArray(creatures), 'creature is array');
 
-        for (var creature in creatures) {
-          t.equal(creature.type, 'dragon', 'creature is dragon');
-        }
+        t.doesNotThrow(function () {
+          body.forEach(function (creature) {
+            t.type(creature, 'object', 'creature is an object');
+            t.equal(creature.type, 'dragon', 'creature is a dragon');
+          });
+        }, 'body is array');
 
         t.end();
       })
     ;
   });
+
+  t.end();
 });
 
 tap.test("non-strict validation tests with account", function (t) {
