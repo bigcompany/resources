@@ -135,6 +135,9 @@ function listen (options, callback) {
     Object.keys(req.body).forEach(function (p) {
       data[p] = req.body[p];
     });
+    if (options.id) {
+      data.id = options.id;
+    }
 
     if (typeof _method === 'undefined' && !options.id) {
       if (options.method) {
