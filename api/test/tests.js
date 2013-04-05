@@ -654,7 +654,7 @@ tap.test("non-strict api tests with creature", function (t) {
 
         t.type(body, 'object', 'creature is object');
         t.equal(body.id, 'leila', 'id is leila');
-        t.equal(body.type, 'dragon', 'type is unicorn');
+        t.equal(body.type, 'unicorn', 'type is unicorn');
         t.equal(body.life, 10, 'life is 10');
 
         t.end();
