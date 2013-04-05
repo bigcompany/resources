@@ -48,25 +48,28 @@ function listen (options, callback) {
     handle({
       resource: req.param('resource'),
       action: "GET"
-      }, req, res);
+    }, req, res);
   });
+  resource.http.app.post('/api/:resource', function(req, res) {
+    handle({
+      resource: req.param('resource'),
+      action: "POST"
+    }, req, res);
+  });
+  resource.http.app.put('/api/:resource', function(req, res) {
+    handle({
+      resource: req.param('resource'),
+      action: "PUT"
+    }, req, res);
+  });
+
   resource.http.app.get('/api/:resource/:method', function(req, res) {
     handle({ 
       resource: req.param('resource'),
       method: req.param('method'),
       action: "GET"
-      }, req, res);
+    }, req, res);
   });
-
-  resource.http.app.get('/api/:resource/:method/:id', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "GET"
-      }, req, res);
-  });
-
   resource.http.app.post('/api/:resource/:method', function(req, res) {
     handle({ 
       resource: req.param('resource'),
@@ -74,26 +77,40 @@ function listen (options, callback) {
       action: "POST"
     }, req, res);
   });
+  resource.http.app.put('/api/:resource/:method', function(req, res) {
+    handle({
+      resource: req.param('resource'),
+      method: req.param('method'),
+      action: "PUT"
+    }, req, res);
+  });
+  resource.http.app.del('/api/:resource/:method', function(req, res) {
+    handle({ 
+      resource: req.param('resource'),
+      method: req.param('method'),
+      action: "DELETE"
+    }, req, res);
+  });
 
-  resource.http.app.post('/api/:resource/:method/:id', function(req, res) {
+  resource.http.app.get('/api/:resource/:id/:method', function(req, res) {
+    handle({ 
+      resource: req.param('resource'),
+      method: req.param('method'),
+      id: req.param('id'),
+      action: "GET"
+    }, req, res);
+  });
+
+  resource.http.app.post('/api/:resource/:id/:method', function(req, res) {
     handle({ 
       resource: req.param('resource'),
       method: req.param('method'),
       id: req.param('id'),
       action: "POST"
-      }, req, res);
+    }, req, res);
   });
 
-  resource.http.app.del('/api/:resource/:method/:id', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "DELETE"
-      }, req, res);
-  });
-
-  resource.http.app.put('/api/:resource/:method/:id', function(req, res) {
+  resource.http.app.put('/api/:resource/:id/:method', function(req, res) {
     handle({ 
       resource: req.param('resource'),
       method: req.param('method'),
@@ -109,6 +126,39 @@ function listen (options, callback) {
 
     var data = {};
 
+    //
+    // Merge query and form data into a common scope
+    //
+    Object.keys(req.query).forEach(function (p) {
+      data[p] = req.query[p];
+    });
+    Object.keys(req.body).forEach(function (p) {
+      data[p] = req.body[p];
+    });
+
+    if (typeof _method === 'undefined' && !options.id) {
+      if (options.method) {
+        data.id = options.method;
+      }
+
+      if (options.action === 'GET' && options.method) {
+        _method = _resource.methods.get;
+        options.method = 'get';
+      }
+      if (options.action === 'POST') {
+        _method = _resource.methods.create;
+        options.method = 'create';
+      }
+      if (options.action === 'PUT') {
+        _method = _resource.methods.update; //?
+        options.method = 'update';
+      }
+      if (options.action === 'DELETE') {
+        _method = _resource.methods.destroy; //?
+        options.method = 'destroy';
+      }
+    }
+
     // todo: alter _method based on options.action
     if (typeof _method === 'undefined') {
       var str = "<h1>Methods Available</h1> \n\n";
@@ -116,23 +166,71 @@ function listen (options, callback) {
       for (var m in _resource.methods) {
         str += ('&nbsp;&nbsp;' + m + '<br/>'); // rs[r].methods[m]
       }
-      res.end(str);
-    } else {
-      //
-      // Merge query and form data into a common scope
-      //
-      for(var p in req.query) {
-        data[p] = req.query[p];
+      if (options.method) {
+        res.statusCode = 404;
       }
+      res.end(str);
+    }
+    else {
+
       if (Object.keys(data).length > 0) {
-        _resource.methods[options.method](data.id, function (err, result){
-          console.log(err, result)
-          res.end(JSON.stringify(result));
-        });
+        //
+        // TODO: get should be able to take an options hash and not just a string.
+        // We should also have a generalized method for translating back and
+        // forth between schema-matched objects and function argument arrays.
+        // This is just a hack to make tests pass.
+        //
+        if (
+          Object.keys(data).length === 1 &&
+          data.id && (
+            options.method === 'get' ||
+            options.method === 'destroy'
+          )
+        ) {
+          data = data.id;
+        }
+
+        _method(data, finish);
       } else {
-        _resource.methods[options.method](function (err, result){
-          res.end(JSON.stringify(result));
-        });
+        _method(finish);
+      }
+
+      function finish(err, result) {
+        if (err) {
+          if (err.message && err.message.match(/not found/)) {
+            res.statusCode = 404;
+          }
+          else if (err.errors) {
+            res.statusCode = 422;
+          }
+          else {
+            res.statusCode = 500;
+          }
+
+          if (err.errors) {
+            return res.end(JSON.stringify({
+              message: err.message,
+              validate: {
+                errors: err.errors
+              }
+            }));
+          }
+          else {
+            return res.end(JSON.stringify({
+              message: err.message
+            }));
+          }
+        }
+
+        if (result === null) {
+          res.statusCode = 204;
+        }
+
+        if (options.method === 'create' || options.method === 'update') {
+          res.statusCode = 201;
+        }
+
+        res.end(JSON.stringify(result));
       }
     }
   };
