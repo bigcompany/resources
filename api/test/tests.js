@@ -25,81 +25,131 @@ tap.test("start an api server", function (t) {
 });
 
 tap.test("strict api tests with creature", function (t) {
-  t.test("GET /api", function (t) {
+  t.test("get /api", function (t) {
     supertest(server)
       .get('/api')
       .expect(200)
       .end(function (err) {
-        t.error(err, 'GET /api');
+        t.error(err, 'no error');
         t.end();
       })
     ;
   });
 
-  t.test("GET /api/creature", function (t) {
+  t.test("get /api/creature", function (t) {
     supertest(server)
       .get('/api/creature')
       .expect(200)
       .end(function (err, res) {
-        t.error(err, 'GET /api/creature');
+
+        t.error(err, 'no error');
         t.end();
       })
     ;
   });
 
-  t.test("POST /api/creature/create", function (t) {
+  t.test("create a new creature by posting to /api/creature with id", function (t) {
     supertest(server)
-      .post('/api/creature/create', { id: 'korben' })
-      .expect(200)
+      .post('/api/creature/korben')
+      .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.equal(body.id, 'korben', 'id is korben');
+
         t.end();
       })
     ;
   });
 
-  t.test("GET /api/creature/korben", function (t) {
+  t.test("get created creature by getting /api/creature/korben", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
-        t.doesNotThrow(JSON.parse.bind(null, res.body), 'body is valid JSON');
+
+        t.doesNotThrow(JSON.parse.bind(null, res.text), 'body is valid JSON');
         t.end();
       })
     ;
   });
 
-  t.test("PUT /api/creature/korben", function (t) {
+  t.test("update creature by putting /api/creature/korben", function (t) {
     supertest(server)
-      .put('/api/creature/korben', { type: 'unicorn', life: 10 })
-      .expect(204)
+      .put('/api/creature/korben')
+      .send({ type: 'unicorn', life: 10 })
+      .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type('object', body.creature, 'creature is object');
-
-        var creature = body.creature || {};
-        t.equal(creature.type, 'unicorn', 'type is unicorn');
-        t.equal(creature.life, 10, 'life is 10');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.type, 'unicorn', 'type is unicorn');
+        t.equal(body.life, 10, 'life is 10');
 
         t.end();
       })
     ;
   });
 
+  t.test("get updated creature by getting /api/creature/korben", function (t) {
+    supertest(server)
+      .get('/api/creature/korben')
+      .expect(200)
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.type, 'unicorn', 'type is unicorn');
+        t.equal(body.life, 10, 'life is 10');
+
+        t.end();
+      })
+    ;
+  });
+
+  t.test("call creature method by getting /api/creature/korben/fire", function (t) {
+    supertest(server)
+      .get('/api/creature/korben/fire')
+      .expect(200)
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        t.type(body, 'object', 'result is object');
+        t.equal(body.status, 'fired', 'status is fired');
+        t.equal(body.direction, 'up', 'direction is up');
+
+        t.end();
+      })
+    ;
+  });
+
+  //
+  // TODO: resource.creature does not have a feed method.
+  // We should write other tests that try to cover this functionality
+  // instead (ie, methods which modify the creature).
+  //
+  /*
   t.test("GET /api/creature/korben/feed", function (t) {
     supertest(server)
       .get('/api/creature/korben/feed')
@@ -107,18 +157,21 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.result, 'string', 'result is a string');
+        console.log('this is the body:', body);
+
+        t.type(body, 'string', 'result is a string');
 
         t.end();
       })
     ;
   });
 
+  /*
   t.test("GET /api/creature/korben", function (t) {
     supertest(server)
       .get('/api/creature/korben')
@@ -126,9 +179,9 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -147,9 +200,9 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.bind(res.text);
         }, 'body is valid JSON');
 
         t.type(body.result, 'string', 'result is a string');
@@ -166,9 +219,9 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -187,9 +240,9 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.result, 'string', 'result is a string');
@@ -206,9 +259,9 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -227,9 +280,9 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.result, 'string', 'result is a string');
@@ -246,9 +299,9 @@ tap.test("strict api tests with creature", function (t) {
       .end(function (err, res) {
         t.error(err, 'no error');
 
-        var body;
+        var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -259,8 +312,9 @@ tap.test("strict api tests with creature", function (t) {
       })
     ;
   });
+  */
 
-  t.test("GET /api/creature/korben/_die", function (t) {
+  t.test("get nonexistent creature method /api/creature/korben/_die", function (t) {
     supertest(server)
       .get('/api/creature/korben/_die')
       .expect(404)
@@ -271,7 +325,7 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("POST /api/creature/korben/_die", function (t) {
+  t.test("post nonexistent creature method /api/creature/korben/_die", function (t) {
     supertest(server)
       .post('/api/creature/korben/_die')
       .expect(404)
@@ -282,18 +336,18 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("DELETE /api/creature/korben", function (t) {
+  t.test("destroy creature by deleting /api/creature/korben", function (t) {
     supertest(server)
       .del('/api/creature/korben')
       .expect(204)
-      .end(function (err) {
+      .end(function (err, res) {
         t.error(err, 'creature is deleted');
         t.end();
       })
     ;
   });
 
-  t.test("GET /api/creature/korben", function (t) {
+  t.test("get destroyed creature by getting /api/creature/korben", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(404)
@@ -308,7 +362,7 @@ tap.test("strict api tests with creature", function (t) {
 });
 
 tap.test("strict validation tests with account", function (t) {
-  t.test("GET /api/account", function (t) {
+  t.test("get /api/account", function (t) {
     supertest(server)
       .get('/api/account')
       .expect(200)
@@ -319,23 +373,23 @@ tap.test("strict validation tests with account", function (t) {
     ;
   });
 
-  t.test("POST /api/account/marak", function (t) {
+  t.test("try to create /api/account/marak without an email", function (t) {
     supertest(server)
-      .post('/api/account', {})
+      .post('/api/account/marak')
       .expect(422)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body, errors;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
           errors = body.validate.errors;
         }, 'validate.errors is defined');
 
-        t.type(errors, 'errors', 'errors is an array');
+        t.ok(Array.isArray(errors), 'errors is an array');
 
         var property, expected, message;
         try {
@@ -354,34 +408,35 @@ tap.test("strict validation tests with account", function (t) {
     ;
   });
 
-  t.test("GET /api/account/marak", function (t) {
+  t.test("try to get /api/account/marak", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(404)
       .end(function (err) {
         t.error(err, 'no account for marak');
+        t.end();
       })
     ;
-    t.end();
   });
 
-  t.test("POST /api/account/marak", function (t) {
+  t.test("try to create /api/account/marak with invalid email", function (t) {
     supertest(server)
-      .post('/api/account', { email: 'not a valid email' })
+      .post('/api/account/marak')
+      .send({ email: 'not_a_valid_email' })
       .expect(422)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body, errors;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
           errors = body.validate.errors;
         }, 'validate.errors is defined');
 
-        t.type(errors, 'errors', 'errors is an array');
+        t.ok(Array.isArray(errors), 'errors is an array');
 
         var property, expected, attribute, message;
         try {
@@ -393,7 +448,7 @@ tap.test("strict validation tests with account", function (t) {
         catch (err) {}
 
         t.equal(property, 'email', 'first error has email property');
-        t.equal(expected, true, 'email is expected');
+        t.equal(expected, 'email', 'email is expected');
         t.equal(attribute, 'format', 'format invalidated');
         t.equal(message, 'is not a valid email', 'email is invalid');
 
@@ -402,27 +457,28 @@ tap.test("strict validation tests with account", function (t) {
     ;
   });
 
-  t.test("GET /api/account/marak", function (t) {
+  t.test("try to get /api/account/marak", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(404)
       .end(function (err) {
         t.error(err, 'no account for marak');
+        t.end();
       })
     ;
-    t.end();
   });
 
-  t.test("POST /api/account/marak", function (t) {
+  t.test("create /api/account/marak with valid email", function (t) {
     supertest(server)
-      .post('/api/account', { email: 'marak@marak.com' })
+      .post('/api/account/marak')
+      .send({ email: 'marak@marak.com' })
       .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.equal(body.id, 'marak', 'user is marak');
@@ -432,34 +488,35 @@ tap.test("strict validation tests with account", function (t) {
     ;
   });
 
-  t.test("GET /api/account/marak", function (t) {
+  t.test("get /api/account/marak", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(200)
       .end(function (err) {
         t.error(err, 'no error');
+        t.end();
       })
     ;
-    t.end();
   });
 
-  t.test("PUT /api/account/marak", function (t) {
+  t.test("try to update /api/account/marak with invalid email", function (t) {
     supertest(server)
-      .post('/api/account/marak', { email: 'not a valid email' })
+      .post('/api/account/marak')
+      .send({ email: 'not_a_valid_email' })
       .expect(422)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body, errors;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
           errors = body.validate.errors;
         }, 'validate.errors is defined');
 
-        t.type(errors, 'errors', 'errors is an array');
+        t.ok(Array.isArray(errors), 'errors is an array');
 
         var property, expected, attribute, message;
         try {
@@ -471,7 +528,7 @@ tap.test("strict validation tests with account", function (t) {
         catch (err) {}
 
         t.equal(property, 'email', 'first error has email property');
-        t.equal(expected, true, 'email is expected');
+        t.equal(expected, 'email', 'email is expected');
         t.equal(attribute, 'format', 'format invalidated');
         t.equal(message, 'is not a valid email', 'email is invalid');
 
@@ -480,16 +537,17 @@ tap.test("strict validation tests with account", function (t) {
     ;
   });
 
-  t.test("PUT /api/account/marak", function (t) {
+  t.test("update /api/account/marak with valid email", function (t) {
     supertest(server)
-      .put('/api/account/marak', { email: 'marak@big.vc' })
+      .put('/api/account/marak')
+      .send({ email: 'marak@big.vc' })
       .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.equal(body.id, 'marak', 'user is marak');
@@ -500,33 +558,36 @@ tap.test("strict validation tests with account", function (t) {
     ;
   });
 
-  t.test("GET /api/account/marak", function (t) {
+  t.test("get /api/account/marak with updated email", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(200)
-      .end(function (err) {
+      .end(function (err, res) {
         t.error(err, 'no error');
 
         var body = {};
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.equal(body.id, 'marak', 'user is marak');
         t.equal(body.email, 'marak@big.vc', 'email is updated');
+
+        t.end();
       })
     ;
-    t.end();
   });
 
   //
   // TODO: Tests for POSTing to /api/account with email and other property
   // without id
   //
+
+  t.end();
 });
 
 tap.test("non-strict api tests with creature", function (t) {
-  t.test("GET /api", function (t) {
+  t.test("get /api", function (t) {
     supertest(server)
       .get('/api')
       .expect(200)
@@ -537,21 +598,22 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("POST /api/creature/new", function (t) {
+  t.test("create a creature by posting to /api/creature/create", function (t) {
     supertest(server)
-      .post('/api/creature/new', { id: 'gordita' })
+      .post('/api/creature/create')
+      .send({ id: 'leila' })
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
         var creature = body.creature || {};
-        t.equal(creature.id, 'gordita', 'id is gordita');
+        t.equal(creature.id, 'leila', 'id is leila');
         t.equal(creature.life, 10, 'life is 10');
 
         t.end();
@@ -559,21 +621,21 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("GET /api/creature/gordita", function (t) {
+  t.test("get created creature /api/creature/leila", function (t) {
     supertest(server)
-      .get('/api/creature/gordita')
+      .get('/api/creature/leila')
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
         var creature = body.creature || {};
-        t.equal(creature.id, 'gordita', 'id is gordita');
+        t.equal(creature.id, 'leila', 'id is leila');
         t.equal(creature.life, 10, 'life is 10');
 
         t.end();
@@ -581,22 +643,23 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("POST /api/creature/gordita/update", function (t) {
+  t.test("update creature by posting to /api/creature/leila/update", function (t) {
     supertest(server)
-      .post('/api/creature/gordita/update', { type: 'dragon' })
-      .expect(204)
+      .post('/api/creature/leila/update')
+      .send({ type: 'unicorn' })
+      .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
         var creature = body.creature || {};
-        t.equal(creature.id, 'gordita', 'id is gordita');
-        t.equal(creature.type, 'dragon', 'type is dragon');
+        t.equal(creature.id, 'leila', 'id is leila');
+        t.equal(creature.type, 'dragon', 'type is unicorn');
         t.equal(creature.life, 10, 'life is 10');
 
         t.end();
@@ -604,20 +667,20 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("POST /api/creature/gordita/destroy", function (t) {
+  t.test("destroy creature by posting to /api/creature/leila/destroy", function (t) {
     supertest(server)
-      .post('/api/creature/gordita/destroy')
+      .post('/api/creature/leila/destroy')
       .expect(204)
       .end(function (err, res) {
-        t.error(err, 'gordita is destroyed');
+        t.error(err, 'leila is destroyed');
         t.end();
       })
     ;
   });
 
-  t.test("GET /api/creature/gordita", function (t) {
+  t.test("try to get destroyed creature /api/creature/leila", function (t) {
     supertest(server)
-      .get('/api/creature/gordita')
+      .get('/api/creature/leila')
       .expect(404)
       .end(function (err, res) {
         t.error(err, 'destroyed creature not found');
@@ -627,16 +690,17 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("POST /api/creature/new", function (t) {
+  t.test("create creature by posting to /api/creature/create", function (t) {
     supertest(server)
-      .post('/api/creature/new', { id: 'chi-chi' })
+      .post('/api/creature/create')
+      .send({ id: 'chi-chi' })
       .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -648,7 +712,7 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("GET /api/creature/chi-chi", function (t) {
+  t.test("get created creature /api/creature/chi-chi", function (t) {
     supertest(server)
       .get('/api/creature/chi-chi')
       .expect(200)
@@ -657,7 +721,7 @@ tap.test("non-strict api tests with creature", function (t) {
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -670,16 +734,17 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("POST /api/creature/chi-chi", function (t) {
+  t.test("update creature by posting to /api/creature/chi-chi", function (t) {
     supertest(server)
-      .post('/api/creature/chi-chi', { id: 'nibblet', type: 'dragon' })
+      .post('/api/creature/chi-chi')
+      .send({ id: 'nibblet', type: 'dragon' })
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -692,7 +757,7 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("GET /api/creature/chi-chi", function (t) {
+  t.test("try to get updated creature with old id /api/creature/chi-chi", function (t) {
     supertest(server)
       .get('/api/creature/chi-chi')
       .expect(404)
@@ -703,7 +768,7 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("GET /api/creature/nibblet", function (t) {
+  t.test("get updated creature with new id /api/creature/nibblet", function (t) {
     supertest(server)
       .get('/api/creature/nibblet')
       .expect(200)
@@ -712,7 +777,7 @@ tap.test("non-strict api tests with creature", function (t) {
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.type(body.creature, 'object', 'creature is object');
@@ -724,7 +789,7 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("GET /api/creature/find", function (t) {
+  t.test("find creatures by getting /api/creature/find", function (t) {
     supertest(server)
       .get('/api/creature/find')
       .expect(200)
@@ -733,17 +798,17 @@ tap.test("non-strict api tests with creature", function (t) {
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'array', 'creature is array');
+        t.ok(Array.isArray(body.creature), 'creature is array');
 
         t.end();
       })
     ;
   });
 
-  t.test("POST /api/creature/find", function (t) {
+  t.test("find creatures by posting /api/creature/find", function (t) {
     supertest(server)
       .post('/api/creature/find')
       .expect(200)
@@ -752,29 +817,30 @@ tap.test("non-strict api tests with creature", function (t) {
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'array', 'creature is array');
+        t.ok(Array.isArray(body.creature), 'creature is array');
 
         t.end();
       })
     ;
   });
 
-  t.test("POST /api/creature/find", function (t) {
+  t.test("find creatures of type dragon by posting /api/creature/find", function (t) {
     supertest(server)
-      .post('/api/creature/find', { type: 'dragon' })
+      .post('/api/creature/find')
+      .send({ type: 'dragon' })
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
         var creatures = body.creature || null;
-        t.type(creatures, 'array', 'creature is array');
+        t.ok(Array.isArray(creatures), 'creature is array');
 
         for (var creature in creatures) {
           t.equal(creature.type, 'dragon', 'creature is dragon');
@@ -785,7 +851,7 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("GET /api/creature/find?type=dragon", function (t) {
+  t.test("find creatures of type dragon by getting /api/creature/find?type=dragon", function (t) {
     supertest(server)
       .get('/api/creature/find?type=dragon')
       .expect(200)
@@ -794,10 +860,10 @@ tap.test("non-strict api tests with creature", function (t) {
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
         var creatures = body.creature || null;
-        t.type(creatures, 'array', 'creature is array');
+        t.ok(Array.isArray(creatures), 'creature is array');
 
         for (var creature in creatures) {
           t.equal(creature.type, 'dragon', 'creature is dragon');
@@ -823,21 +889,22 @@ tap.test("non-strict validation tests with account", function (t) {
 
   t.test("POST /api/account", function (t) {
     supertest(server)
-      .post('/api/account', { id: 'josh' })
+      .post('/api/account')
+      .send({ id: 'josh' })
       .expect(422)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body, errors;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
           errors = body.validate.errors;
         }, 'validate.errors is defined');
 
-        t.type(errors, 'errors', 'errors is an array');
+        t.ok(Array.isArray(errors), 'errors is an array');
 
         var property, expected, message;
         try {
@@ -869,21 +936,22 @@ tap.test("non-strict validation tests with account", function (t) {
 
   t.test("POST /api/account", function (t) {
     supertest(server)
-      .post('/api/account', { id: 'josh', email: 'not a valid email' })
+      .post('/api/account')
+      .send({ id: 'josh', email: 'not a valid email' })
       .expect(422)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body, errors;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
           errors = body.validate.errors;
         }, 'validate.errors is defined');
 
-        t.type(errors, 'errors', 'errors is an array');
+        t.ok(Array.isArray(errors), 'errors is an array');
 
         var property, expected, attribute, message;
         try {
@@ -895,7 +963,7 @@ tap.test("non-strict validation tests with account", function (t) {
         catch (err) {}
 
         t.equal(property, 'email', 'first error has email property');
-        t.equal(expected, true, 'email is expected');
+        t.equal(expected, 'email', 'email is expected');
         t.equal(attribute, 'format', 'format invalidated');
         t.equal(message, 'is not a valid email', 'email is invalid');
 
@@ -917,14 +985,15 @@ tap.test("non-strict validation tests with account", function (t) {
 
   t.test("POST /api/account", function (t) {
     supertest(server)
-      .post('/api/account', { user: 'josh', email: 'josh@jesusabdullah.net' })
+      .post('/api/account')
+      .send({ id: 'josh', email: 'josh@jesusabdullah.net' })
       .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.equal(body.id, 'josh', 'user is josh');
@@ -947,21 +1016,22 @@ tap.test("non-strict validation tests with account", function (t) {
 
   t.test("POST /api/account/josh/update", function (t) {
     supertest(server)
-      .post('/api/account/josh/update', { email: 'not a valid email' })
+      .post('/api/account/josh/update')
+      .send({ email: 'not a valid email' })
       .expect(422)
       .end(function (err, res) {
         t.error(err, 'no error');
 
         var body, errors;
         t.doesNotThrow(function () {
-          body = JSON.parse.bind(null, res.body);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
           errors = body.validate.errors;
         }, 'validate.errors is defined');
 
-        t.type(errors, 'errors', 'errors is an array');
+        t.ok(Array.isArray(errors), 'errors is an array');
 
         var property, expected, attribute, message;
         try {
@@ -973,7 +1043,7 @@ tap.test("non-strict validation tests with account", function (t) {
         catch (err) {}
 
         t.equal(property, 'email', 'first error has email property');
-        t.equal(expected, true, 'email is expected');
+        t.equal(expected, 'email', 'email is expected');
         t.equal(attribute, 'format', 'format invalidated');
         t.equal(message, 'is not a valid email', 'email is invalid');
 
