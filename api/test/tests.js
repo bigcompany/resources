@@ -371,8 +371,8 @@ tap.test("strict validation tests with account", function (t) {
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
-          errors = body.validate.errors;
-        }, 'validate.errors is defined');
+          errors = body.errors;
+        }, 'errors is defined');
 
         t.ok(Array.isArray(errors), 'errors is an array');
 
@@ -420,8 +420,8 @@ tap.test("strict validation tests with account", function (t) {
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
-          errors = body.validate.errors;
-        }, 'validate.errors is defined');
+          errors = body.errors;
+        }, 'errors is defined');
 
         t.ok(Array.isArray(errors), 'errors is an array');
 
@@ -504,8 +504,8 @@ tap.test("strict validation tests with account", function (t) {
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
-          errors = body.validate.errors;
-        }, 'validate.errors is defined');
+          errors = body.errors;
+        }, 'errors is defined');
 
         t.ok(Array.isArray(errors), 'errors is an array');
 
@@ -807,8 +807,8 @@ tap.test("non-strict validation tests with account", function (t) {
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
-          errors = body.validate.errors;
-        }, 'validate.errors is defined');
+          errors = body.errors;
+        }, 'errors is defined');
 
         t.ok(Array.isArray(errors), 'errors is an array');
 
@@ -856,8 +856,8 @@ tap.test("non-strict validation tests with account", function (t) {
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
-          errors = body.validate.errors;
-        }, 'validate.errors is defined');
+          errors = body.errors;
+        }, 'errors is defined');
 
         t.ok(Array.isArray(errors), 'errors is an array');
 
@@ -940,8 +940,8 @@ tap.test("non-strict validation tests with account", function (t) {
         }, 'body is valid JSON');
 
         t.doesNotThrow(function () {
-          errors = body.validate.errors;
-        }, 'validate.errors is defined');
+          errors = body.errors;
+        }, 'errors is defined');
 
         t.ok(Array.isArray(errors), 'errors is an array');
 
