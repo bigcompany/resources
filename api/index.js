@@ -4,7 +4,8 @@
 //
 
 var resource = require('resource'),
-    api = resource.define('api');
+    api = resource.define('api'),
+    path = require('path');
 
 api.schema.description = "provides a web API for interacting with resources";
 
@@ -42,7 +43,10 @@ api.method('listen', listen, {
 
 function listen (options, callback) {
 
-  var resources = options.resources;
+  var resources = options.resources,
+      view = resource.view.create({ path: path.join(__dirname, 'view') });
+
+  view.load();
 
   resource.http.app.get('/api/:resource', function(req, res) {
     handle({
@@ -164,15 +168,23 @@ function listen (options, callback) {
 
     // todo: alter _method based on options.action
     if (typeof _method === 'undefined') {
-      var str = "<h1>Methods Available</h1> \n\n";
-      var rs = resource.resources;
-      for (var m in _resource.methods) {
-        str += ('&nbsp;&nbsp;' + m + '<br/>'); // rs[r].methods[m]
-      }
-      if (options.method) {
-        res.statusCode = 404;
-      }
-      res.end(str);
+      view.routes.render();
+      view.routes.present({
+        title: 'Methods Available',
+        routes: Object.keys(_resource.methods).map(function (m) {
+          return { name: m, url: '/api/' + options.resource + '/' + m };
+        })
+      }, function (err, str) {
+        if (err) {
+          return res.end(JSON.stringify({ message: err.message }));
+        }
+
+        if (options.method) {
+          res.statusCode = 404;
+        }
+
+        res.end(str);
+      });
     }
     else {
 
@@ -239,19 +251,18 @@ function listen (options, callback) {
   };
 
   resource.http.app.get('/api', function (req, res, next) {
-    //
-    // TODO: Add better HTML view for rendering resource methods as routes
-    //
-    //var str = JSON.stringify(resource.http.app.routes, true, 2);
-    var str = "";
-    var rs = resource.resources;
-    for(var r in rs) {
-      str += ('<a href="/api/' + r + '">' + r + '</a><br/>');
-      for (var m in rs[r].methods) {
-        str += ('&nbsp;&nbsp; <a href="/api/' + r + '/' + m + '">' + m + '</a><br/>');
+    view.routes.render();
+    view.routes.present({
+      title: 'Resources Available',
+      routes: Object.keys(resource.resources).map(function (r) {
+        return { name: r, url: '/api/' + r };
+      })
+    }, function (err, str) {
+      if (err) {
+        return res.end(JSON.stringify({ message: err.message }));
       }
-    }
-    res.end(str);
+      res.end(str);
+    });
   });
 
   resource.http.app.get('/api/' + options.version, function (req, res, next) {

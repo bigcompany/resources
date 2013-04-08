@@ -7,6 +7,7 @@ tap.test("start an api server", function (t) {
   resource.use('creature');
   resource.use('account');
   resource.use('http');
+  resource.use('view');
   resource.use('api');
   resource.http.listen(function (err, _server) {
     t.error(err, 'no error');
