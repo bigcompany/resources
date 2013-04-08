@@ -273,9 +273,7 @@ function listen (options, callback) {
             if (err.errors) {
               return res.end(JSON.stringify({
                 message: err.message,
-                validate: {
-                  errors: err.errors
-                }
+                errors: err.errors
               }, true, 2));
             }
             else {
