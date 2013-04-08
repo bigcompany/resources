@@ -6,6 +6,7 @@ var tap = require("tap"),
 tap.test("start an api server", function (t) {
   var creature = resource.use('creature');
   resource.use('account');
+  resource.use('calculator');
   resource.use('http');
   resource.use('view');
   resource.use('api');
@@ -48,9 +49,14 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api')
       .expect(200)
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no error');
+
+        //
+        // TODO: Assert some properties of the json
+        //
+
         t.end();
       })
     ;
@@ -60,10 +66,15 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature')
       .expect(200)
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
 
         t.error(err, 'no error');
+
+        //
+        // TODO: Assert some properties of the json
+        //
+
         t.end();
       })
     ;
@@ -174,7 +185,7 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("get method schema by getting /api/creature/fire", function (t) {
+  t.test("call creature method by getting /api/creature/fire", function (t) {
     supertest(server)
       .get('/api/creature/fire')
       .expect(200)
@@ -187,16 +198,15 @@ tap.test("strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.equal(body.description, 'fires a lazer at a certain power and direction', 'description is accurate');
-        t.type(body.properties, 'object', 'properties is an object');
+        t.type(body, 'object', 'result is object');
+        t.equal(body.status, 'fired', 'status is fired');
+        t.equal(body.direction, 'up', 'direction is up');
 
         t.end();
       })
     ;
   });
 
-  //
-  //
   t.test("call method with instance by posting /api/creature/korben/feed", function (t) {
     supertest(server)
       .post('/api/creature/korben/feed')
@@ -344,6 +354,109 @@ tap.test("strict api tests with creature", function (t) {
   t.end();
 });
 
+tap.test("strict api tests with calculator", function (t) {
+  t.test("get /api", function (t) {
+    supertest(server)
+      .get('/api')
+      .expect(200)
+      .expect('Content-Type', 'application/json')
+      .end(function (err) {
+        t.error(err, 'no error');
+
+        //
+        // TODO: Assert some properties of the json
+        //
+
+        t.end();
+      })
+    ;
+  });
+
+  t.test("get /api/calculator", function (t) {
+    supertest(server)
+      .get('/api/creature')
+      .expect(200)
+      .expect('Content-Type', 'application/json')
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        //
+        // TODO: Assert some properties of the json
+        //
+
+        t.end();
+      })
+    ;
+  });
+
+  t.test("execute method by getting /api/calculator/add", function (t) {
+    supertest(server)
+      .get('/api/creature/fire?a=1&b=2')
+      .expect(200)
+      .expect('Content-Type', 'application/json')
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        t.equal(body.result, 3, 'result is 3');
+
+        t.end();
+      })
+    ;
+  });
+
+  t.test("try to create a new calculator by posting to /api/calculator with id", function (t) {
+    supertest(server)
+      .put('/api/calculator/baban')
+      .expect(500) // TODO: A more appropriate status code?
+      .expect('Content-Type', 'application/json')
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        //
+        // TODO: Assert something regarding the error
+        //
+
+        t.end();
+      })
+    ;
+  });
+
+  t.test("try to call calculator method by posting /api/calculator/baban/add", function (t) {
+    supertest(server)
+      .post('/api/creature/korben/fire')
+      .send({ a: 1, b: 2 })
+      .expect(500) // TODO: More appropriate status code?
+      .expect('Content-Type', 'application/json')
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        //
+        // TODO: Assert something regarding the error
+        //
+
+        t.end();
+      })
+    ;
+  });
+
+  t.end();
+});
+
 tap.test("strict validation tests with account", function (t) {
   t.test("get /api/account", function (t) {
     supertest(server)
@@ -460,7 +573,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .put('/api/account/marak')
       .send({ email: 'marak@marak.com' })
-      .expect(201) // TODO: expect(201)
+      .expect(201)
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
