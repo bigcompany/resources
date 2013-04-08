@@ -11,7 +11,7 @@ tap.test("start an api server", function (t) {
   resource.use('api');
 
   //
-  // Add a method to creature for testing implicit get
+  // Add a method to creature for testing instance-scoped method calls
   //
   creature.method('feed', feed, {
     description: 'feed a creature',
@@ -67,10 +67,14 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
+  //
+  // We should be able to create with either POST or PUT (PUT is explicitly for
+  // creates and updates)
+  //
   t.test("create a new creature by posting to /api/creature with id", function (t) {
     supertest(server)
-      .post('/api/creature/korben')
-      .expect(201)
+      .put('/api/creature/korben')
+      .expect(200) // TODO .expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -103,7 +107,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .put('/api/creature/korben')
       .send({ type: 'unicorn', life: 10 })
-      .expect(201)
+      .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -142,9 +146,9 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("call creature method by getting /api/creature/korben/fire", function (t) {
+  t.test("call creature method by posting /api/creature/korben/fire", function (t) {
     supertest(server)
-      .get('/api/creature/korben/fire')
+      .post('/api/creature/korben/fire')
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -163,14 +167,31 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
-  //
-  // TODO: resource.creature does not have a feed method.
-  // We should write other tests that try to cover this functionality
-  // instead (ie, methods which modify the creature).
-  //
-  t.test("call method with instance by getting /api/creature/korben/feed", function (t) {
+  t.test("get method schema by getting /api/creature/fire", function (t) {
     supertest(server)
-      .get('/api/creature/korben/feed')
+      .get('/api/creature/fire')
+      .expect(200)
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        t.equal(body.description, 'fires a lazer at a certain power and direction', 'description is accurate');
+        t.type(body.properties, 'object', 'properties is an object');
+
+        t.end();
+      })
+    ;
+  });
+
+  //
+  //
+  t.test("call method with instance by posting /api/creature/korben/feed", function (t) {
+    supertest(server)
+      .post('/api/creature/korben/feed')
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -214,7 +235,7 @@ tap.test("strict api tests with creature", function (t) {
 
   t.test("update instance with output of /api/creature/korben/feed", function (t) {
     supertest(server)
-      .get('/api/creature/korben/feed')
+      .post('/api/creature/korben/feed')
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -230,7 +251,7 @@ tap.test("strict api tests with creature", function (t) {
         supertest(server)
           .put('/api/creature/korben')
           .send(body)
-          .expect(201)
+          .expect(200) // TODO: expect(201)
           .end(function (err, res) {
             t.error(err, 'no error');
             t.end();
@@ -321,7 +342,7 @@ tap.test("strict validation tests with account", function (t) {
 
   t.test("try to create /api/account/marak without an email", function (t) {
     supertest(server)
-      .post('/api/account/marak')
+      .put('/api/account/marak')
       .expect(422)
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -367,7 +388,7 @@ tap.test("strict validation tests with account", function (t) {
 
   t.test("try to create /api/account/marak with invalid email", function (t) {
     supertest(server)
-      .post('/api/account/marak')
+      .put('/api/account/marak')
       .send({ email: 'not_a_valid_email' })
       .expect(422)
       .end(function (err, res) {
@@ -416,9 +437,9 @@ tap.test("strict validation tests with account", function (t) {
 
   t.test("create /api/account/marak with valid email", function (t) {
     supertest(server)
-      .post('/api/account/marak')
+      .put('/api/account/marak')
       .send({ email: 'marak@marak.com' })
-      .expect(201)
+      .expect(200) // TODO: expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -447,7 +468,7 @@ tap.test("strict validation tests with account", function (t) {
 
   t.test("try to update /api/account/marak with invalid email", function (t) {
     supertest(server)
-      .post('/api/account/marak')
+      .put('/api/account/marak')
       .send({ email: 'not_a_valid_email' })
       .expect(422)
       .end(function (err, res) {
@@ -487,7 +508,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .put('/api/account/marak')
       .send({ email: 'marak@big.vc' })
-      .expect(201)
+      .expect(200) // TODO: expect(201)
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -523,11 +544,6 @@ tap.test("strict validation tests with account", function (t) {
       })
     ;
   });
-
-  //
-  // TODO: Tests for POSTing to /api/account with email and other property
-  // without id
-  //
 
   t.end();
 });
@@ -591,7 +607,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/leila/update')
       .send({ type: 'unicorn' })
-      .expect(201)
+      .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -633,7 +649,11 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("find creatures by getting /api/creature/find", function (t) {
+  //
+  // IMO this should not work.
+  //
+  /*
+  t.test("find creatures by posting /api/creature/find", function (t) {
     supertest(server)
       .get('/api/creature/find')
       .expect(200)
@@ -651,6 +671,7 @@ tap.test("non-strict api tests with creature", function (t) {
       })
     ;
   });
+  */
 
   t.test("find creatures by posting /api/creature/find", function (t) {
     supertest(server)
@@ -696,9 +717,9 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  t.test("find creatures of type dragon by getting /api/creature/find?type=dragon", function (t) {
+  t.test("find creatures of type dragon by posting /api/creature/find?type=dragon", function (t) {
     supertest(server)
-      .get('/api/creature/find?type=dragon')
+      .post('/api/creature/find?type=dragon')
       .expect(200)
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -835,7 +856,7 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .post('/api/account')
       .send({ id: 'josh', email: 'josh@jesusabdullah.net' })
-      .expect(201)
+      .expect(200) // TODO: .expect(201) // ?
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -899,10 +920,6 @@ tap.test("non-strict validation tests with account", function (t) {
       });
     ;
   });
-
-  //
-  // TODO: Test updates with string -> number coercions
-  //
 
   t.end();
 });
