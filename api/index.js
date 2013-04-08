@@ -236,6 +236,18 @@ function listen (options, callback) {
 
         if (Object.keys(data).length > 0) {
           //
+          // Do a get in order to set the status code correctly
+          //
+          if (options.method === 'updateOrCreate' && data.id) {
+            return _resource.methods.get(data.id, function (err) {
+              if (err && err.message && err.message.match('not found')) {
+                res.statusCode = 201;
+              }
+              _method(data, finish);
+            });
+          }
+
+          //
           // TODO: get should be able to take an options hash and not just a
           // string. We should also have a generalized method for translating back
           // forth and between schema-matched objects and function argument
@@ -287,11 +299,6 @@ function listen (options, callback) {
             res.statusCode = 204;
           }
 
-          //
-          // TODO: Ideally, we can detect if an instance was created or updated
-          // with createOrUpdate, but for now we'll return a 201 for explicit
-          // calls to create only
-          //
           if (options.method === 'create') {
             res.statusCode = 201;
           }
