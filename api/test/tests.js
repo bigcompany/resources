@@ -48,6 +48,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api')
       .expect(200)
+      .expect('Content-Type', 'text/html')
       .end(function (err) {
         t.error(err, 'no error');
         t.end();
@@ -59,6 +60,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature')
       .expect(200)
+      .expect('Content-Type', 'text/html')
       .end(function (err, res) {
 
         t.error(err, 'no error');
@@ -75,6 +77,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .put('/api/creature/korben')
       .expect(200) // TODO .expect(201)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -94,6 +97,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -108,6 +112,7 @@ tap.test("strict api tests with creature", function (t) {
       .put('/api/creature/korben')
       .send({ type: 'unicorn', life: 10 })
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -129,6 +134,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -150,6 +156,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/korben/fire')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -171,6 +178,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/fire')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -193,6 +201,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/korben/feed')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -217,6 +226,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -237,6 +247,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/korben/feed')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -265,6 +276,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -284,6 +296,7 @@ tap.test("strict api tests with creature", function (t) {
   t.test("get nonexistent creature method /api/creature/korben/_die", function (t) {
     supertest(server)
       .get('/api/creature/korben/_die')
+      .expect('Content-Type', 'text/html')
       .expect(404)
       .end(function (err) {
         t.error(err, '_die is not found');
@@ -296,6 +309,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/korben/_die')
       .expect(404)
+      .expect('Content-Type', 'text/html')
       .end(function (err) {
         t.error(err, '_die is not found');
         t.end();
@@ -307,6 +321,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .del('/api/creature/korben')
       .expect(204)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'creature is deleted');
         t.end();
@@ -318,6 +333,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(404)
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'deleted creature is not found');
         t.end();
@@ -333,6 +349,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account')
       .expect(200)
+      .expect('Content-Type', 'text/html')
       .end(function (err) {
         t.error(err, 'no error');
         t.end();
@@ -344,6 +361,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .put('/api/account/marak')
       .expect(422)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -379,6 +397,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(404)
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no account for marak');
         t.end();
@@ -391,6 +410,7 @@ tap.test("strict validation tests with account", function (t) {
       .put('/api/account/marak')
       .send({ email: 'not_a_valid_email' })
       .expect(422)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -428,6 +448,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(404)
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no account for marak');
         t.end();
@@ -440,6 +461,7 @@ tap.test("strict validation tests with account", function (t) {
       .put('/api/account/marak')
       .send({ email: 'marak@marak.com' })
       .expect(200) // TODO: expect(201)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -459,6 +481,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no error');
         t.end();
@@ -471,6 +494,7 @@ tap.test("strict validation tests with account", function (t) {
       .put('/api/account/marak')
       .send({ email: 'not_a_valid_email' })
       .expect(422)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -509,6 +533,7 @@ tap.test("strict validation tests with account", function (t) {
       .put('/api/account/marak')
       .send({ email: 'marak@big.vc' })
       .expect(200) // TODO: expect(201)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -529,6 +554,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account/marak')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -553,6 +579,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .get('/api')
       .expect(200)
+      .expect('Content-Type', 'text/html')
       .end(function (err) {
         t.error(err, 'GET /api');
         t.end();
@@ -565,6 +592,7 @@ tap.test("non-strict api tests with creature", function (t) {
       .post('/api/creature/create')
       .send({ id: 'leila' })
       .expect(201)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -586,6 +614,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/leila')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -608,6 +637,7 @@ tap.test("non-strict api tests with creature", function (t) {
       .post('/api/creature/leila/update')
       .send({ type: 'unicorn' })
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -630,6 +660,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/leila/destroy')
       .expect(204)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'leila is destroyed');
         t.end();
@@ -641,6 +672,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .get('/api/creature/leila')
       .expect(404)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'destroyed creature not found');
 
@@ -677,6 +709,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/find')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -697,6 +730,7 @@ tap.test("non-strict api tests with creature", function (t) {
       .post('/api/creature/find')
       .send({ type: 'dragon' })
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -721,6 +755,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/find?type=dragon')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -749,6 +784,7 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account')
       .expect(200)
+      .expect('Content-Type', 'text/html')
       .end(function (err) {
         t.error(err, 'no error');
         t.end();
@@ -761,6 +797,7 @@ tap.test("non-strict validation tests with account", function (t) {
       .post('/api/account')
       .send({ id: 'josh' })
       .expect(422)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -796,6 +833,7 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account/josh')
       .expect(404)
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no account for josh');
       })
@@ -808,6 +846,7 @@ tap.test("non-strict validation tests with account", function (t) {
       .post('/api/account')
       .send({ id: 'josh', email: 'not a valid email' })
       .expect(422)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -845,6 +884,7 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account/josh')
       .expect(404)
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no account for josh');
       })
@@ -856,7 +896,8 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .post('/api/account')
       .send({ id: 'josh', email: 'josh@jesusabdullah.net' })
-      .expect(200) // TODO: .expect(201) // ?
+      .expect(200) // TODO: .expect(201)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
@@ -876,6 +917,7 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account/josh')
       .expect(200)
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no error');
       })
@@ -888,6 +930,7 @@ tap.test("non-strict validation tests with account", function (t) {
       .post('/api/account/josh/update')
       .send({ email: 'not a valid email' })
       .expect(422)
+      .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
 
