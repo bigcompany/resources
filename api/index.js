@@ -206,78 +206,95 @@ function listen (options, callback) {
         res.end(str);
       });
     }
-    else if (typeof options.id !== 'undefined' && !isCrudMethod) {
-      _resource.methods.get(options.id, function (err, inst) {
-        if (err) {
-          return finish(err);
-        }
-        Object.keys(inst).forEach(function (p) {
-          data[p] = inst[p];
-        });
-
-        _method(data, finish);
-      });
-    }
     else {
-
-      if (Object.keys(data).length > 0) {
-        //
-        // TODO: get should be able to take an options hash and not just a
-        // string. We should also have a generalized method for translating back
-        // forth and between schema-matched objects and function argument
-        // arrays. This is just a hack to make tests pass.
-        //
-        if (
-          Object.keys(data).length === 1 &&
-          data.id && (
-            options.method === 'get' ||
-            options.method === 'destroy'
-          )
-        ) {
-          data = data.id;
-        }
-
-        _method(data, finish);
-      } else {
-        _method(finish);
+      //
+      // If you try to GET a method, return the schema for the method
+      //
+      if (
+        options.action === 'GET' &&
+        options.method !== 'get' &&
+        (!data.id || options.id)
+      ) {
+        res.end(JSON.stringify(_method.schema, true, 2));
       }
+      else if (typeof options.id !== 'undefined' && !isCrudMethod) {
+        _resource.methods.get(options.id, function (err, inst) {
+          if (err) {
+            return finish(err);
+          }
+          Object.keys(inst).forEach(function (p) {
+            data[p] = inst[p];
+          });
 
-      function finish(err, result) {
-        if (err) {
-          if (err.message && err.message.match(/not found/)) {
-            res.statusCode = 404;
-          }
-          else if (err.errors) {
-            res.statusCode = 422;
-          }
-          else {
-            res.statusCode = 500;
+          _method(data, finish);
+        });
+      }
+      else {
+
+        if (Object.keys(data).length > 0) {
+          //
+          // TODO: get should be able to take an options hash and not just a
+          // string. We should also have a generalized method for translating back
+          // forth and between schema-matched objects and function argument
+          // arrays. This is just a hack to make tests pass.
+          //
+          if (
+            Object.keys(data).length === 1 &&
+            data.id && (
+              options.method === 'get' ||
+              options.method === 'destroy'
+            )
+          ) {
+            data = data.id;
           }
 
-          if (err.errors) {
-            return res.end(JSON.stringify({
-              message: err.message,
-              validate: {
-                errors: err.errors
-              }
-            }));
-          }
-          else {
-            return res.end(JSON.stringify({
-              message: err.message
-            }));
-          }
+          _method(data, finish);
+        } else {
+          _method(finish);
         }
 
-        if (result === null) {
-          res.statusCode = 204;
-        }
+        function finish(err, result) {
+          if (err) {
+            if (err.message && err.message.match(/not found/)) {
+              res.statusCode = 404;
+            }
+            else if (err.errors) {
+              res.statusCode = 422;
+            }
+            else {
+              res.statusCode = 500;
+            }
 
-        if (options.method === 'create' || options.method === 'update') {
-          res.statusCode = 201;
-        }
+            if (err.errors) {
+              return res.end(JSON.stringify({
+                message: err.message,
+                validate: {
+                  errors: err.errors
+                }
+              }, true, 2));
+            }
+            else {
+              return res.end(JSON.stringify({
+                message: err.message
+              }, true, 2));
+            }
+          }
 
-        res.end(JSON.stringify(result));
+          if (result === null) {
+            res.statusCode = 204;
+          }
+
+          //
+          // TODO: Ideally, we can detect if an instance was created or updated
+          // with createOrUpdate, but for now we'll return a 201 for explicit
+          // calls to create only
+          //
+          if (options.method === 'create') {
+            res.statusCode = 201;
+          }
+
+          res.end(JSON.stringify(result, true, 2));
+        }
       }
     }
   };
