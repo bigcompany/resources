@@ -193,7 +193,10 @@ function listen (options, callback) {
         })
       }, function (err, str) {
         if (err) {
-          return res.end(JSON.stringify({ message: err.message }));
+          res.statusCode = 500;
+          return res.end(JSON.stringify({
+            message: err.message
+          }, true, 2));
         }
 
         if (options.method) {
@@ -288,7 +291,7 @@ function listen (options, callback) {
       })
     }, function (err, str) {
       if (err) {
-        return res.end(JSON.stringify({ message: err.message }));
+        return res.end(JSON.stringify({ message: err.message }, true, 2));
       }
       res.end(str);
     });
