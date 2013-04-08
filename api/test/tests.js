@@ -76,7 +76,7 @@ tap.test("strict api tests with creature", function (t) {
   t.test("create a new creature by posting to /api/creature with id", function (t) {
     supertest(server)
       .put('/api/creature/korben')
-      .expect(200) // TODO .expect(201)
+      .expect(201)
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -262,7 +262,7 @@ tap.test("strict api tests with creature", function (t) {
         supertest(server)
           .put('/api/creature/korben')
           .send(body)
-          .expect(200) // TODO: expect(201)
+          .expect(200)
           .end(function (err, res) {
             t.error(err, 'no error');
             t.end();
@@ -460,7 +460,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .put('/api/account/marak')
       .send({ email: 'marak@marak.com' })
-      .expect(200) // TODO: expect(201)
+      .expect(201) // TODO: expect(201)
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -532,7 +532,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .put('/api/account/marak')
       .send({ email: 'marak@big.vc' })
-      .expect(200) // TODO: expect(201)
+      .expect(200)
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -896,7 +896,7 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .post('/api/account')
       .send({ id: 'josh', email: 'josh@jesusabdullah.net' })
-      .expect(200) // TODO: .expect(201)
+      .expect(201) // TODO: .expect(201)
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
