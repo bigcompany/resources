@@ -194,6 +194,7 @@ function listen (options, callback) {
       }, function (err, str) {
         if (err) {
           res.statusCode = 500;
+          res.setHeader('Content-Type', 'application/json');
           return res.end(JSON.stringify({
             message: err.message
           }, true, 2));
@@ -203,6 +204,7 @@ function listen (options, callback) {
           res.statusCode = 404;
         }
 
+        res.setHeader('Content-Type', 'text/html');
         res.end(str);
       });
     }
@@ -215,6 +217,7 @@ function listen (options, callback) {
         options.method !== 'get' &&
         (!data.id || options.id)
       ) {
+        res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(_method.schema, true, 2));
       }
       else if (typeof options.id !== 'undefined' && !isCrudMethod) {
@@ -254,6 +257,8 @@ function listen (options, callback) {
         }
 
         function finish(err, result) {
+          res.setHeader('Content-Type', 'application/json');
+
           if (err) {
             if (err.message && err.message.match(/not found/)) {
               res.statusCode = 404;
@@ -308,19 +313,24 @@ function listen (options, callback) {
       })
     }, function (err, str) {
       if (err) {
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
         return res.end(JSON.stringify({ message: err.message }, true, 2));
       }
+      res.setHeader('Content-Type', 'text/html');
       res.end(str);
     });
   });
 
   resource.http.app.get('/api/' + options.version, function (req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(api, true, 2));
   });
 
   resource.http.app.get('/api/' + options.version + '/:resource', function (req, res, next) {
     var r = resource.resources[req.param('resource')];
     var obj = resource.toJSON(r);
+    res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(obj, true, 2));
   });
 
