@@ -153,13 +153,9 @@ function listen (options, callback) {
         _method = _resource.methods.get;
         options.method = 'get';
       }
-      if (options.action === 'POST') {
-        _method = _resource.methods.create;
-        options.method = 'create';
-      }
-      if (options.action === 'PUT') {
-        _method = _resource.methods.update; //?
-        options.method = 'update';
+      if (options.action === 'POST' || options.action === 'PUT') {
+        _method = _resource.methods.updateOrCreate;
+        options.method = 'updateOrCreate';
       }
       if (options.action === 'DELETE') {
         _method = _resource.methods.destroy; //?
