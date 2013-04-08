@@ -126,7 +126,8 @@ function listen (options, callback) {
   function handle(options, req, res) {
 
     var _resource = resource.resources[options.resource],
-        _method   = _resource.methods[options.method];
+        _method = _resource.methods[options.method],
+        isCrudMethod = false;
 
     var data = {};
 
@@ -166,6 +167,20 @@ function listen (options, callback) {
       }
     }
 
+    //
+    // Methods for which /:resource/:id/:method do not require an implicit
+    // call to r['get']
+    //
+    isCrudMethod = [
+      'get',
+      'create',
+      'update',
+      'updateOrCreate',
+      'destroy'
+    ].some(function (method) {
+      return options.method !== method;
+    });
+
     // todo: alter _method based on options.action
     if (typeof _method === 'undefined') {
       view.routes.render();
@@ -186,14 +201,26 @@ function listen (options, callback) {
         res.end(str);
       });
     }
+    else if (typeof options.id !== 'undefined' && !isCrudMethod) {
+      _resource.methods.get(options.id, function (err, inst) {
+        if (err) {
+          return finish(err);
+        }
+        Object.keys(inst).forEach(function (p) {
+          data[p] = inst[p];
+        });
+
+        _method(data, finish);
+      });
+    }
     else {
 
       if (Object.keys(data).length > 0) {
         //
-        // TODO: get should be able to take an options hash and not just a string.
-        // We should also have a generalized method for translating back and
-        // forth between schema-matched objects and function argument arrays.
-        // This is just a hack to make tests pass.
+        // TODO: get should be able to take an options hash and not just a
+        // string. We should also have a generalized method for translating back
+        // forth and between schema-matched objects and function argument
+        // arrays. This is just a hack to make tests pass.
         //
         if (
           Object.keys(data).length === 1 &&
