@@ -45,6 +45,10 @@ function listen (options, callback) {
 
   var resources = options.resources;
 
+  //
+  // TODO: We may wish to have a mode for the api which does not depend on
+  // the view resource
+  //
   resource.view.create({
     path: path.join(__dirname, 'view')
   }, function (err, view) {
