@@ -4,11 +4,29 @@ var tap = require("tap"),
     server;
 
 tap.test("start an api server", function (t) {
-  resource.use('creature');
+  var creature = resource.use('creature');
   resource.use('account');
   resource.use('http');
   resource.use('view');
   resource.use('api');
+
+  //
+  // Add a method to creature for testing implicit get
+  //
+  creature.method('feed', feed, {
+    description: 'feed a creature',
+    properties: {
+      options: creature.schema,
+      callback: {
+        type: 'function'
+      }
+    }
+  });
+  function feed(options, callback) {
+    options.life = options.life + 1;
+    callback(null, options);
+  }
+
   resource.http.listen(function (err, _server) {
     t.error(err, 'no error');
     t.ok(_server, 'server is returned');
@@ -150,8 +168,7 @@ tap.test("strict api tests with creature", function (t) {
   // We should write other tests that try to cover this functionality
   // instead (ie, methods which modify the creature).
   //
-  /*
-  t.test("GET /api/creature/korben/feed", function (t) {
+  t.test("call method with instance by getting /api/creature/korben/feed", function (t) {
     supertest(server)
       .get('/api/creature/korben/feed')
       .expect(200)
@@ -163,15 +180,19 @@ tap.test("strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body, 'string', 'result is a string');
+        t.type(body, 'object', 'body is an object');
+        t.equal(body.life, 11, 'life is 11');
 
         t.end();
       })
     ;
   });
 
-  /*
-  t.test("GET /api/creature/korben", function (t) {
+  //
+  // In the current implementation, calling a method against an instance does
+  // not save it. You have to do that on your own.
+  //
+  t.test("show that instance is unchanged by getting /api/creature/korben", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(200)
@@ -183,16 +204,15 @@ tap.test("strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.life, 11, 'life is 11');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.life, 10, 'life is 10');
 
         t.end();
       })
     ;
   });
 
-  t.test("GET /api/creature/korben/feed", function (t) {
+  t.test("update instance with output of /api/creature/korben/feed", function (t) {
     supertest(server)
       .get('/api/creature/korben/feed')
       .expect(200)
@@ -201,17 +221,26 @@ tap.test("strict api tests with creature", function (t) {
 
         var body = {};
         t.doesNotThrow(function () {
-          body = JSON.bind(res.text);
+          body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.result, 'string', 'result is a string');
+        t.type(body, 'object', 'body is an object');
+        t.equal(body.life, 11, 'life is 11');
 
-        t.end();
+        supertest(server)
+          .put('/api/creature/korben')
+          .send(body)
+          .expect(201)
+          .end(function (err, res) {
+            t.error(err, 'no error');
+            t.end();
+          })
+        ;
       })
     ;
   });
 
-  t.test("GET /api/creature/korben", function (t) {
+  t.test("show that instance is updated by getting /api/creature/korben", function (t) {
     supertest(server)
       .get('/api/creature/korben')
       .expect(200)
@@ -223,95 +252,13 @@ tap.test("strict api tests with creature", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.life, 12, 'life is 12');
+        t.type(body, 'object', 'creature is object');
+        t.equal(body.life, 11, 'life is 11');
 
         t.end();
       })
     ;
   });
-
-  t.test("GET /api/creature/korben/hit", function (t) {
-    supertest(server)
-      .get('/api/creature/korben/hit')
-      .expect(200)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body = {};
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body.result, 'string', 'result is a string');
-
-        t.end();
-      })
-    ;
-  });
-
-  t.test("GET /api/creature/korben", function (t) {
-    supertest(server)
-      .get('/api/creature/korben')
-      .expect(200)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body = {};
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.life, 11, 'life is 11');
-
-        t.end();
-      })
-    ;
-  });
-
-  t.test("GET /api/creature/korben/hit", function (t) {
-    supertest(server)
-      .get('/api/creature/korben/hit')
-      .expect(200)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body = {};
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body.result, 'string', 'result is a string');
-
-        t.end();
-      })
-    ;
-  });
-
-  t.test("GET /api/creature/korben", function (t) {
-    supertest(server)
-      .get('/api/creature/korben')
-      .expect(200)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body = {};
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body.creature, 'object', 'creature is object');
-        var creature = body.creature || {};
-        t.equal(creature.life, 10, 'life is 10');
-
-        t.end();
-      })
-    ;
-  });
-  */
 
   t.test("get nonexistent creature method /api/creature/korben/_die", function (t) {
     supertest(server)
@@ -685,109 +632,6 @@ tap.test("non-strict api tests with creature", function (t) {
       })
     ;
   });
-
-  //
-  // This series of tests is supposed to test changing the id of a resource
-  // with the update API. The "update" resource method doesn't support this
-  // behavior, so implementing this would require separate create and delete
-  // methods. For now, I think it's better to ignore these.
-  //
-  /*
-  t.test("create creature by posting to /api/creature/create", function (t) {
-    supertest(server)
-      .post('/api/creature/create')
-      .send({ id: 'chi-chi' })
-      .expect(201)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body;
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body, 'object', 'creature is object');
-        t.equal(body.id, 'chi-chi', 'id is chi-chi');
-
-        t.end();
-      })
-    ;
-  });
-
-  t.test("get created creature /api/creature/chi-chi", function (t) {
-    supertest(server)
-      .get('/api/creature/chi-chi')
-      .expect(200)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body;
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body, 'object', 'creature is object');
-        t.equal(body.id, 'chi-chi', 'id is chi-chi');
-        t.equal(body.life, 10, 'life is 10');
-
-        t.end();
-      })
-    ;
-  });
-
-  t.test("update creature by posting to /api/creature/chi-chi/update", function (t) {
-    supertest(server)
-      .post('/api/creature/chi-chi/update')
-      .send({ id: 'nibblet', type: 'dragon' })
-      .expect(200)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body;
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body, 'object', 'creature is object');
-        t.equal(body.id, 'nibblet', 'id is nibblet');
-        t.equal(body.type, 'dragon', 'type is dragon');
-
-        t.end();
-      })
-    ;
-  });
-
-  t.test("try to get updated creature with old id /api/creature/chi-chi", function (t) {
-    supertest(server)
-      .get('/api/creature/chi-chi')
-      .expect(404)
-      .end(function (err, res) {
-        t.error(err, 'chi-chi not found');
-        t.end();
-      })
-    ;
-  });
-
-  t.test("get updated creature with new id /api/creature/nibblet", function (t) {
-    supertest(server)
-      .get('/api/creature/nibblet')
-      .expect(200)
-      .end(function (err, res) {
-        t.error(err, 'no error');
-
-        var body;
-        t.doesNotThrow(function () {
-          body = JSON.parse(res.text);
-        }, 'body is valid JSON');
-
-        t.type(body, 'object', 'creature is object');
-        t.equal(body.id, 'nibblet', 'id is nibblet');
-
-        t.end();
-      })
-    ;
-  });
-  */
 
   t.test("find creatures by getting /api/creature/find", function (t) {
     supertest(server)
