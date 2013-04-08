@@ -144,6 +144,10 @@ function listen (options, callback) {
       data.id = options.id;
     }
 
+    //
+    // Handle cases where options.method is actually an id and we want to
+    // infer the method from the HTTP method
+    //
     if (typeof _method === 'undefined' && !options.id) {
       if (options.method) {
         data.id = options.method;
@@ -165,7 +169,7 @@ function listen (options, callback) {
 
     //
     // Methods for which /:resource/:id/:method do not require an implicit
-    // call to r['get']
+    // call to r['get'] (ie, "crud methods")
     //
     isCrudMethod = [
       'get',
@@ -177,7 +181,9 @@ function listen (options, callback) {
       return options.method !== method;
     });
 
-    // todo: alter _method based on options.action
+    //
+    // Show a list of available methods
+    //
     if (typeof _method === 'undefined') {
       view.routes.render();
       view.routes.present({
