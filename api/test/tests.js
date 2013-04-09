@@ -8,7 +8,6 @@ tap.test("start an api server", function (t) {
   resource.use('account');
   resource.use('calculator');
   resource.use('http');
-  resource.use('view');
   resource.use('api');
 
   //
