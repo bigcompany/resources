@@ -119,6 +119,18 @@ function listen (options, callback) {
     }
 
     //
+    // If we are calling a method against an instance, make sure it's
+    // actually instantiable.
+    //
+    if (options.id && options.method && !_resource.methods.get) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
+      return res.end(JSON.stringify({
+        message: 'Resource `' + options.resource + '` is not persisted'
+      }, true, 2));
+    }
+
+    //
     // Handle cases where options.method is actually an id and we want to
     // infer the method from the HTTP method
     //
@@ -206,7 +218,6 @@ function listen (options, callback) {
         });
       }
       else {
-
         if (Object.keys(data).length > 0) {
           //
           // Do a get in order to set the status code correctly
