@@ -305,7 +305,7 @@ tap.test("strict api tests with creature", function (t) {
   t.test("get nonexistent creature method /api/creature/korben/_die", function (t) {
     supertest(server)
       .get('/api/creature/korben/_die')
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'application/json')
       .expect(404)
       .end(function (err) {
         t.error(err, '_die is not found');
@@ -318,7 +318,7 @@ tap.test("strict api tests with creature", function (t) {
     supertest(server)
       .post('/api/creature/korben/_die')
       .expect(404)
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, '_die is not found');
         t.end();
@@ -390,7 +390,7 @@ tap.test("strict api tests with calculator", function (t) {
 
   t.test("execute method by getting /api/calculator/add", function (t) {
     supertest(server)
-      .get('/api/creature/fire?a=1&b=2')
+      .get('/api/calculator/add?a=1&b=2')
       .expect(200)
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -401,17 +401,17 @@ tap.test("strict api tests with calculator", function (t) {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
 
-        t.equal(body.result, 3, 'result is 3');
+        t.equal(body, 3, 'result is 3');
 
         t.end();
       })
     ;
   });
 
-  t.test("try to create a new calculator by posting to /api/calculator with id", function (t) {
+  t.test("try to create a new calculator by posting to /api/calculator/baban", function (t) {
     supertest(server)
       .put('/api/calculator/baban')
-      .expect(500) // TODO: A more appropriate status code?
+      .expect(404) // Method not found
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -420,10 +420,6 @@ tap.test("strict api tests with calculator", function (t) {
         t.doesNotThrow(function () {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
-
-        //
-        // TODO: Assert something regarding the error
-        //
 
         t.end();
       })
@@ -432,9 +428,9 @@ tap.test("strict api tests with calculator", function (t) {
 
   t.test("try to call calculator method by posting /api/calculator/baban/add", function (t) {
     supertest(server)
-      .post('/api/creature/korben/fire')
+      .post('/api/calculator/baban/add')
       .send({ a: 1, b: 2 })
-      .expect(500) // TODO: More appropriate status code?
+      .expect(400)
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
@@ -447,6 +443,7 @@ tap.test("strict api tests with calculator", function (t) {
         //
         // TODO: Assert something regarding the error
         //
+        t.equal(body.message, 'Resource `calculator` is not persisted', 'calculator is not persisted');
 
         t.end();
       })
@@ -461,7 +458,7 @@ tap.test("strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account')
       .expect(200)
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no error');
         t.end();
@@ -691,7 +688,7 @@ tap.test("non-strict api tests with creature", function (t) {
     supertest(server)
       .get('/api')
       .expect(200)
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'GET /api');
         t.end();
@@ -793,11 +790,7 @@ tap.test("non-strict api tests with creature", function (t) {
     ;
   });
 
-  //
-  // IMO this should not work.
-  //
-  /*
-  t.test("find creatures by posting /api/creature/find", function (t) {
+  t.test("find creatures by getting /api/creature/find", function (t) {
     supertest(server)
       .get('/api/creature/find')
       .expect(200)
@@ -815,7 +808,6 @@ tap.test("non-strict api tests with creature", function (t) {
       })
     ;
   });
-  */
 
   t.test("find creatures by posting /api/creature/find", function (t) {
     supertest(server)
@@ -896,7 +888,7 @@ tap.test("non-strict validation tests with account", function (t) {
     supertest(server)
       .get('/api/account')
       .expect(200)
-      .expect('Content-Type', 'text/html')
+      .expect('Content-Type', 'application/json')
       .end(function (err) {
         t.error(err, 'no error');
         t.end();
