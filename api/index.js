@@ -45,80 +45,57 @@ function listen (options, callback) {
 
   var resources = options.resources;
 
-  resource.http.app.get('/api/:resource', function(req, res) {
-    handle({
-      resource: req.param('resource'),
-      action: "GET"
-    }, req, res);
-  });
-  resource.http.app.post('/api/:resource', function(req, res) {
-    handle({
-      resource: req.param('resource'),
-      action: "POST"
-    }, req, res);
-  });
-  resource.http.app.put('/api/:resource', function(req, res) {
-    handle({
-      resource: req.param('resource'),
-      action: "PUT"
-    }, req, res);
-  });
+  var api = function (req, res, next) {
+    var url = require('url'),
+        data = {},
+        route;
 
-  resource.http.app.get('/api/:resource/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      action: "GET"
-    }, req, res);
-  });
-  resource.http.app.post('/api/:resource/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      action: "POST"
-    }, req, res);
-  });
-  resource.http.app.put('/api/:resource/:method', function(req, res) {
-    handle({
-      resource: req.param('resource'),
-      method: req.param('method'),
-      action: "PUT"
-    }, req, res);
-  });
-  resource.http.app.del('/api/:resource/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      action: "DELETE"
-    }, req, res);
-  });
+    route = url.parse(req.url)
+     .pathname
+     .split('/')
+     .filter(function (_) { return _ !== ''; })
+    ;
 
-  resource.http.app.get('/api/:resource/:id/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "GET"
-    }, req, res);
-  });
+    if (route[0] !== 'api') {
+      return next();
+    }
 
-  resource.http.app.post('/api/:resource/:id/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "POST"
-    }, req, res);
-  });
+    route.shift();
 
-  resource.http.app.put('/api/:resource/:id/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "PUT"
-    }, req, res);
-  });
+    if (route.length) {
+      data.resource = route.shift();
+    }
+    else {
+      //
+      // Route is '/api'
+      //
+      res.setHeader('Content-Type', 'application/json');
+
+      return res.end(JSON.stringify({
+        resources: Object.keys(resource.resources).map(function (r) {
+          return { resource: r, url: '/api/' + r };
+        })
+      }, true, 2));
+    }
+
+    if (route.length) {
+      data.method = route.shift();
+    }
+
+    if (route.length) {
+      data.id = data.method;
+      data.method = route.shift();
+    }
+
+    data.action = req.method;
+
+    handle(data, req, res);
+  };
+
+  resource.http.app.use(api);
+  resource.api.middleware = api;
+
+  callback(null, resource.http.server);
 
   function handle(options, req, res) {
 
@@ -283,32 +260,7 @@ function listen (options, callback) {
         }
       }
     }
-  };
-
-  resource.http.app.get('/api', function (req, res, next) {
-    var routes;
-
-    routes = Object.keys(resource.resources).map(function (r) {
-      return { resource: r, url: '/api/' + r };
-    });
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ resources: routes }, true, 2));
-  });
-
-  resource.http.app.get('/api/' + options.version, function (req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(api, true, 2));
-  });
-
-  resource.http.app.get('/api/' + options.version + '/:resource', function (req, res, next) {
-    var r = resource.resources[req.param('resource')];
-    var obj = resource.toJSON(r);
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(obj, true, 2));
-  });
-
-  callback(null, resource.http.server);
-
+  }
 }
 
 exports.api = api;
