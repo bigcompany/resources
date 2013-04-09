@@ -65,19 +65,6 @@ function listen (options, callback) {
     if (route.length) {
       data.resource = route.shift();
     }
-    else {
-      //
-      // Route is '/api'
-      //
-      res.setHeader('Content-Type', 'application/json');
-
-      return res.end(JSON.stringify({
-        resources: Object.keys(resource.resources).map(function (r) {
-          return { resource: r, url: '/api/' + r };
-        })
-      }, true, 2));
-    }
-
     if (route.length) {
       data.method = route.shift();
     }
@@ -99,9 +86,21 @@ function listen (options, callback) {
 
   function handle(options, req, res) {
 
+    if (Object.keys(options).length === 1) {
+      //
+      // Route is '/api'
+      //
+      return reply(null, {
+        resources: Object.keys(resource.resources).map(function (r) {
+          return { resource: r, url: '/api/' + r };
+        })
+      });
+    }
+
     var _resource = resource.resources[options.resource],
         _method = _resource.methods[options.method],
-        isCrudMethod = false;
+        isCrudMethod = false,
+        status;
 
     var data = {};
 
@@ -123,11 +122,9 @@ function listen (options, callback) {
     // actually instantiable.
     //
     if (options.id && options.method && !_resource.methods.get) {
-      res.statusCode = 400;
-      res.setHeader('Content-Type', 'application/json');
-      return res.end(JSON.stringify({
-        message: 'Resource `' + options.resource + '` is not persisted'
-      }, true, 2));
+      return reply(new Error(
+        'Resource `' + options.resource + '` is not persisted'
+      ), null, 400);
     }
 
     //
@@ -178,11 +175,10 @@ function listen (options, callback) {
       });
 
       if (options.method) {
-        res.statusCode = 404;
+        status = 404;
       }
 
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ methods: routes }, true, 2));
+      reply(null, { methods: routes }, status);
     }
     else {
 
@@ -225,7 +221,7 @@ function listen (options, callback) {
           if (options.method === 'updateOrCreate' && data.id) {
             return _resource.methods.get(data.id, function (err) {
               if (err && err.message && err.message.match('not found')) {
-                res.statusCode = 201;
+                status = 201;
               }
               _method(data, finish);
             });
@@ -253,42 +249,52 @@ function listen (options, callback) {
         }
 
         function finish(err, result) {
-          res.setHeader('Content-Type', 'application/json');
-
           if (err) {
             if (err.message && err.message.match(/not found/)) {
-              res.statusCode = 404;
+              status = 404;
             }
             else if (err.errors) {
-              res.statusCode = 422;
+              status = 422;
             }
             else {
-              res.statusCode = 500;
-            }
-
-            if (err.errors) {
-              return res.end(JSON.stringify({
-                message: err.message,
-                errors: err.errors
-              }, true, 2));
-            }
-            else {
-              return res.end(JSON.stringify({
-                message: err.message
-              }, true, 2));
+              status = 500;
             }
           }
 
           if (result === null) {
-            res.statusCode = 204;
+            status = 204;
           }
 
           if (options.method === 'create') {
-            res.statusCode = 201;
+            status = 201;
           }
 
-          res.end(JSON.stringify(result, true, 2));
+          reply(err, result, status);
         }
+      }
+
+      function reply(err, result, status) {
+        if (typeof status == 'number' || typeof status == 'string') {
+          res.statusCode = status;
+        }
+
+        res.setHeader('Content-Type', 'application/json');
+
+        if (err) {
+          if (err.errors) {
+            return res.end(JSON.stringify({
+              message: err.message,
+              errors: err.errors
+            }, true, 2));
+          }
+          else {
+            return res.end(JSON.stringify({
+              message: err.message
+            }, true, 2));
+          }
+        }
+
+        res.end(JSON.stringify(result, true, 2));
       }
     }
   }
