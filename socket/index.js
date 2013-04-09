@@ -17,12 +17,16 @@ socket.method('start', start, {
 function start (options, callback) {
   options = options || {};
   var server;
-  var socketful = require('socketful');
-  socket.server = server = socketful.createServer(resource.resources, { server: resource.http.server });
+  var socketful = require('./lib/socketful');
+  socket.server = server = socketful.createServer(
+    resource.resources,
+    { server: resource.http.server },
+    callback
+  );
 }
 
 exports.socket = socket;
 
 exports.dependencies = {
-  "socketful": "*"
+  "socket.io": "0.9.x"
 };
