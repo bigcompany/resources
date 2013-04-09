@@ -196,18 +196,7 @@ function listen (options, callback) {
       res.end(JSON.stringify({ methods: routes }, true, 2));
     }
     else {
-      //
-      // If you try to GET a method, return the schema for the method
-      //
-      if (
-        options.action === 'GET' &&
-        options.method !== 'get' &&
-        (!data.id || options.id)
-      ) {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(_method.schema, true, 2));
-      }
-      else if (typeof options.id !== 'undefined' && !isCrudMethod) {
+      if (typeof options.id !== 'undefined' && !isCrudMethod) {
         _resource.methods.get(options.id, function (err, inst) {
           if (err) {
             return finish(err);
