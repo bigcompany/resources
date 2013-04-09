@@ -173,6 +173,26 @@ function listen (options, callback) {
       res.end(JSON.stringify({ methods: routes }, true, 2));
     }
     else {
+
+      if (
+        _method.schema &&
+        _method.schema.properties &&
+        _method.schema.properties.options &&
+        _method.schema.properties.options.properties
+      ) {
+        var props = _method.schema.properties.options.properties;
+
+        Object.keys(data).forEach(function (p) {
+          if (props && props[p] && props[p].type === 'number') {
+            var coerced = parseFloat(data[p], 10);
+
+            if (coerced.toString() !== 'NaN') {
+              data[p] = coerced;
+            }
+          }
+        });
+      }
+
       if (typeof options.id !== 'undefined' && !isCrudMethod) {
         _resource.methods.get(options.id, function (err, inst) {
           if (err) {
