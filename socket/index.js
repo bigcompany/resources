@@ -15,13 +15,23 @@ socket.method('start', start, {
 });
 
 function start (options, callback) {
-  options = options || {};
-  var server;
+
+  if (!callback && typeof options == 'function') {
+    callback = options;
+    options = {};
+  }
+
   var socketful = require('./lib/socketful');
-  socket.server = server = socketful.createServer(
+  socket.server = socketful.createServer(
     resource.resources,
     { server: resource.http.server },
-    callback
+    function (err, io) {
+      if (err) {
+        return callback(err);
+      }
+      socket.io = io;
+      callback(err, io);
+    }
   );
 }
 
