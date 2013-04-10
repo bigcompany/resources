@@ -22,10 +22,8 @@ exports.engines = {
 // specified `resources`.
 //
 exports.createServer = function (resources, options, callback) {
+
   options = options || {};
   options.engine = options.engine || 'socket.io';
-  if (!Array.isArray(resources)){
-    resources = [resources];
-  }
   return socketful.engines[options.engine].createServer(resources, options, callback);
 };
