@@ -1,6 +1,19 @@
 var resource = require('resource'),
     config = resource.define('config');
 
+var _persist = config.persist,
+    engine;
+
+config.persist = function (opts) {
+  if (typeof opts === 'string') {
+    engine = opts;
+  }
+  else if (opts.type) {
+    engine = opts.type;
+  }
+  return _persist(opts);
+};
+
 config.persist('fs');
 
 config.after('create', attach);
@@ -53,8 +66,18 @@ config.method('attach', attach, {
   }
 });
 function attach(conf, callback) {
+  var path = require('path');
+
   var err = null;
   try {
+
+    //
+    // Hack to get the full config
+    //
+    if (engine === 'fs') {
+      conf = require(path.join(resource.helper.appDir, 'db', 'config', conf.id + '.json'));
+    }
+
     Object.keys(conf).forEach(function (k) {
       config[k] = conf[k];
     });
