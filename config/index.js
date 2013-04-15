@@ -22,33 +22,28 @@ config.after('update', attach);
 config.after('updateOrCreate', attach);
 
 //
-// Ideally, we would use config.get with a default id, but this does not work
-// because calling get(callback) ends up with the id being set to the callback
-// and the callback not being set at all. Using the schema to insist that
-// the id is a string causes get to error on validation.
+// Redefine the get method to allow for undefined id
 //
-config.method('load', load, {
-  description: 'Load the default configuration for this application',
-  properties: {
-    callback: {
-      type: 'function'
+delete config.get.schema.properties.id.required;
+
+var _get = config.get.unwrapped;
+
+config.method('get', get, config.get.schema);
+function get(id, callback) {
+  if (!callback && typeof id === 'function') {
+    callback = id;
+    id;
+
+    if (resource.isProduction) {
+      id = 'production';
+    }
+    else {
+      id = 'development';
     }
   }
-});
-function load(callback) {
-  //
-  // Remark: In order for the config to load properly, you currently need to
-  // set the expected properties on config, and then re-persist it. This is
-  // a problem. I see two solutions: Either attempt to make the fs adapter
-  // for jugglingdb not scrub properties, or write a custom get function.
-  // Combined with the call signature issues with get, writing a custom get
-  // may be the best solution.
-  //
-  if (resource.isProduction) {
-    return config.get('production', callback);
-  }
-  return config.get('development', callback);
-}
+
+  return _get(id, callback);
+};
 
 //
 // Attach properties from a conf object to the config resource
@@ -70,7 +65,6 @@ function attach(conf, callback) {
 
   var err = null;
   try {
-
     //
     // Hack to get the full config
     //
