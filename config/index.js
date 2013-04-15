@@ -26,8 +26,17 @@ if (resource.isProduction) {
 // Attach properties from a conf object to the config resource
 // This is written with after hooks in mind
 //
-// TODO: Expose as a resource method
-//
+config.method('attach', attach, {
+  "description": "Attach configuration options to the config resource",
+  "properties": {
+    "options": {
+      "type": "object"
+    },
+    "callback": {
+      "type": "function"
+    }
+  }
+});
 function attach(conf, callback) {
   var err = null;
   try {
@@ -41,15 +50,21 @@ function attach(conf, callback) {
   callback(err, conf);
 }
 
-// var originalProperties = Object.keys(config); // Use for scrubbing config?
-// config.before('destroy', detach);
-
 //
 // Clean up resource.config by passing the config object in you wish to "detach"
 // This is written with before hooks in mind
 //
-// TODO: Expose as a resource method
-//
+config.method('detach', detach, {
+  "description": "Detach configuration options from the config resource",
+  "properties": {
+    "options": {
+      "type": "object"
+    },
+    "callback": {
+      "type": "function"
+    }
+  }
+});
 function detach(conf, callback) {
   var err = null;
   try {
