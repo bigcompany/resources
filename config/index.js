@@ -9,17 +9,32 @@ config.after('update', attach);
 config.after('updateOrCreate', attach);
 
 //
-// This way, if you do config.get(function (err, conf) {}) it will default
-// to either "development" or "production"
+// Ideally, we would use config.get with a default id, but this does not work
+// because calling get(callback) ends up with the id being set to the callback
+// and the callback not being set at all. Using the schema to insist that
+// the id is a string causes get to error on validation.
 //
-// TODO: Is there something more clever we can do here?
-//
-if (resource.isDevelopment) {
-  config.get.schema.properties.id.default = 'development';
-}
-
-if (resource.isProduction) {
-  config.get.schema.properties.id.default = 'production';
+config.method('load', load, {
+  description: 'Load the default configuration for this application',
+  properties: {
+    callback: {
+      type: 'function'
+    }
+  }
+});
+function load(callback) {
+  //
+  // Remark: In order for the config to load properly, you currently need to
+  // set the expected properties on config, and then re-persist it. This is
+  // a problem. I see two solutions: Either attempt to make the fs adapter
+  // for jugglingdb not scrub properties, or write a custom get function.
+  // Combined with the call signature issues with get, writing a custom get
+  // may be the best solution.
+  //
+  if (resource.isProduction) {
+    return config.get('production', callback);
+  }
+  return config.get('development', callback);
 }
 
 //
