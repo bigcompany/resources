@@ -77,3 +77,5 @@ function detach(conf, callback) {
   }
   callback(err, conf);
 }
+
+exports.config = config;
