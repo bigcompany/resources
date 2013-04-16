@@ -61,6 +61,8 @@ git clone https://github.com/visionmedia/mon.git
 cd mon
 make install
 
+cd ..
+
 # change directory into resource
 cd resource
 
@@ -77,8 +79,6 @@ cd ..
 cd resources
 npm link resource
 npm link
-npm install nosqlite -g
-npm install prompt -g
 npm install -g
 
 cd ..
@@ -106,13 +106,13 @@ cd /root/big
 npm install cradle -g
 
 # run once to install deps
-node bin/big
-big
+# node bin/big
+# big
 
 # start big replicator
-node bin/big system groupadd --name big-users
-node bin/big system useradd --user marak --group big-users
-node bin/big system passwd --user marak --password b1gPPuol1
+# node bin/big system groupadd --name big-users
+# node bin/big system useradd --user marak --group big-users
+# node bin/big system passwd --user marak --password b1gPPuol1
 
 # start the web admin
-node bin/admin
+node apps/admin
