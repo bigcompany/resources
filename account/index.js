@@ -13,7 +13,8 @@ account.property('email', {
 
 account.property('password', {
   "type": "string",
-  "format": "password"
+  "format": "password",
+  "required": true
 });
 
 account.property('status', {
@@ -54,9 +55,9 @@ account.method('reset', reset, {
 });
 
 account.method('auth', auth, {
-  "description": "checks accountname and password for a account ( auth check )",
+  "description": "checks id and password for an account ( auth check )",
   "properties": {
-    "accountname": {
+    "id": {
       "type": "string",
       "required": true
     },
@@ -75,17 +76,17 @@ account.before('create', function(_account, next) {
   next(null, _account)
 });
 
-function auth (email, password, callback) {
+function auth (id, password, callback) {
 
   //
   // Lookup account by name and password
   //
-  account.find({ email: email, password: password }, function(err, _account){
+  account.find({ id: id, password: password }, function(err, _account){
     if (err) {
       return callback(err);
     }
     if(_account.length === 0) {
-      return callback(new Error('invalid'));
+      return callback(null, false);
     }
     return callback(null, true);
   })
