@@ -28,10 +28,18 @@ module['exports'] = function(options, callback) {
 
         var label = record.title || record.name || record.id;
 
+        var leading;
+        if (options.id) {
+          leading = '../';
+        }
+        else {
+          leading = './';
+        }
+
         output += ('<tr>'
-               +     '<td><a href="./get/' + record.id +'">' + label + '</a></td>'
-               +     '<td><a href="./update/'  + record.id + '">' + 'update' + '</a></td>'
-               +     '<td><a href="./destroy/'  + record.id + '">' + 'destroy' + '</a></td>'
+               +     '<td><a href="' + leading + 'get/' + record.id +'">' + label + '</a></td>'
+               +     '<td><a href="' + leading + 'update/'  + record.id + '">' + 'update' + '</a></td>'
+               +     '<td><a href="' + leading + 'destroy/'  + record.id + '">' + 'destroy' + '</a></td>'
                +   '</tr>');
       });
       $('h1').html(entity);

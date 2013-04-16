@@ -251,7 +251,7 @@ function promptToList (resource, callback) {
 exports.route = router.route;
 
 exports.dependencies = {
-  "prompt-lite": "0.1.0",
+  "prompt-lite": "0.1.x",
   "optimist": "0.3.5",
   "colors": "*"
 };
