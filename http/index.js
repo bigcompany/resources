@@ -3,7 +3,6 @@ var resource  = require('resource'),
     http = resource.define('http');
 
 http.schema.description = "provides an HTTP API";
-
 http.property("port", {
   "type": "number",
   "default": 8888,
@@ -87,7 +86,7 @@ function listen (options, callback) {
   // TODO: finish view middleware
   // TODO: move to resource.view middleware
   //
-  if(resource.view) {
+  if (resource.view) {
     //
     // Create a new view assumming there is a ./view/ directory
     //
@@ -97,13 +96,19 @@ function listen (options, callback) {
       if(err) {
         resource.logger.warn(err.message);
       }
-      if(view) {
+      if (view) {
+        //
+        // Bind view to http resource scope for later reference
+        //
+        http.view = view;
+
         //
         // View middleware for serving views
         //
         app.use(function (req, res, next) {
           var _view = view;
-          var parts = req.url.split('/');
+          var parts = require('url').parse(req.url).pathname.split('/');
+
           parts.shift();
           parts.forEach(function(part) {
             if(part.length > 0 && typeof _view !== 'undefined') {
@@ -114,18 +119,41 @@ function listen (options, callback) {
             _view = _view['index'];
           }
           if(typeof _view === "undefined") {
-            resource.logger.error('invalid view ' + req.url);
-            var _path = path.resolve(process.cwd() + req.virtualpath);
-            return connect.static(_path)(req, res, next);
+            return next();
           }
 
           var str = _view.render({});
           if (typeof _view.present === "function") {
-            _view.present({}, function (err, rendered) {
+
+            //
+            // TODO: this data should already be on the request from resource request parser
+            //
+            var data = {};
+            if (typeof req.params === 'object') {
+              Object.keys(req.params).forEach(function (p) {
+                data[p] = req.param(p);
+              });
+            }
+
+            if (typeof req.query === 'object') {
+              Object.keys(req.query).forEach(function (p) {
+                data[p] = req.query[p];
+              });
+            }
+
+            Object.keys(req.body).forEach(function (p) {
+              data[p] = req.body[p];
+            });
+
+            _view.present({
+              request: req,
+              response: res,
+              data: data
+              }, function (err, rendered) {
               res.end(rendered);
             });
           } else {
-            res.end(str);
+            return next();
           }
         });
       }
