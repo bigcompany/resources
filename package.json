@@ -5,6 +5,10 @@
     "peerDependencies": {
       "resource": "0.3.x"
     },
+    "devDependencies": {
+      "tap": "*",
+      "supertest": "*"
+    },
     "main": "./index",
     "engine": [
         "node 0.6.x"
