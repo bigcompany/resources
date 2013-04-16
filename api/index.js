@@ -4,7 +4,8 @@
 //
 
 var resource = require('resource'),
-    api = resource.define('api');
+    api = resource.define('api'),
+    path = require('path');
 
 api.schema.description = "provides a web API for interacting with resources";
 
@@ -44,127 +45,259 @@ function listen (options, callback) {
 
   var resources = options.resources;
 
-  resource.http.app.get('/api/:resource', function(req, res) {
-    handle({
-      resource: req.param('resource'),
-      action: "GET"
-      }, req, res);
-  });
-  resource.http.app.get('/api/:resource/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      action: "GET"
-      }, req, res);
-  });
+  var api = function (req, res, next) {
+    var url = require('url'),
+        data = {},
+        route;
 
-  resource.http.app.get('/api/:resource/:method/:id', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "GET"
-      }, req, res);
-  });
+    route = url.parse(req.url)
+     .pathname
+     .split('/')
+     .filter(function (_) { return _ !== ''; })
+    ;
 
-  resource.http.app.post('/api/:resource/:method', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      action: "POST"
-    }, req, res);
-  });
-
-  resource.http.app.post('/api/:resource/:method/:id', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "POST"
-      }, req, res);
-  });
-
-  resource.http.app.del('/api/:resource/:method/:id', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "DELETE"
-      }, req, res);
-  });
-
-  resource.http.app.put('/api/:resource/:method/:id', function(req, res) {
-    handle({ 
-      resource: req.param('resource'),
-      method: req.param('method'),
-      id: req.param('id'),
-      action: "PUT"
-    }, req, res);
-  });
-
-  function handle(options, req, res) {
-
-    var _resource = resource.resources[options.resource],
-        _method   = _resource.methods[options.method];
-
-    var data = {};
-
-    // todo: alter _method based on options.action
-    if (typeof _method === 'undefined') {
-      var str = "<h1>Methods Available</h1> \n\n";
-      var rs = resource.resources;
-      for (var m in _resource.methods) {
-        str += ('&nbsp;&nbsp;' + m + '<br/>'); // rs[r].methods[m]
-      }
-      res.end(str);
-    } else {
-      //
-      // Merge query and form data into a common scope
-      //
-      for(var p in req.query) {
-        data[p] = req.query[p];
-      }
-      if (Object.keys(data).length > 0) {
-        _resource.methods[options.method](data.id, function (err, result){
-          console.log(err, result)
-          res.end(JSON.stringify(result));
-        });
-      } else {
-        _resource.methods[options.method](function (err, result){
-          res.end(JSON.stringify(result));
-        });
-      }
+    if (route[0] !== 'api') {
+      return next();
     }
+
+    route.shift();
+
+    if (route.length) {
+      data.resource = route.shift();
+    }
+    if (route.length) {
+      data.method = route.shift();
+    }
+
+    if (route.length) {
+      data.id = data.method;
+      data.method = route.shift();
+    }
+
+    data.action = req.method;
+
+    handle(data, req, res);
   };
 
-  resource.http.app.get('/api', function (req, res, next) {
-    //
-    // TODO: Add better HTML view for rendering resource methods as routes
-    //
-    //var str = JSON.stringify(resource.http.app.routes, true, 2);
-    var str = "";
-    var rs = resource.resources;
-    for(var r in rs) {
-      str += ('<a href="/api/' + r + '">' + r + '</a><br/>');
-      for (var m in rs[r].methods) {
-        str += ('&nbsp;&nbsp; <a href="/api/' + r + '/' + m + '">' + m + '</a><br/>');
-      }
-    }
-    res.end(str);
-  });
-
-  resource.http.app.get('/api/' + options.version, function (req, res, next) {
-    res.end(JSON.stringify(api, true, 2));
-  });
-
-  resource.http.app.get('/api/' + options.version + '/:resource', function (req, res, next) {
-    var r = resource.resources[req.param('resource')];
-    var obj = resource.toJSON(r);
-    res.end(JSON.stringify(obj, true, 2));
-  });
+  resource.http.app.use(api);
+  resource.api.middleware = api;
 
   callback(null, resource.http.server);
 
+  function handle(options, req, res) {
+
+    if (Object.keys(options).length === 1) {
+      //
+      // Route is '/api'
+      //
+      return reply(null, {
+        resources: Object.keys(resource.resources).map(function (r) {
+          return { resource: r, url: '/api/' + r };
+        })
+      });
+    }
+
+    var _resource = resource.resources[options.resource],
+        _method = _resource.methods[options.method],
+        isCrudMethod = false,
+        status;
+
+    var data = {};
+
+    //
+    // Merge query and form data into a common scope
+    //
+    Object.keys(req.query).forEach(function (p) {
+      data[p] = req.query[p];
+    });
+    Object.keys(req.body).forEach(function (p) {
+      data[p] = req.body[p];
+    });
+    if (options.id) {
+      data.id = options.id;
+    }
+
+    //
+    // If we are calling a method against an instance, make sure it's
+    // actually instantiable.
+    //
+    if (options.id && options.method && !_resource.methods.get) {
+      return reply(new Error(
+        'Resource `' + options.resource + '` is not persisted'
+      ), null, 400);
+    }
+
+    //
+    // Handle cases where options.method is actually an id and we want to
+    // infer the method from the HTTP method
+    //
+    if (typeof _method === 'undefined' && !options.id) {
+      if (options.method) {
+        data.id = options.method;
+      }
+
+      if (options.action === 'GET' && options.method) {
+        _method = _resource.methods.get;
+        options.method = 'get';
+      }
+      if (options.action === 'POST' || options.action === 'PUT') {
+        _method = _resource.methods.updateOrCreate;
+        options.method = 'updateOrCreate';
+      }
+      if (options.action === 'DELETE') {
+        _method = _resource.methods.destroy; //?
+        options.method = 'destroy';
+      }
+    }
+
+    //
+    // Methods for which /:resource/:id/:method do not require an implicit
+    // call to r['get'] (ie, "crud methods")
+    //
+    isCrudMethod = [
+      'get',
+      'create',
+      'update',
+      'updateOrCreate',
+      'destroy'
+    ].some(function (method) {
+      return options.method !== method;
+    });
+
+    //
+    // Show a list of available methods
+    //
+    if (typeof _method === 'undefined') {
+      var routes;
+
+      routes = Object.keys(_resource.methods).map(function (m) {
+        return { method: m, url: '/api/' + options.resource + '/' + m };
+      });
+
+      if (options.method) {
+        status = 404;
+      }
+
+      reply(null, { methods: routes }, status);
+    }
+    else {
+
+      if (
+        _method.schema &&
+        _method.schema.properties &&
+        _method.schema.properties.options &&
+        _method.schema.properties.options.properties
+      ) {
+        var props = _method.schema.properties.options.properties;
+
+        Object.keys(data).forEach(function (p) {
+          if (props && props[p] && props[p].type === 'number') {
+            var coerced = parseFloat(data[p], 10);
+
+            if (coerced.toString() !== 'NaN') {
+              data[p] = coerced;
+            }
+          }
+        });
+      }
+
+      if (typeof options.id !== 'undefined' && !isCrudMethod) {
+        _resource.methods.get(options.id, function (err, inst) {
+          if (err) {
+            return finish(err);
+          }
+          Object.keys(inst).forEach(function (p) {
+            data[p] = inst[p];
+          });
+
+          _method(data, finish);
+        });
+      }
+      else {
+        if (Object.keys(data).length > 0) {
+          //
+          // Do a get in order to set the status code correctly
+          //
+          if (options.method === 'updateOrCreate' && data.id) {
+            return _resource.methods.get(data.id, function (err) {
+              if (err && err.message && err.message.match('not found')) {
+                status = 201;
+              }
+              _method(data, finish);
+            });
+          }
+
+          //
+          // TODO: get should be able to take an options hash and not just a
+          // string. We should also have a generalized method for translating back
+          // forth and between schema-matched objects and function argument
+          // arrays. This is just a hack to make tests pass.
+          //
+          if (
+            Object.keys(data).length === 1 &&
+            data.id && (
+              options.method === 'get' ||
+              options.method === 'destroy'
+            )
+          ) {
+            data = data.id;
+          }
+
+          _method(data, finish);
+        } else {
+          _method(finish);
+        }
+
+        function finish(err, result) {
+          if (err) {
+            if (err.message && err.message.match(/not found/)) {
+              status = 404;
+            }
+            else if (err.errors) {
+              status = 422;
+            }
+            else {
+              status = 500;
+            }
+          }
+
+          if (result === null) {
+            status = 204;
+          }
+
+          if (options.method === 'create') {
+            status = 201;
+          }
+
+          reply(err, result, status);
+        }
+      }
+
+      function reply(err, result, status) {
+        if (typeof status == 'number' || typeof status == 'string') {
+          res.statusCode = status;
+        }
+
+        res.setHeader('Content-Type', 'application/json');
+
+        if (err) {
+          if (err.errors) {
+            return res.end(JSON.stringify({
+              message: err.message,
+              errors: err.errors
+            }, true, 2));
+          }
+          else {
+            return res.end(JSON.stringify({
+              message: err.message
+            }, true, 2));
+          }
+        }
+
+        res.end(JSON.stringify(result, true, 2));
+      }
+    }
+  }
 }
 
 exports.api = api;
