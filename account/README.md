@@ -37,7 +37,7 @@ for managing accounts
 
   - [reset](#account-methods-reset) (email)
 
-  - [auth](#account-methods-auth) (accountname, password)
+  - [auth](#account-methods-auth) (id, password)
 
 
 <a name="account-properties"></a>
@@ -62,6 +62,8 @@ for managing accounts
   - **type** : string
 
   - **format** : password
+
+  - **required** : true
 
 - **status** 
 
@@ -125,6 +127,8 @@ create a new account
       - **type** : string
 
       - **format** : password
+
+      - **required** : true
 
     - **status** 
 
@@ -208,9 +212,9 @@ search for instances of account
 
       - **type** : any
 
-      - **default** : 
-
       - **required** : false
+
+      - **default** : 
 
     - **status** 
 
@@ -278,6 +282,8 @@ updates a account by id
 
       - **format** : password
 
+      - **required** : true
+
     - **status** 
 
       - **description** : the current status of the account
@@ -339,6 +345,8 @@ updates a account by id, and creates if necessary
       - **type** : string
 
       - **format** : password
+
+      - **required** : true
 
     - **status** 
 
@@ -422,11 +430,11 @@ resets access token for account
 
 <a name="account-methods-auth"></a> 
 
-### account.auth(accountname, password)
+### account.auth(id, password)
 
-checks accountname and password for a account ( auth check )
+checks id and password for an account ( auth check )
 
-- **accountname** 
+- **id** 
 
   - **type** : string
 

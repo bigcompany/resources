@@ -660,7 +660,7 @@ execute shell scripts on a node via SSH
 
       - **type** : string
 
-      - **default** : /Users/maraksquires/dev/bigcompany/resources/node/recipes/ls-test
+      - **default** : ls-test
 
 - **callback** 
 

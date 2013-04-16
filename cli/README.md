@@ -41,7 +41,7 @@ starts the big command line interface
 
 
 ## dependencies 
-- [prompt-lite](http://npmjs.org/package/prompt-lite) v0.1.0
+- [prompt-lite](http://npmjs.org/package/prompt-lite) v0.1.x
 - [optimist](http://npmjs.org/package/optimist) v0.3.5
 - [colors](http://npmjs.org/package/colors)
 
