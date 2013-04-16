@@ -21,6 +21,7 @@ resources for any occasion
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) provides a distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes
  - [oauth](https://github.com/bigcompany/resources/tree/master/oauth) for managing oauth providers and sessions
+ - [page](https://github.com/bigcompany/resources/tree/master/page) for representing HTML pages
  - [permissions](https://github.com/bigcompany/resources/tree/master/permissions) for managing permissions
  - [queue](https://github.com/bigcompany/resources/tree/master/queue) a queue for resource events
  - [repl](https://github.com/bigcompany/resources/tree/master/repl) enables an interactive Read-Eval-Print-Loop ( REPL )
