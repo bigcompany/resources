@@ -16,20 +16,18 @@ config.persist = function (opts) {
 
 config.persist('fs');
 
-config.after('create', attach);
-config.after('get', attach);
-config.after('update', attach);
-config.after('updateOrCreate', attach);
-
-//
-// Redefine the get method to allow for undefined id
-//
-delete config.get.schema.properties.id.required;
-
-var _get = config.get.unwrapped;
-
-config.method('get', get, config.get.schema);
-function get(id, callback) {
+config.method('start', start, {
+  "description": "load configuration options",
+  "properties": {
+    "id": {
+      "type": "any"
+    },
+    "callback": {
+      "type": "function"
+    }
+  }
+});
+function start(id, callback) {
   if (!callback && typeof id === 'function') {
     callback = id;
     id;
@@ -42,7 +40,25 @@ function get(id, callback) {
     }
   }
 
-  return _get(id, callback);
+  config.get(id, function (err, conf) {
+    if (err) {
+      if (err.message.match(/not found/) && id === 'production') {
+        config.get('development', finish);
+      }
+      else {
+        return callback(err);
+      }
+      finish(null, conf);
+    }
+  });
+
+  function finish(err, conf) {
+    if (err) {
+      return callback(err);
+    }
+
+    config.attach(conf, callback);
+  }
 };
 
 //
@@ -74,34 +90,6 @@ function attach(conf, callback) {
 
     Object.keys(conf).forEach(function (k) {
       config[k] = conf[k];
-    });
-  }
-  catch (e) {
-    err = e;
-  }
-  callback(err, conf);
-}
-
-//
-// Clean up resource.config by passing the config object in you wish to "detach"
-// This is written with before hooks in mind
-//
-config.method('detach', detach, {
-  "description": "Detach configuration options from the config resource",
-  "properties": {
-    "options": {
-      "type": "object"
-    },
-    "callback": {
-      "type": "function"
-    }
-  }
-});
-function detach(conf, callback) {
-  var err = null;
-  try {
-    Object.keys(conf).forEach(function (k) {
-      delete config[k];
     });
   }
   catch (e) {
