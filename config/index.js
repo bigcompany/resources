@@ -30,20 +30,15 @@ config.method('start', start, {
 function start(id, callback) {
   if (!callback && typeof id === 'function') {
     callback = id;
-    id;
-
-    if (resource.isProduction) {
-      id = 'production';
-    }
-    else {
-      id = 'development';
-    }
+    id = resource.env;
   }
 
   config.get(id, function (err, conf) {
     if (err) {
-      if (err.message.match(/not found/) && id === 'production') {
-        config.get('development', finish);
+      if (err.message.match(/not found/) && id !== 'development') {
+        resource.logger.warn('Could not find `' + id + '` configuration');
+        resource.logger.warn('Falling back to `development `configuration');
+        return config.get('development', finish);
       }
       else {
         return callback(err);
