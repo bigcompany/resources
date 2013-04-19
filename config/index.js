@@ -40,18 +40,15 @@ function start(id, callback) {
         resource.logger.warn('Falling back to `development `configuration');
         return config.get('development', finish);
       }
-      else {
-        return callback(err);
-      }
-      finish(null, conf);
+      return callback(err);
     }
+    finish(null, conf);
   });
 
   function finish(err, conf) {
     if (err) {
       return callback(err);
     }
-
     config.attach(conf, callback);
   }
 };
