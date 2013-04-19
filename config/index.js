@@ -43,8 +43,8 @@ function start(id, callback) {
       else {
         return callback(err);
       }
-      finish(null, conf);
     }
+    finish(null, conf);
   });
 
   function finish(err, conf) {
