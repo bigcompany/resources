@@ -83,6 +83,57 @@ function create (options, callback) {
   }
 }
 
+//
+// View middleware
+// Creates a view from a folder and automatically route all urls to paths in that folder
+//
+view.middle = function(req, res, next) {
+
+  //
+  // Create a new view assumming there is a ./view/ directory
+  //
+  resource.view.create({ path: process.cwd() + '/view'}, function (err, view) {
+    if(err) {
+      resource.logger.warn(err.message);
+    }
+    if (view) {
+      resource.http.view = view;
+      //
+      // View middleware for serving views
+      //
+
+      var _view = view;
+      var parts = require('url').parse(req.url).pathname.split('/');
+
+      parts.shift();
+      parts.forEach(function(part) {
+        if(part.length > 0 && typeof _view !== 'undefined') {
+          _view = _view[part];
+        }
+      });
+      if (_view && _view['index']) {
+        _view = _view['index'];
+      }
+      if(typeof _view === "undefined") {
+        return next();
+      }
+      var str = _view.render({});
+      if (typeof _view.present === "function") {
+        _view.present({
+          request: req,
+          response: res,
+          data: req.big.params
+          }, function (err, rendered) {
+          res.end(rendered);
+        });
+      } else {
+        return next();
+      }
+    }
+  });
+};
+
+
 exports.view = view;
 
 exports.dependencies = {
