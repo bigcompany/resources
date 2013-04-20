@@ -102,17 +102,8 @@ function listen (options, callback) {
         isCrudMethod = false,
         status;
 
-    var data = {};
+    var data = req.big.params;
 
-    //
-    // Merge query and form data into a common scope
-    //
-    Object.keys(req.query).forEach(function (p) {
-      data[p] = req.query[p];
-    });
-    Object.keys(req.body).forEach(function (p) {
-      data[p] = req.body[p];
-    });
     if (options.id) {
       data.id = options.id;
     }
