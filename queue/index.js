@@ -70,6 +70,13 @@ queue.method('push', push, {
 });
 function push(q, job) {
   return q.elements.push(job);
+  if (q.autosave) {
+    queue.updateOrCreate(q, function (err, _q) {
+      if (err) {
+        queue.emit('error', err);
+      }
+    });
+  }
 }
 
 queue.method('shift', shift, {
@@ -82,6 +89,13 @@ queue.method('shift', shift, {
 });
 function shift (q) {
   return q.elements.shift();
+  if (q.autosave) {
+    queue.updateOrCreate(q, function (err, _q) {
+      if (err) {
+        queue.emit('error', err);
+      }
+    });
+  }
 }
 
 queue.method('take', take, {
@@ -115,6 +129,14 @@ function take (q) {
     n--;
   }
 
+  if (q.autosave) {
+    queue.updateOrCreate(q, function (err, _q) {
+      if (err) {
+        queue.emit('error', err);
+      }
+    });
+  }
+
   return xs;
 }
 
@@ -142,6 +164,14 @@ function extend(q, xs) {
   xs.forEach(function (elem) {
     q.elements.push(elem);
   });
+
+  if (q.autosave) {
+    queue.updateOrCreate(q, function (err, _q) {
+      if (err) {
+        queue.emit('error', err);
+      }
+    });
+  }
 
   return q.elements;
 }
