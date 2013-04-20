@@ -70,6 +70,12 @@ function listen (options, callback) {
   }
 
   //
+  // Merge all query / body / param data onto `req.big.params
+  //
+  app
+  .use(mergeParams);
+
+  //
   // Basic virtual host support
   //
   if(resource.virtualhost) {
@@ -97,18 +103,14 @@ function listen (options, callback) {
         resource.logger.warn(err.message);
       }
       if (view) {
-        //
-        // Bind view to http resource scope for later reference
-        //
         http.view = view;
-
         //
         // View middleware for serving views
         //
         app.use(function (req, res, next) {
+
           var _view = view;
           var parts = require('url').parse(req.url).pathname.split('/');
-
           parts.shift();
           parts.forEach(function(part) {
             if(part.length > 0 && typeof _view !== 'undefined') {
@@ -121,34 +123,12 @@ function listen (options, callback) {
           if(typeof _view === "undefined") {
             return next();
           }
-
           var str = _view.render({});
           if (typeof _view.present === "function") {
-
-            //
-            // TODO: this data should already be on the request from resource request parser
-            //
-            var data = {};
-            if (typeof req.params === 'object') {
-              Object.keys(req.params).forEach(function (p) {
-                data[p] = req.param(p);
-              });
-            }
-
-            if (typeof req.query === 'object') {
-              Object.keys(req.query).forEach(function (p) {
-                data[p] = req.query[p];
-              });
-            }
-
-            Object.keys(req.body).forEach(function (p) {
-              data[p] = req.body[p];
-            });
-
             _view.present({
               request: req,
               response: res,
-              data: data
+              data: req.big.params
               }, function (err, rendered) {
               res.end(rendered);
             });
@@ -190,6 +170,38 @@ function listen (options, callback) {
     http.app = app;
     http.server = server;
   }
+}
+
+//
+// Middleware for merging all querystring / request.body and route parameters,
+// into a common scope bound to req.big.params
+//
+function mergeParams (req, res, next) {
+
+  req.big = req.big || {};
+  req.big.params = {};
+
+  //
+  // Iterate through all the querystring and request.body values and
+  // merge them into a single "data" argument
+  //
+  if (typeof req.params === 'object') {
+    Object.keys(req.params).forEach(function (p) {
+      req.big.params[p] = req.param(p);
+    });
+  }
+
+  if (typeof req.query === 'object') {
+    Object.keys(req.query).forEach(function (p) {
+      req.big.params[p] = req.query[p];
+    });
+  }
+
+  Object.keys(req.body).forEach(function (p) {
+    req.big.params[p] = req.body[p];
+  });
+
+  next();
 }
 
 //
