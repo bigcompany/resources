@@ -39,12 +39,12 @@ function events() {
     //
     // Emit the event over the mesh
     //
-    meshEmitter.emit(event, payload);
+    return meshEmitter.emit(event, payload);
 
     //
-    // Do the regular emit
+    // Don't do the regular emit ( since its being used to broadcast to the remote mesh scope, not the local mesh scope)
     //
-    return emit(event, payload);
+    // return emit(event, payload);
   };
 }
 

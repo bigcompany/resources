@@ -1,12 +1,15 @@
 var resource = require('resource');
 
-resource.use('mesh');
-resource.connect();
+var mesh = resource.use('mesh');
 
-setInterval(function(){
-  resource.emit('client-foo', { bar: "foo" });
-}, 2000);
+mesh.connect(function(){
 
-resource.onAny(function(data){
-  console.log(this.event, data)
+  setInterval(function(){
+    mesh.emit('client-foo', { bar: "foo" });
+  }, 2000);
+
+  mesh.onAny(function(data){
+    console.log(this.event, data);
+  })
+
 });
