@@ -79,6 +79,18 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
+  t.test("get /api/creature/get", function (t) {
+    supertest(server)
+      .get('/api/creature/get')
+      .expect(200)
+      .expect('Content-Type', 'application/json')
+      .end(function (err, res) {
+        t.error(err, 'no error');
+        t.end();
+      })
+    ;
+  });
+
   //
   // We should be able to create with either POST or PUT (PUT is explicitly for
   // creates and updates)
