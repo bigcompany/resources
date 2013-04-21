@@ -116,6 +116,9 @@ irc.method('connect', connect, {
         channel: irc.schema.properties.channel,
         channels: irc.schema.properties.channels
       }
+    },
+    callback: {
+      type: 'function'
     }
   }
 });
