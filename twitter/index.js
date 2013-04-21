@@ -81,7 +81,7 @@ twitter.property('tweet', {
   properties: {
     message: {
       type: 'string',
-      default: 'I am big.'
+      required: true
     },
   }
 });
@@ -387,7 +387,7 @@ twitter.method('send', send, {
       type: 'object',
       properties: {
         user: twitter.schema.properties.user,
-        tweet: twitter.schema.properties.tweet
+        message: twitter.schema.properties.tweet.properties.message
       }
     },
     callback: {
@@ -407,7 +407,7 @@ function send (options, callback) {
   // These will probably be separate methods.
 
   var screenName = getUser(options).screenName,
-      tweet = options.tweet.message;
+      tweet = options.message;
 
   // TODO: Intelligent trimming of tweet?
   twitter.connections[screenName].client.updateStatus(tweet, function (err, result) {
