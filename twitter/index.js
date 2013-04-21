@@ -48,7 +48,7 @@ twitter.property('user', {
 // We keep track of both screenNames and ids for users that have active
 // authenticated client instances
 //
-function getUser(options) {
+function getUser (options) {
   var user = options.user || options,
       screenName, id;
 
@@ -59,6 +59,14 @@ function getUser(options) {
   else if (user.id) {
     id = user.id;
     screenName = twitter.ids[id];
+  }
+
+  //
+  // If there is only one connection and no screen name is being passed around,
+  // assume user is attempting to tweet from the only connection available
+  //
+  if (Object.keys(twitter.connections).length === 1 && typeof screenName === 'undefined') {
+    screenName = Object.keys(twitter.connections)[0];
   }
 
   return {
