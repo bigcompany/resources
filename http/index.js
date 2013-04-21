@@ -91,7 +91,7 @@ function listen (options, callback) {
   // TODO: move to resource.view middleware
   //
   if (resource.view) {
-    app.use(resource.view.middle);
+    app.use(resource.view.middle());
   }
 
   finish();

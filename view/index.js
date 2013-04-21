@@ -87,21 +87,19 @@ function create (options, callback) {
 // View middleware
 // Creates a view from a folder and automatically route all urls to paths in that folder
 //
-view.middle = function(req, res, next) {
+view.middle = function() {
 
-  //
-  // Create a new view assumming there is a ./view/ directory
-  //
-  resource.view.create({ path: process.cwd() + '/view'}, function (err, view) {
-    if(err) {
-      resource.logger.warn(err.message);
-    }
+  var view;
+  try {
+    view = resource.view.create({ path: process.cwd() + '/view'});
+    resource.http.view = view;
+  } catch (err) {
+    console.log(err)
+    view = null;
+  }
+
+  return function (req, res, next) {
     if (view) {
-      resource.http.view = view;
-      //
-      // View middleware for serving views
-      //
-
       var _view = view;
       var parts = require('url').parse(req.url).pathname.split('/');
 
@@ -127,10 +125,15 @@ view.middle = function(req, res, next) {
           res.end(rendered);
         });
       } else {
-        return next();
+        next();
       }
+    } else {
+      //
+      // No view was found, do not use middleware
+      //
+      next();
     }
-  });
+  };
 };
 
 
