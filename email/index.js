@@ -3,7 +3,7 @@ var resource = require('resource'),
 
 email.schema.description = "for sending emails"
 
-email.method('send', send, {
+email.method('send', require('./send'), {
   "description": "sends an email",
   "properties": {
     "options": {
@@ -45,10 +45,5 @@ email.property('body', {
   "type": "string",
   "description": "the content of the email"
 });
-
-function send (options, callback) {
-  console.log('send email stub', arguments);
-//  callback(null, options);
-};
 
 exports.email = email;
