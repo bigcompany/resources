@@ -46,7 +46,11 @@ function listen (options, callback) {
       return;
     }
 
+    //
+    // Serve the /public/ admin folder
+    //
     resource.http.app.use(connect.static(__dirname + '/public'));
+
     resource.view.create({ path: __dirname + '/view'}, function (err, view) {
       if (err) {
         callback(err);
@@ -66,31 +70,6 @@ function listen (options, callback) {
         res.end(str);
       });
 
-      resource.http.app.get('/admin/resources', auth, function (req, res, next) {
-        var str = view.resources.render();
-        str = view.resources.present({ resources: resource.resources });
-        res.end(str);
-      });
-
-      resource.http.app.get('/admin/ssh', auth, function (req, res, next) {
-       view.ssh.render({});
-       str = view.ssh.present({});
-       res.end(str);
-      });
-
-      resource.http.app.get('/admin/mesh', auth, function (req, res, next) {
-       view.mesh.render({});
-       view.mesh.present({}, function(err, str){
-         res.end(str);
-       });
-      });
-
-      resource.http.app.get('/admin/docs', auth, function (req, res, next) {
-       view.docs.render({});
-       str = view.docs.present({});
-       res.end(str);
-      });
-
       /*
         //
         // Remark: Commented out docs route ( for now )
@@ -107,33 +86,6 @@ function listen (options, callback) {
       });
       */
 
-      //
-      // TODO: don't add these routes if the resources aren't available
-      //
-        resource.http.app.get('/admin/replicator', auth, function (req, res, next) {
-         view.replicator.render({});
-         view.replicator.present({}, function(err, result){
-           res.end(result);
-         });
-        });
-
-        resource.http.app.get('/admin/hooks', auth, function (req, res, next) {
-         view.hooks.render({});
-         view.hooks.present({}, function(err, result){
-           res.end(result);
-         });
-        });
-      //
-      // END TODO
-      //
-
-      resource.http.app.get('/admin/datasources', auth, function (req, res, next) {
-       view.datasources.render({});
-       resource.datasource.all(function(err, results){
-         str = view.datasources.present({ datasources: results });
-         res.end(str);
-       });
-      });
 
       resource.http.app.get('/admin/datasources/:datasource', auth, function (req, res, next) {
        resource.datasource.get(req.param('datasource'), function(err, result){
@@ -165,8 +117,11 @@ function listen (options, callback) {
             _method = _resource[req.param('_method')],
             id = req.param('id'),
             str,
-            data = {},
+            data = req.big.params,
             props = _method.schema.properties || {};
+
+        delete data._resource;
+        delete data._method;
 
         if(typeof _method.schema === 'undefined') {
           _method.schema = {
@@ -180,18 +135,6 @@ function listen (options, callback) {
         if(_method.schema.properties && typeof _method.schema.properties.options !== 'undefined') {
           props = _method.schema.properties.options.properties;
         }
-
-        //
-        // Iterate through all the querystring and request.body values and
-        // merge them into a single "data" argument
-        //
-        Object.keys(req.params).forEach(function (p) {
-          data[p] = req.param(p);
-        });
-
-        Object.keys(req.body).forEach(function (p) {
-          data[p] = req.body[p];
-        });
 
         //
         // If a value is supposed to be a number, attempt to coerce it
@@ -248,7 +191,7 @@ function listen (options, callback) {
           };
         }
 
-        var props, str, data = {};
+        var props, str, data = req.big.params;
 
         props = _method.schema.properties || {};
 
@@ -273,6 +216,8 @@ function listen (options, callback) {
           method: req.param('_method'),
           id: req.param('id'),
           data: data,
+          request: req,
+          response: res,
           action: 'post'
         }, function(err, str){
           res.end(str);
