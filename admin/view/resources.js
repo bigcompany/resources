@@ -3,7 +3,7 @@ var layout = require('./layout'),
 
 module['exports'] = function (options, callback) {
 
-  var resources = options.resources,
+  var resources = resource.resources,
       $ = this.$;
 
   var keys = Object.keys(resource.resources).sort();
@@ -13,6 +13,6 @@ module['exports'] = function (options, callback) {
     $('.resources').append('<tr><td><a href="/admin/resources/' + _resource.name + '">' + _resource.name + '</a></td><td>' + _resource.schema.description + '</td></tr>')
   });
 
-  return $.html();
+  return callback(null, $.html());
 
 }
