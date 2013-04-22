@@ -251,51 +251,40 @@ function process (q, callback) {
     return callback();
   }
 
-  var i = elements.length,
-          error;
+  var i;
 
   elements.forEach(function (elem) {
-    if (!error) {
-      queue.run(elem, function (err) {
-        if (err) {
-          callback(err);
-          error = err;
-          return;
-        }
+    queue.run(elem, function (err) {
+      i--;
 
-        i--;
+      if (err) {
+        queue.emit('error', err);
+      }
 
-        if (!i) {
-          finish();
-        }
-      });
-    }
+      //
+      // If element repeating is turned on, push the just-processed element
+      // back onto the queue
+      //
+      if (q.repeat) {
+        queue.push(q, elem);
+      }
+
+      //
+      // If autosave is turned on, save the current queue.
+      //
+      if (q.autosave) {
+        queue.updateOrCreate(q, function (_err, _q) {
+          if (_err) {
+            return queue.emit(_err);
+          }
+        });
+      }
+
+      if (i === 0) {
+        callback(null, q);
+      }
+    });
   });
-
-  function finish () {
-    //
-    // If element repeating is turned on, concat the just-processed elements
-    // back onto the queue
-    //
-    if (q.repeat && elements.length) {
-      queue.extend(q, elements);
-    }
-
-    //
-    // If autosave is turned on, save the current queue.
-    //
-    if (q.autosave) {
-      queue.updateOrCreate(q, function (err, _q) {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, _q);
-      });
-    }
-    else {
-      callback(null, q);
-    }
-  }
 }
 
 //
@@ -318,7 +307,7 @@ function load(q) {
     // Process again at the end of the timeout *if* the last process step
     // completed
     //
-    setTimeout(function () {
+    queue._loop = setTimeout(function () {
       //
       // If waiting is turned off, always process the next set of elements
       //
@@ -351,6 +340,16 @@ function load(q) {
       }
     });
   }
+}
+
+queue.method('unload', unload, {
+  description: 'start processing a queue',
+  properties: {
+    options: queue.schema
+  }
+});
+function unload(q) {
+  clearInterval(q._loop);
 }
 
 queue.on('error', function (error, data) {
@@ -411,7 +410,8 @@ function addMethods (instance, next) {
     'take',
     'extend',
     'process',
-    'load'
+    'load',
+    'unload'
   ].forEach(function (m) {
     instance[m] = queue[m].bind(queue, instance);
   });
@@ -420,6 +420,7 @@ function addMethods (instance, next) {
   // Alias "start" to "load" at the instance level
   //
   instance.start = instance.load;
+  instance.stop = instance.unload;
 
   next(null, instance);
 }
