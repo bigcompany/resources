@@ -87,8 +87,7 @@ function listen (options, callback) {
   app.use(app.router);
 
   //
-  // TODO: finish view middleware
-  // TODO: move to resource.view middleware
+  // Use view middleware
   //
   if (resource.view) {
     app.use(resource.view.middle());
