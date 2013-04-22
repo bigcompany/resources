@@ -50,13 +50,15 @@ function create (options, callback) {
       var view = new viewful.View({
         template: options.template,
         input: options.input,
-        output: options.ouput
+        output: options.ouput,
+        prefix: options.prefix
       });
     } else {
       var view = new viewful.View({
         path: options.path,
         input: options.input,
-        output: options.ouput
+        output: options.ouput,
+        prefix: options.prefix
       });
     }
     //
@@ -87,22 +89,25 @@ function create (options, callback) {
 // View middleware
 // Creates a view from a folder and automatically route all urls to paths in that folder
 //
-view.middle = function() {
+view.middle = function(options) {
 
+  options = options || {};
+  options.viewPath = options.viewPath || process.cwd() + '/view';
+  options.prefix = options.prefix || '';
   var view;
   try {
-    view = resource.view.create({ path: process.cwd() + '/view'});
+    view = resource.view.create({ path: options.viewPath });
     resource.http.view = view;
   } catch (err) {
-    console.log(err)
+    // Ignore missing view errors for now
+    //console.log(err)
     view = null;
   }
 
   return function (req, res, next) {
     if (view) {
       var _view = view;
-      var parts = require('url').parse(req.url).pathname.split('/');
-
+      var parts = require('url').parse(req.url).pathname.replace(options.prefix, '').split('/');
       parts.shift();
       parts.forEach(function(part) {
         if(part.length > 0 && typeof _view !== 'undefined') {
@@ -115,7 +120,11 @@ view.middle = function() {
       if(typeof _view === "undefined") {
         return next();
       }
-      var str = _view.render({});
+      var str = _view.render({
+        request: req,
+        response: res,
+        data: req.big.params
+      });
       if (typeof _view.present === "function") {
         _view.present({
           request: req,
