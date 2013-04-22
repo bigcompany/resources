@@ -69,7 +69,7 @@ queue.method('push', push, {
   }
 });
 function push(q, job) {
-  return q.elements.push(job);
+  var elems = q.elements.push(job);
   if (q.autosave) {
     queue.updateOrCreate(q, function (err, _q) {
       if (err) {
@@ -77,6 +77,7 @@ function push(q, job) {
       }
     });
   }
+  return elems;
 }
 
 queue.method('shift', shift, {
@@ -88,7 +89,7 @@ queue.method('shift', shift, {
   }
 });
 function shift (q) {
-  return q.elements.shift();
+  var shifted = q.elements.shift();
   if (q.autosave) {
     queue.updateOrCreate(q, function (err, _q) {
       if (err) {
@@ -96,6 +97,7 @@ function shift (q) {
       }
     });
   }
+  return shifted;
 }
 
 queue.method('take', take, {
@@ -129,6 +131,10 @@ function take (q) {
     n--;
   }
 
+  //
+  // xs.shift already autosaves so we don't need to do it at the end
+  //
+  /*
   if (q.autosave) {
     queue.updateOrCreate(q, function (err, _q) {
       if (err) {
@@ -136,6 +142,7 @@ function take (q) {
       }
     });
   }
+  */
 
   return xs;
 }
