@@ -90,7 +90,9 @@ function listen (options, callback) {
   // Use view middleware
   //
   if (resource.view) {
-    app.use(resource.view.middle());
+    // Remark: For now, do not automatically load middleware
+    // This is a somewhat useful sugar sytnax, but its slightly confusing right now
+    // app.use(resource.view.middle());
   }
 
   finish();
