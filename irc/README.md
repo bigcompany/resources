@@ -25,7 +25,7 @@ for managing communication with irc
 
   - [wrapColors](#irc-methods-wrapColors) (color, message)
 
-  - [connect](#irc-methods-connect) (options)
+  - [connect](#irc-methods-connect) (options, callback)
 
   - [disconnect](#irc-methods-disconnect) (options)
 
@@ -226,7 +226,7 @@ wraps text in an irc color code
 
 <a name="irc-methods-connect"></a> 
 
-### irc.connect(options)
+### irc.connect(options, callback)
 
 connects to an irc server
 
@@ -265,6 +265,10 @@ connects to an irc server
     - **channels** 
 
       - **type** : array
+
+- **callback** 
+
+  - **type** : function
 
 <a name="irc-methods-disconnect"></a> 
 

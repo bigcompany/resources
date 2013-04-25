@@ -8,6 +8,7 @@ resources for any occasion
  - [api](https://github.com/bigcompany/resources/tree/master/api) provides a web API for interacting with resources
  - [calculator](https://github.com/bigcompany/resources/tree/master/calculator) a basic calculator
  - [cli](https://github.com/bigcompany/resources/tree/master/cli) provides a command line interface
+ - [config](https://github.com/bigcompany/resources/tree/master/config) 
  - [creature](https://github.com/bigcompany/resources/tree/master/creature) example resource for creatures like dragons, unicorns, and ponies
  - [cron](https://github.com/bigcompany/resources/tree/master/cron) for managing cron jobs
  - [datasource](https://github.com/bigcompany/resources/tree/master/datasource) perists resources to data storage engines
@@ -28,7 +29,7 @@ resources for any occasion
  - [replication](https://github.com/bigcompany/resources/tree/master/replication) for managing and keeping track of replication events
  - [replicator](https://github.com/bigcompany/resources/tree/master/replicator) provides an application replication API for resource based apps
  - [resource](https://github.com/bigcompany/resources/tree/master/resource) meta-resource for describing and creating new resources
- - [socket](https://github.com/bigcompany/resources/tree/master/socket) socket.io websocket resource
+ - [socket](https://github.com/bigcompany/resources/tree/master/socket) websockets resource
  - [ssh](https://github.com/bigcompany/resources/tree/master/ssh) ssh interface resource
  - [stdin](https://github.com/bigcompany/resources/tree/master/stdin) allows application to listen for input from STDIN
  - [stdout](https://github.com/bigcompany/resources/tree/master/stdout) outputs all events as new-line delimited JSON fragments to STDOUT
