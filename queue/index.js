@@ -407,7 +407,9 @@ function addMethods (instance, next) {
     'load',
     'unload'
   ].forEach(function (m) {
-    instance[m] = queue[m].bind(queue, instance);
+    instance[m] = function (options) {
+      return queue[m](instance, options);
+    }
   });
 
   //
