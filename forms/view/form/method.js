@@ -46,7 +46,14 @@ module['exports'] = function (options, callback) {
       // If an options hash is expected as part of the resource method schema
       //
       if(method.schema.properties.options) {
-        method.call(this, options.data, cb);
+        //
+        // Remark: If method.call returns a value this indicates method is sync,
+        // and that the continuation must be manually called with no error condition
+        //
+        var result = method.call(this, options.data, cb);
+        if(typeof result !== 'undefined') {
+          return cb(null, result);
+        }
       } else {
         //
         // If no options hash is expected, curry the arguments left to right into an array
@@ -56,13 +63,27 @@ module['exports'] = function (options, callback) {
           args.push(options.data[p]);
         }
         args.push(cb);
-        method.apply(this, args);
+        //
+        // Remark: If method.apply returns a value this indicates method is sync,
+        // and that the continuation must be manually called with no error condition
+        //
+        var result = method.apply(this, args);
+        if(typeof result !== 'undefined') {
+          return cb(null, result);
+        }
       }
     } else {
       //
-      // No form data was passed in, execute the resource metho with no data
+      // No form data was passed in, execute the resource method with no data
       //
-      method.call(this, cb);
+      //
+      // Remark: If method.call returns a value this indicates method is sync,
+      // and that the continuation must be manually called with no error condition
+      //
+      var result = method.call(this, cb);
+      if(typeof result !== 'undefined') {
+        return cb(null, result);
+      }
     }
   } else {
     $('.results').remove();
