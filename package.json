@@ -2,7 +2,7 @@
     "name": "resources",
     "description": "resources for any occasion",
     "version": "0.3.8",
-    "peerDependencies": {
+    "dependencies": {
       "resource": "0.3.x"
     },
     "devDependencies": {
