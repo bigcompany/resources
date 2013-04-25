@@ -131,19 +131,6 @@ function take (q, n) {
     n--;
   }
 
-  //
-  // xs.shift already autosaves so we don't need to do it at the end
-  //
-  /*
-  if (q.autosave) {
-    queue.updateOrCreate(q, function (err, _q) {
-      if (err) {
-        queue.emit('error', err);
-      }
-    });
-  }
-  */
-
   return xs;
 }
 
