@@ -3,12 +3,42 @@ var resource  = require('resource'),
 
 admin.schema.description = "a web based admin panel";
 
-resource.use('system');
+//
+// The admin requires a view engine
+//
 resource.use('view');
+
+//
+// The system resource helps gather information about the system
+//
+resource.use('system');
+
+//
+// The datasource resource is used to store datasource persistence connections
+//
 resource.use('datasource', { datasource: "fs" });
 
-resource.use('hook');
+//
+// replication and node resources are used to store information about replicator and mesh history.
+// Although the replicator and mesh resource aren't automatically installed with the admin,
+// they easily can be added
+//
+resource.use('replication', { datasource: "fs"});
+resource.use('node', { datasource: "fs"});
+
+//
+// The hook resource is used for easily hooking together resource events
+//
+resource.use('hook', { datasource: "fs"});
+
+//
+// HTML Form generator for admin forms
+//
 resource.use('forms');
+
+//
+// The standard http resource for creating http servers
+//
 resource.use('http');
 
 admin.method('listen', listen, {
@@ -90,10 +120,6 @@ function listen (options, callback) {
         res.end(str);
       });
       */
-
-      //
-      // TODO: The following routes should be able to be handled by the view engine....
-      //
 
       resource.http.app.get('/admin/datasources/:datasource', auth, function (req, res, next) {
        resource.datasource.get(req.param('datasource'), function(err, result){
