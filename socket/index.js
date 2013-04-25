@@ -1,10 +1,10 @@
 var resource  = require('resource'),
     socket = resource.define('socket');
 
-socket.schema.description = "socket.io websocket resource";
+socket.schema.description = "websockets resource";
 
 socket.method('start', start, {
-  "description": "starts a socket.io server",
+  "description": "starts a websocket server",
   "properties": {
     "callback": {
       "description": "the callback executed after server listen",
@@ -14,6 +14,13 @@ socket.method('start', start, {
   }
 });
 
+//
+// Available websocket engines
+// see: /lib/engines/ for more
+exports.engines = {
+  "socket.io": require('./lib/engines/socketio')
+};
+
 function start (options, callback) {
 
   if (!callback && typeof options == 'function') {
@@ -21,8 +28,8 @@ function start (options, callback) {
     options = {};
   }
 
-  var socketful = require('./lib/socketful');
-  socket.server = socketful.createServer(
+  var sockets = require('./lib/sockets');
+  socket.server = sockets.createServer(
     resource.resources,
     { server: resource.http.server },
     function (err, io) {

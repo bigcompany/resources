@@ -2,7 +2,7 @@ var tap = require("tap"),
     resource = require('resource'),
     io = require('socket.io-client');
 
-tap.test('create a socketful server', function (t) {
+tap.test('create a socket server', function (t) {
   resource.use('http');
   resource.use('socket');
   resource.use('creature');
@@ -16,7 +16,7 @@ tap.test('create a socketful server', function (t) {
 });
 
 var client;
-tap.test('connect to socketful server', function (t) {
+tap.test('connect to socket server', function (t) {
   t.doesNotThrow(function () {
     client = io.connect('http://localhost:8888');
   }, 'client created successfully');
