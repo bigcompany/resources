@@ -47,6 +47,11 @@ function listen (options, callback) {
     }
 
     //
+    // Create view middleware using /admin/view
+    //
+    resource.http.app.use(resource.view.middle({ viewPath: __dirname + '/view', prefix: '/admin'}));
+
+    //
     // Serve the /public/ admin folder
     //
     resource.http.app.use(connect.static(__dirname + '/public'));
@@ -86,6 +91,9 @@ function listen (options, callback) {
       });
       */
 
+      //
+      // TODO: The following routes should be able to be handled by the view engine....
+      //
 
       resource.http.app.get('/admin/datasources/:datasource', auth, function (req, res, next) {
        resource.datasource.get(req.param('datasource'), function(err, result){
