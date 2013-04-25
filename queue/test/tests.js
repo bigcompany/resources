@@ -54,7 +54,6 @@ tap.test('extend the queue with multiple elements', function (t) {
   }, 'queue.extend called successfully');
   t.equal(queue.elements.length, 3, 'queue length is now 3');
   t.end();
-  t.end();
 });
 
 tap.test('shift an element off the queue', function (t) {
@@ -63,7 +62,8 @@ tap.test('shift an element off the queue', function (t) {
     element = queue.shift();
   }, 'queue.shift called successfully');
   t.equal(queue.elements.length, 2, 'queue length is now 2');
-  t.equal(element.message, 'one', 'message is "one"');
+
+  t.equal(element.with.message, 'one', 'message is "one"');
   t.end();
 });
 
@@ -71,13 +71,15 @@ tap.test('take multiple elements from the queue', function (t) {
   t.plan(5);
 
   var elems;
+
   t.doesNotThrow(function () {
     elems = queue.take(2);
   }, 'queue.take called successfully');
+
   t.equal(queue.elements.length, 0, 'queue length is now 0');
   t.doesNotThrow(function () {
-    t.equal(elems[0].message, 'two', 'message is "two"');
-    t.equal(elems[1].message, 'three', 'message is "three"');
+    t.equal(elems[0].with.message, 'two', 'message is "two"');
+    t.equal(elems[1].with.message, 'three', 'message is "three"');
   }, 'take returned 2 elements');
   t.end();
 });
@@ -89,14 +91,19 @@ tap.test('start processing the queue', function (t) {
   t.end();
 });
 
-//
-// TODO: Test the processing of elements
-// TODO: Write tests that break autosave (turning off wait should do it)
-//
-
 tap.test('stop processing the queue', function (t) {
   t.doesNotThrow(function () {
     queue.stop();
   }, 'queue stops');
+
+  //
+  // TODO: This hangs. Figure out why. Something is broken.
+  //
+
   t.end();
 });
+
+//
+// TODO: Test the processing of elements
+// TODO: Write tests that break autosave (turning off wait should do it)
+//
