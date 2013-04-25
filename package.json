@@ -1,7 +1,7 @@
 {
     "name": "resources",
     "description": "resources for any occasion",
-    "version": "0.3.8",
+    "version": "0.3.8-1",
     "dependencies": {
       "resource": "0.3.x"
     },
