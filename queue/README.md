@@ -51,6 +51,8 @@ a queue for resource events
 
   - [load](#queue-methods-load) (options)
 
+  - [unload](#queue-methods-unload) (options)
+
 
 <a name="queue-properties"></a>
 
@@ -813,6 +815,70 @@ process elements off the queue
 <a name="queue-methods-load"></a> 
 
 ### queue.load(options)
+
+start processing a queue
+
+- **options** 
+
+  - **description** : a queue for resource events
+
+  - **properties**
+
+    - **id** 
+
+      - **type** : any
+
+    - **concurrency** 
+
+      - **description** : how many jobs to run at once
+
+      - **type** : number
+
+      - **default** : 1
+
+    - **interval** 
+
+      - **description** : time interval between processing items (ms)
+
+      - **type** : number
+
+      - **default** : 5000
+
+    - **wait** 
+
+      - **description** : wait until all running jobs are completed before executing next set
+
+      - **type** : boolean
+
+      - **default** : true
+
+    - **repeat** 
+
+      - **description** : automatically push completed elements back onto the queue
+
+      - **type** : boolean
+
+      - **default** : false
+
+    - **autosave** 
+
+      - **description** : automatically save the queue after a processing step
+
+      - **type** : boolean
+
+      - **default** : true
+
+    - **elements** 
+
+      - **description** : the elements currently inside the queue
+
+      - **type** : array
+
+      - **default**
+
+<a name="queue-methods-unload"></a> 
+
+### queue.unload(options)
 
 start processing a queue
 

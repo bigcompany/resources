@@ -119,7 +119,7 @@ for interacting with the Twitter API
 
       - **type** : string
 
-      - **default** : I am big.
+      - **required** : true
 
 - **stream** 
 
@@ -428,19 +428,11 @@ sends a tweet (updates your status)
 
           - **required** : false
 
-    - **tweet** 
+    - **message** 
 
-      - **description** : a twitter tweet
+      - **type** : string
 
-      - **type** : object
-
-      - **properties**
-
-        - **message** 
-
-          - **type** : string
-
-          - **default** : I am big.
+      - **required** : true
 
 - **callback** 
 
@@ -469,7 +461,7 @@ receives tweets from activated streams
 
       - **type** : string
 
-      - **default** : I am big.
+      - **required** : true
 
 - **callback** 
 
@@ -726,7 +718,7 @@ gets the length of a tweet
 
       - **type** : string
 
-      - **default** : I am big.
+      - **required** : true
 
 - **callback** 
 
