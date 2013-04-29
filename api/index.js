@@ -177,7 +177,6 @@ function handle(options, req, res) {
         Object.keys(inst).forEach(function (p) {
           data[p] = inst[p];
         });
-
         _method(data, finish);
       });
     }
@@ -195,25 +194,16 @@ function handle(options, req, res) {
           });
         }
 
-        //
-        // TODO: get should be able to take an options hash and not just a
-        // string. We should also have a generalized method for translating back
-        // forth and between schema-matched objects and function argument
-        // arrays. This is just a hack to make tests pass.
-        //
-        if (
-          Object.keys(data).length === 1 &&
-          data.id && (
-            options.method === 'get' ||
-            options.method === 'destroy'
-          )
-        ) {
-          data = data.id;
-        }
 
-        _method(data, finish);
+        //
+        // Use resource.invoke to ensure resource method gets invoked with correct signature
+        //
+        return resource.invoke(_method, data, finish);
       } else {
-        _method(finish);
+        //
+        // Use resource.invoke to ensure resource method gets invoked with correct signature
+        //
+        return resource.invoke(_method, {}, finish);
       }
 
       function finish(err, result) {
