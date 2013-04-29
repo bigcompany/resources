@@ -37,54 +37,7 @@ module['exports'] = function (options, callback) {
         return callback(null, $.html());
       }
     }
-
-    //
-    // If any form data was passed in
-    //
-    if(Object.keys(options.data).length > 0) {
-      //
-      // If an options hash is expected as part of the resource method schema
-      //
-      if(method.schema.properties.options) {
-        //
-        // Remark: If method.call returns a value this indicates method is sync,
-        // and that the continuation must be manually called with no error condition
-        //
-        var result = method.call(this, options.data, cb);
-        if(typeof result !== 'undefined') {
-          return cb(null, result);
-        }
-      } else {
-        //
-        // If no options hash is expected, curry the arguments left to right into an array
-        //
-        var args = [];
-        for(var p in options.data) {
-          args.push(options.data[p]);
-        }
-        args.push(cb);
-        //
-        // Remark: If method.apply returns a value this indicates method is sync,
-        // and that the continuation must be manually called with no error condition
-        //
-        var result = method.apply(this, args);
-        if(typeof result !== 'undefined') {
-          return cb(null, result);
-        }
-      }
-    } else {
-      //
-      // No form data was passed in, execute the resource method with no data
-      //
-      //
-      // Remark: If method.call returns a value this indicates method is sync,
-      // and that the continuation must be manually called with no error condition
-      //
-      var result = method.call(this, cb);
-      if(typeof result !== 'undefined') {
-        return cb(null, result);
-      }
-    }
+    return resource.invoke(method, options.data, cb);
   } else {
     $('.results').remove();
     showForm();
