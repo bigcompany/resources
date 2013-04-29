@@ -7,8 +7,8 @@ tap.test("start an api server", function (t) {
   var creature = resource.use('creature');
   resource.use('account');
   resource.use('calculator');
-  resource.use('http');
   resource.use('api');
+  resource.use('http');
 
   //
   // Add a method to creature for testing instance-scoped method calls
@@ -27,19 +27,12 @@ tap.test("start an api server", function (t) {
     callback(null, options);
   }
 
-  resource.http.listen(function (err, _server) {
+  resource.http.start(function (err, _server) {
     t.error(err, 'no error');
     t.ok(_server, 'server is returned');
     t.ok(resource.http.app, 'resource.http.app is defined');
-
-    resource.api.listen(function (err, _server) {
-      t.error(err, 'no error');
-      t.ok(_server, 'server is returned');
-
-      server = _server;
-
-      t.end();
-    });
+    server = _server;
+    t.end();
   });
 });
 
