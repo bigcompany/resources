@@ -81,6 +81,13 @@ function listen (options, callback) {
   }
 
   //
+  // API middleware
+  //
+  if(resource.api) {
+    app.use(resource.api.middle);
+  }
+
+  //
   // Explicitly use the app.router middleware here so that routes take
   // precedence over the view middleware
   //
