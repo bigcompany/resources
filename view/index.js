@@ -89,22 +89,18 @@ function create (options, callback) {
 // View middleware
 // Creates a view from a folder and automatically route all urls to paths in that folder
 //
-view.middle = function(options) {
+view.middle = function (options) {
 
   options = options || {};
   options.viewPath = options.viewPath || process.cwd() + '/view';
   options.prefix = options.prefix || '';
-  var view;
-  try {
-    view = resource.view.create({ path: options.viewPath });
-    resource.http.view = view;
-  } catch (err) {
-    // Ignore missing view errors for now
-    //console.log(err)
-    view = null;
-  }
+
+  resource.view.create({ path: options.viewPath }, function(err, _view){
+    resource.http.view = _view;
+  });
 
   return function (req, res, next) {
+    var view = resource.http.view;
     if (view) {
       var _view = view;
       var parts = require('url').parse(req.url).pathname.replace(options.prefix, '').split('/');
