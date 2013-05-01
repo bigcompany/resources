@@ -71,17 +71,20 @@ queue.method('push', push, {
           default: {}
         }
       }
+    },
+    callback: {
+      type: 'function'
     }
   }
 });
-function push(q, job) {
+function push (q, job, callback) {
+
   var elems = q.elements.push(job);
   if (q.autosave) {
-    queue.updateOrCreate(q, function (err, _q) {
-      if (err) {
-        queue.emit('error', err);
-      }
-    });
+    queue.updateOrCreate(q, callback);
+  }
+  else {
+    callback(null, q);
   }
   return elems;
 }
@@ -89,19 +92,19 @@ function push(q, job) {
 queue.method('shift', shift, {
   description: 'shift an element off the queue',
   properties: {
-    options: {
-      properties: queue.schema.properties
+    queue: queue.schema,
+    callback: {
+      type: 'function'
     }
   }
 });
-function shift (q) {
+function shift (q, callback) {
   var shifted = q.elements.shift();
   if (q.autosave) {
-    queue.updateOrCreate(q, function (err, _q) {
-      if (err) {
-        queue.emit('error', err);
-      }
-    });
+    queue.updateOrCreate(q, callback);
+  }
+  else {
+    callback(null, q);
   }
   return shifted;
 }
@@ -109,21 +112,15 @@ function shift (q) {
 queue.method('take', take, {
   description: 'take `queue.concurrency` elements off the queue',
   properties: {
-    options: {
-      properties: queue.schema.properties
-    },
-    n: {
-      type: 'number'
+    queue: queue.schema,
+    callback: {
+      type: 'function'
     }
   }
 });
-function take (q, n) {
+function take (q, callback) {
 
-  if (typeof n !== 'number') {
-    n = q.concurrency;
-  }
-
-  var xs = [];
+  var n = q.concurrency, xs = [];
   //
   // We do multiple shifts instead of a concat because q is actually a different
   // object and not a direct reference. However, the underlying array methods
@@ -137,6 +134,13 @@ function take (q, n) {
     n--;
   }
 
+  if (q.autosave) {
+    queue.updateOrCreate(q, callback);
+  }
+  else {
+    callback(null, q);
+  }
+
   return xs;
 }
 
@@ -147,15 +151,16 @@ function take (q, n) {
 queue.method('extend', extend, {
   description: 'extend the queue with an array of elements',
   properties: {
-    instance: {
-      properties: queue.schema.properties
-    },
+    queue: queue.schema,
     elems: {
       type: 'any'
+    },
+    callback: {
+      type: 'function'
     }
   }
 });
-function extend(q, xs) {
+function extend(q, xs, callback) {
   //
   // This method suffers the same problems with modifying objects in-place,
   // as explained in the `take` method. Here, we get around this in a
@@ -166,11 +171,10 @@ function extend(q, xs) {
   });
 
   if (q.autosave) {
-    queue.updateOrCreate(q, function (err, _q) {
-      if (err) {
-        queue.emit('error', err);
-      }
-    });
+    queue.updateOrCreate(q, callback);
+  }
+  else {
+    callback(null, q);
   }
 
   return q.elements;
@@ -232,57 +236,76 @@ function run(j, callback) {
 // This method takes q.concurrency elements off the front of the queue and
 // `queue.run`s them.
 //
-queue.method('process', process, {
+queue.method('process', processQueue, {
   description: 'process elements off the queue',
   properties: {
-    options: queue.schema,
+    queue: queue.schema,
     callback: {
       type: 'function'
     }
   }
 });
-function process (q, callback) {
+function processQueue (q, callback) {
   //
   // Process the top q.concurrency elements at once
   //
-  var elements = queue.take(q, q.concurrency);
+  var elements = queue.take(q, function (err, q) {
+    if (err) {
+      return callback(err);
+    }
 
-  if (!elements.length) {
-    return callback();
-  }
+    if (!elements.length) {
+      return callback();
+    }
 
-  var i;
+    var i = elements.length;
 
-  elements.forEach(function (elem) {
-    queue.run(elem, function (err) {
-      i--;
+    elements.forEach(function (elem) {
+      queue.run(elem, function (err) {
+        i--;
 
-      if (err) {
-        queue.emit('error', err);
-      }
+        if (err) {
+          queue.emit('error', err);
+        }
 
-      //
-      // If element repeating is turned on, push the just-processed element
-      // back onto the queue
-      //
-      if (q.repeat) {
-        queue.push(q, elem);
-      }
-
-      //
-      // If autosave is turned on, save the current queue.
-      //
-      if (q.autosave) {
-        queue.updateOrCreate(q, function (_err, _q) {
-          if (_err) {
-            return queue.emit(_err);
+        handleRepeats(function (err, q) {
+          if (err) {
+            queue.emit('error', err);
           }
-        });
-      }
 
-      if (i === 0) {
-        callback(null, q);
-      }
+          handleAutosaves(function (err, q) {
+            if (err) {
+              queue.emit('error', err);
+            }
+
+            if (i === 0) {
+              callback(null, q);
+            }
+          });
+        });
+
+        function handleRepeats(cb) {
+          //
+          // If element repeating is turned on, push the just-processed element
+          // back onto the queue
+          //
+          if (q.repeat) {
+            queue.push(q, elem, cb);
+          }
+          else {
+            cb(null, q);
+          }
+        }
+
+        function handleAutosaves(cb) {
+          //
+          // If autosave is turned on, save the current queue.
+          //
+          if (q.autosave) {
+            queue.updateOrCreate(q, cb);
+          }
+        }
+      });
     });
   });
 }
@@ -293,7 +316,7 @@ function process (q, callback) {
 queue.method('load', load, {
   description: 'start processing a queue',
   properties: {
-    options: queue.schema
+    queue: queue.schema
   }
 });
 function load(q) {
@@ -331,6 +354,7 @@ function load(q) {
         }, q.interval);
 
         queue.process(q, function (err, result) {
+
           if (err) {
             //
             // Remark: Emit error, keep going (for now, may change behavior)
@@ -358,7 +382,7 @@ function load(q) {
 queue.method('unload', unload, {
   description: 'start processing a queue',
   properties: {
-    options: queue.schema
+    queue: queue.schema
   }
 });
 function unload(q) {
@@ -366,14 +390,11 @@ function unload(q) {
   q.started = false;
 
   queue.updateOrCreate(q, function (err, res) {
-    if (err) throw err;
+    if (err) {
+      queue.emit('error', err);
+    }
   });
 }
-
-queue.on('error', function (error, data) {
-  resource.logger.error(error);
-  resource.logger.data(data);
-});
 
 //
 // after hooks to add methods to instances of queue
@@ -431,8 +452,8 @@ function addMethods (instance, next) {
     'load',
     'unload'
   ].forEach(function (m) {
-    instance[m] = function (options) {
-      return queue[m](instance, options);
+    instance[m] = function () {
+      return queue[m].apply(null, [instance].concat([].slice.call(arguments)));
     }
   });
 
@@ -445,4 +466,12 @@ function addMethods (instance, next) {
   next(null, instance);
 }
 
+process.nextTick(function () {
+  if (!queue.listeners('error')) {
+    queue.on('error', function (err) {
+      resource.logger.error('Error while processing queue:');
+      resource.logger.error(err);
+    });
+  }
+});
 exports.queue = queue;
