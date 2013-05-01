@@ -8,8 +8,18 @@ counter.property('message', {
   type: 'string'
 });
 counter.property('timestamp');
+
 counter.persist('memory');
 
+counter.before('create', function (data, next) {
+  console.error('# about to create %j', data);
+  next(null, data);
+});
+
+counter.after('create', function (data, next) {
+  console.error('# just created %j', data);
+  next(null, data);
+});
 
 var queue;
 
@@ -36,95 +46,112 @@ tap.test('create a queue with repeat', function (t) {
 });
 
 tap.test('push an element onto the queue', function (t) {
-  t.equal(queue.elements.length, 0, 'queue length is now 1');
-  t.doesNotThrow(function () {
-    queue.push({ method: 'counter::create', with: { timestamp: new Date(), message: 'one' } });
-  }, 'queue.push called successfully');
-  t.equal(queue.elements.length, 1, 'queue length is now 1');
-  t.end();
+  t.equal(queue.elements.length, 0, 'queue length is now 0');
+  queue.push({
+    method: 'counter::create',
+    with: { timestamp: new Date(), message: 'one' }
+  }, function (err, _queue) {
+    t.error(err, 'queue.push called successfully');
+    t.equal(_queue.elements.length, 1, 'queue length is now 1');
+    queue = _queue;
+    t.end();
+  });
 });
 
 tap.test('extend the queue with multiple elements', function (t) {
-  t.doesNotThrow(function () {
-    queue.extend([
-      {
-        method: 'counter::create',
-        with: { timestamp: new Date(), message: 'two' }
-      },
-      {
-        method: 'counter::create',
-        with: { timestamp: new Date(), message: 'three' }
-      }
-    ]);
-  }, 'queue.extend called successfully');
-  t.equal(queue.elements.length, 3, 'queue length is now 3');
-  t.end();
+  queue.extend([
+    {
+      method: 'counter::create',
+      with: { timestamp: new Date(), message: 'two' }
+    },
+    {
+      method: 'counter::create',
+      with: { timestamp: new Date(), message: 'three' }
+    }
+  ], function (err, _queue) {
+
+    t.error(err, 'queue.extend called successfully');
+    t.equal(_queue.elements.length, 3, 'queue length is now 3');
+    queue = _queue;
+    t.end();
+  });
 });
 
 tap.test('shift an element off the queue', function (t) {
   var element;
-  t.doesNotThrow(function () {
-    element = queue.shift();
-  }, 'queue.shift called successfully');
-  t.equal(queue.elements.length, 2, 'queue length is now 2');
+  element = queue.shift(function (err, _queue) {
+    t.error(err, 'queue.shift called successfully');
+    t.equal(_queue.elements.length, 2, 'queue length is now 2');
 
-  t.equal(element.with.message, 'one', 'message is "one"');
-  t.end();
+    queue = _queue;
+
+    t.equal(element.with.message, 'one', 'message is "one"');
+    t.end();
+  });
 });
 
 tap.test('take multiple elements from the queue', function (t) {
   t.plan(5);
 
+  queue.concurrency = 2;
+
   var elems;
 
-  t.doesNotThrow(function () {
-    elems = queue.take(2);
-  }, 'queue.take called successfully');
+  elems = queue.take(function (err, _queue) {
+    t.error(err, 'queue.take called successfully');
 
-  t.equal(queue.elements.length, 0, 'queue length is now 0');
-  t.doesNotThrow(function () {
-    t.equal(elems[0].with.message, 'two', 'message is "two"');
-    t.equal(elems[1].with.message, 'three', 'message is "three"');
-  }, 'take returned 2 elements');
-  t.end();
+    t.equal(_queue.elements.length, 0, 'queue length is now 0');
+
+    queue = _queue;
+    queue.concurrency = 1;
+
+    t.doesNotThrow(function () {
+      t.equal(elems[0].with.message, 'two', 'message is "two"');
+      t.equal(elems[1].with.message, 'three', 'message is "three"');
+    }, 'take returned 2 elements');
+    t.end();
+  });
 });
 
 tap.test('repopulate the queue', function (t) {
-  t.doesNotThrow(function () {
-    queue.extend([
-      {
-        method: 'counter::create',
-        with: { timestamp: new Date(), message: 'one' }
-      },
-      {
-        method: 'counter::create',
-        with: { timestamp: new Date(), message: 'two' }
-      },
-      {
-        method: 'counter::create',
-        with: { timestamp: new Date(), message: 'three' }
-      }
-    ]);
-  }, 'queue.extend called successfully');
-  t.equal(queue.elements.length, 3, 'queue length is now 3');
-  t.end();
+  queue.extend([
+    {
+      method: 'counter::create',
+      with: { timestamp: new Date(), message: 'one' }
+    },
+    {
+      method: 'counter::create',
+      with: { timestamp: new Date(), message: 'two' }
+    },
+    {
+      method: 'counter::create',
+      with: { timestamp: new Date(), message: 'three' }
+    }
+  ], function (err, _queue) {
+    t.error(err, 'queue.extend called successfully');
+    t.equal(_queue.elements.length, 3, 'queue length is now 3');
+
+    queue = _queue;
+
+    t.end();
+  });
 });
 
-tap.test('start the queue and run for 16 seconds', function (t) {
+tap.test('start the queue and run for 11 seconds', function (t) {
   t.doesNotThrow(function () {
     queue.start();
   }, 'queue starts');
   t.end();
 });
 
-tap.test('stop on the queue after 16 seconds', function (t) {
+tap.test('stop on the queue after 11 seconds', function (t) {
   setTimeout(function () {
     t.doesNotThrow(function () {
       queue.stop();
     }, 'queue stops');
 
     t.end();
-  }, 16000);
+  }, 11000);
 });
 
 tap.test('queue elements processed as expected', function (t) {
