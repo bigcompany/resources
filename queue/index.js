@@ -41,6 +41,12 @@ queue.property('elements', {
   default: []
 });
 
+queue.property('started', {
+  description: 'whether or not the queue has been started',
+  type: 'boolean',
+  default: false
+});
+
 //
 // Basic push/shift methods for queue
 //
@@ -291,49 +297,62 @@ queue.method('load', load, {
   }
 });
 function load(q) {
-  _process();
 
-  function _process() {
-    var completed = false,
-        timedOut = false;
+  q.started = true;
+  queue.updateOrCreate(q, function (err, q) {
+    if (err) {
+      queue.emit('error', err);
+    }
 
-    //
-    // Process again at the end of the timeout *if* the last process step
-    // completed
-    //
-    queue._loop = setTimeout(function () {
-      //
-      // If waiting is turned off, always process the next set of elements
-      //
-      if (completed || !q.wait) {
-        _process();
-      }
-      else {
-        timedOut = true;
-      }
-    }, q.interval);
+    _process();
 
-    queue.process(q, function (err, result) {
-      if (err) {
+    function _process() {
+      queue.get(q.id, function (err, q) {
+        if (err) {
+          queue.emit('error', err);
+        }
+        var completed = false,
+            timedOut = false;
+
         //
-        // Remark: Emit error, keep going (for now, may change behavior)
+        // Process again at the end of the timeout *if* the last process step
+        // completed
         //
-        // TODO: Attach some context to the error?
-        //
-        queue.emit('error', err);
-      }
+        q._loop = setTimeout(function () {
+          //
+          // If waiting is turned off, always process the next set of elements
+          //
+          if (q.started && (completed || !q.wait)) {
+            _process();
+          }
+          else {
+            timedOut = true;
+          }
+        }, q.interval);
 
-      completed = true;
+        queue.process(q, function (err, result) {
+          if (err) {
+            //
+            // Remark: Emit error, keep going (for now, may change behavior)
+            //
+            // TODO: Attach some context to the error?
+            //
+            queue.emit('error', err);
+          }
 
-      //
-      // If the timeout occurred while the process step was still running,
-      // execute it late
-      //
-      if (timedOut) {
-        _process();
-      }
-    });
-  }
+          completed = true;
+
+          //
+          // If the timeout occurred while the process step was still running,
+          // execute it late
+          //
+          if (timedOut && q.started) {
+            _process();
+          }
+        });
+      });
+    }
+  });
 }
 
 queue.method('unload', unload, {
@@ -344,6 +363,11 @@ queue.method('unload', unload, {
 });
 function unload(q) {
   clearInterval(q._loop);
+  q.started = false;
+
+  queue.updateOrCreate(q, function (err, res) {
+    if (err) throw err;
+  });
 }
 
 queue.on('error', function (error, data) {
