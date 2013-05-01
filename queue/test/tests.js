@@ -4,10 +4,18 @@ var tap = require('tap'),
 resource.use('queue');
 
 var counter = resource.counter = resource.define('counter');
+counter.property('message', {
+  type: 'string'
+});
+counter.property('timestamp');
 counter.persist('memory');
 
 
 var queue;
+
+resource.queue.on('error', function (err) {
+  throw err;
+});
 
 tap.test('create a queue with repeat', function (t) {
   resource.queue.create({ repeat: true }, function (err, _queue) {
@@ -29,9 +37,6 @@ tap.test('create a queue with repeat', function (t) {
 
 tap.test('push an element onto the queue', function (t) {
   t.equal(queue.elements.length, 0, 'queue length is now 1');
-  //
-  // TODO: This breaks because queue.elements is a List type instead of an Array
-  //
   t.doesNotThrow(function () {
     queue.push({ method: 'counter::create', with: { timestamp: new Date(), message: 'one' } });
   }, 'queue.push called successfully');
@@ -84,26 +89,64 @@ tap.test('take multiple elements from the queue', function (t) {
   t.end();
 });
 
-tap.test('start processing the queue', function (t) {
+tap.test('repopulate the queue', function (t) {
+  t.doesNotThrow(function () {
+    queue.extend([
+      {
+        method: 'counter::create',
+        with: { timestamp: new Date(), message: 'one' }
+      },
+      {
+        method: 'counter::create',
+        with: { timestamp: new Date(), message: 'two' }
+      },
+      {
+        method: 'counter::create',
+        with: { timestamp: new Date(), message: 'three' }
+      }
+    ]);
+  }, 'queue.extend called successfully');
+  t.equal(queue.elements.length, 3, 'queue length is now 3');
+  t.end();
+});
+
+tap.test('start the queue and run for 16 seconds', function (t) {
   t.doesNotThrow(function () {
     queue.start();
   }, 'queue starts');
   t.end();
 });
 
-tap.test('stop processing the queue', function (t) {
-  t.doesNotThrow(function () {
-    queue.stop();
-  }, 'queue stops');
+tap.test('stop on the queue after 16 seconds', function (t) {
+  setTimeout(function () {
+    t.doesNotThrow(function () {
+      queue.stop();
+    }, 'queue stops');
 
-  //
-  // TODO: This hangs. Figure out why. Something is broken.
-  //
-
-  t.end();
+    t.end();
+  }, 16000);
 });
 
-//
-// TODO: Test the processing of elements
-// TODO: Write tests that break autosave (turning off wait should do it)
-//
+tap.test('queue elements processed as expected', function (t) {
+  counter.all(function (err, counts) {
+    t.error(err, 'no error');
+
+    t.equal(counts.length, 3, '3 elements were processed by the queue');
+    t.ok(hasMessage('one'), 'first job was executed');
+    t.ok(hasMessage('two'), 'second job was executed');
+    t.ok(hasMessage('three'), 'third job was executed');
+
+    t.equal(queue.elements.length, 3, 'queue has 3 elements');
+    t.equal(queue.elements[0].with.message, 'one', 'first job is now first in queue');
+    t.equal(queue.elements[1].with.message, 'two', 'second job is now second in queue');
+    t.equal(queue.elements[2].with.message, 'three', 'third job is now third in queue');
+
+    t.end();
+
+    function hasMessage(msg) {
+      return counts.some(function (c) {
+        return c.message === msg;
+      });
+    }
+  });
+});
