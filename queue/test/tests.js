@@ -144,7 +144,7 @@ tap.test('start the queue and run for 11 seconds', function (t) {
   t.end();
 });
 
-tap.test('stop on the queue after 11 seconds', function (t) {
+tap.test('stop the queue after 11 seconds', function (t) {
   setTimeout(function () {
     t.doesNotThrow(function () {
       queue.stop();
