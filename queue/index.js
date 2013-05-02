@@ -310,7 +310,7 @@ function processQueue (q, callback) {
           // If element repeating is turned on, push the just-processed element
           // back onto the queue
           //
-          if (q.repeat) {
+          if (q.repeat && !err) {
             queue.push(q, elem, cb);
           }
           else {
