@@ -89,7 +89,9 @@ function push (q, job, callback) {
     queue.updateOrCreate(q, callback);
   }
   else {
-    callback(null, q);
+    process.nextTick(function () {
+      callback(null, q);
+    });
   }
   return elems;
 }
@@ -153,7 +155,9 @@ function take (q, callback) {
     queue.updateOrCreate(q, callback);
   }
   else {
-    callback(null, q);
+    process.nextTick(function () {
+      callback(null, q);
+    });
   }
 
   return xs;
@@ -194,7 +198,9 @@ function extend(q, xs, callback) {
     queue.updateOrCreate(q, callback);
   }
   else {
-    callback(null, q);
+    process.nextTick(function () {
+      callback(null, q);
+    });
   }
 
   return q.elements;
