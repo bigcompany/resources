@@ -116,9 +116,49 @@ function shift (q, callback) {
     queue.updateOrCreate(q, callback);
   }
   else {
-    callback(null, q);
+    process.nextTick(function () {
+      callback(null, q);
+    });
   }
   return shifted;
+}
+
+queue.method('unshift', unshift, {
+  description: 'unshift an element onto the front of the queue',
+  properties: {
+    queue: queue.schema,
+    job: {
+      properties: {
+        method: {
+          type: 'string'
+        },
+        with: {
+          type: 'any',
+          default: {}
+        }
+      }
+    },
+    callback: {
+      type: 'function',
+      default: function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
+    }
+  }
+});
+function unshift (q, job, callback) {
+  var elements = q.elements.unshift(job);
+  if (q.autosave) {
+    queue.updateOrCreate(q, callback);
+  }
+  else {
+    process.nextTick(function () {
+      callback(null, q);
+    });
+  }
+  return elements;
 }
 
 queue.method('take', take, {
