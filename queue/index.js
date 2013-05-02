@@ -47,6 +47,13 @@ queue.property('started', {
   default: false
 });
 
+queue.property('inProgress', {
+  description: 'the elements currently being processed',
+  type: 'array',
+  default: []
+});
+
+
 //
 // Basic push/shift methods for queue
 //
@@ -327,54 +334,75 @@ function processQueue (q, callback) {
 
     var i = elements.length;
 
-    elements.forEach(function (elem) {
-      queue.run(elem, function (err) {
-        i--;
+    q.inProgress = elements;
 
-        if (err) {
-          queue.emit('error', err);
-        }
+    handleAutosaves(q, function (err, q) {
+      if (err) {
+        queue.emit('error', err);
+      }
 
-        handleRepeats(q, function (err, q) {
+      elements.forEach(function (elem, j) {
+        queue.run(elem, function (err) {
+          i--;
+
           if (err) {
             queue.emit('error', err);
           }
 
-          handleAutosaves(q, function (err, q) {
+          q.inProgress[j] = null;
+
+          handleRepeats(q, function (err, q) {
             if (err) {
               queue.emit('error', err);
             }
 
-            if (i === 0) {
-              callback(null, q);
-            }
+            handleAutosaves(q, function (err, q) {
+              if (err) {
+                queue.emit('error', err);
+              }
+
+              if (i === 0) {
+                q.inProgress = [];
+
+                handleAutosaves(q, function (err, q) {
+                  if (err) {
+                    queue.emit('error', err);
+                  }
+
+                  callback(null, q);
+                });
+              }
+            });
           });
+
+          function handleRepeats(q, cb) {
+            //
+            // If element repeating is turned on, push the just-processed element
+            // back onto the queue
+            //
+            if (q.repeat && !err) {
+              queue.push(q, elem, cb);
+            }
+            else {
+              cb(null, q);
+            }
+          }
         });
-
-        function handleRepeats(q, cb) {
-          //
-          // If element repeating is turned on, push the just-processed element
-          // back onto the queue
-          //
-          if (q.repeat && !err) {
-            queue.push(q, elem, cb);
-          }
-          else {
-            cb(null, q);
-          }
-        }
-
-        function handleAutosaves(q, cb) {
-          //
-          // If autosave is turned on, save the current queue.
-          //
-          if (q.autosave) {
-            queue.updateOrCreate(q, cb);
-          }
-        }
       });
     });
   });
+
+  function handleAutosaves(q, cb) {
+    //
+    // If autosave is turned on, save the current queue.
+    //
+    if (q.autosave) {
+      queue.updateOrCreate(q, cb);
+    }
+    else {
+      cb(null, q);
+    }
+  }
 }
 
 //
@@ -394,7 +422,44 @@ function load(q) {
       queue.emit('error', err);
     }
 
-    _process();
+    if (q.inProgress.length) {
+      var i = q.inProgress.length;
+
+      q.inProgress.forEach(function (elem) {
+        if (elem !== null) {
+          q.unshift(elem, function (err, q) {
+            if (err) {
+              queue.emit('error', err);
+            }
+            complete();
+          });
+        }
+        else {
+          complete();
+        }
+
+        function complete() {
+          i--;
+          if (i === 0) {
+            q.inProgress = [];
+            if (q.autosave) {
+              queue.updateOrCreate(q, function (err, q) {
+                if (err) {
+                  queue.emit('error', err);
+                }
+                _process();
+              });
+            }
+            else {
+              _process();
+            }
+          }
+        }
+      });
+    }
+    else {
+      _process();
+    }
 
     function _process() {
       queue.get(q.id, function (err, q) {
