@@ -73,7 +73,12 @@ queue.method('push', push, {
       }
     },
     callback: {
-      type: 'function'
+      type: 'function',
+      default: function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
     }
   }
 });
@@ -94,7 +99,12 @@ queue.method('shift', shift, {
   properties: {
     queue: queue.schema,
     callback: {
-      type: 'function'
+      type: 'function',
+      default: function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
     }
   }
 });
@@ -114,7 +124,12 @@ queue.method('take', take, {
   properties: {
     queue: queue.schema,
     callback: {
-      type: 'function'
+      type: 'function',
+      default: function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
     }
   }
 });
@@ -156,7 +171,12 @@ queue.method('extend', extend, {
       type: 'any'
     },
     callback: {
-      type: 'function'
+      type: 'function',
+      default: function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
     }
   }
 });
@@ -241,7 +261,8 @@ queue.method('process', processQueue, {
   properties: {
     queue: queue.schema,
     callback: {
-      type: 'function'
+      type: 'function',
+      required: true
     }
   }
 });
