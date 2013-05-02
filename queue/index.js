@@ -57,13 +57,6 @@ queue.property('inProgress', {
 //
 // Basic push/shift methods for queue
 //
-// Remark: Typically, array shifts are considered expensive, and there is
-// a way to optimize this by offsetting the index instead of shifting,
-// reusing earlier elements in the array, and then resizing the array (only
-// here would slicing be used) and resetting the offsets when the array becomes
-// full. That said, this is probably negligible compared to the overhead of
-// persisting the queue to a datasource anyway.
-//
 queue.method('push', push, {
   description: 'push an element onto the queue',
   properties: {
