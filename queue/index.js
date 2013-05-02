@@ -337,43 +337,45 @@ function load(q) {
         var completed = false,
             timedOut = false;
 
-        //
-        // Process again at the end of the timeout *if* the last process step
-        // completed
-        //
-        q._loop = setTimeout(function () {
+        if (q.started) {
           //
-          // If waiting is turned off, always process the next set of elements
+          // Process again at the end of the timeout *if* the last process step
+          // completed
           //
-          if (q.started && (completed || !q.wait)) {
-            _process();
-          }
-          else {
-            timedOut = true;
-          }
-        }, q.interval);
-
-        queue.process(q, function (err, result) {
-
-          if (err) {
+          q._loop = setTimeout(function () {
             //
-            // Remark: Emit error, keep going (for now, may change behavior)
+            // If waiting is turned off, always process the next set of elements
             //
-            // TODO: Attach some context to the error?
+            if (q.started && (completed || !q.wait)) {
+              _process();
+            }
+            else {
+              timedOut = true;
+            }
+          }, q.interval);
+
+          queue.process(q, function (err, result) {
+
+            if (err) {
+              //
+              // Remark: Emit error, keep going (for now, may change behavior)
+              //
+              // TODO: Attach some context to the error?
+              //
+              queue.emit('error', err);
+            }
+
+            completed = true;
+
             //
-            queue.emit('error', err);
-          }
-
-          completed = true;
-
-          //
-          // If the timeout occurred while the process step was still running,
-          // execute it late
-          //
-          if (timedOut && q.started) {
-            _process();
-          }
-        });
+            // If the timeout occurred while the process step was still running,
+            // execute it late
+            //
+            if (timedOut && q.started) {
+              _process();
+            }
+          });
+        }
       });
     }
   });
