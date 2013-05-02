@@ -289,12 +289,12 @@ function processQueue (q, callback) {
           queue.emit('error', err);
         }
 
-        handleRepeats(function (err, q) {
+        handleRepeats(q, function (err, q) {
           if (err) {
             queue.emit('error', err);
           }
 
-          handleAutosaves(function (err, q) {
+          handleAutosaves(q, function (err, q) {
             if (err) {
               queue.emit('error', err);
             }
@@ -305,7 +305,7 @@ function processQueue (q, callback) {
           });
         });
 
-        function handleRepeats(cb) {
+        function handleRepeats(q, cb) {
           //
           // If element repeating is turned on, push the just-processed element
           // back onto the queue
@@ -318,7 +318,7 @@ function processQueue (q, callback) {
           }
         }
 
-        function handleAutosaves(cb) {
+        function handleAutosaves(q, cb) {
           //
           // If autosave is turned on, save the current queue.
           //
