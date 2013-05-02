@@ -490,7 +490,7 @@ function addMethods (instance, next) {
 }
 
 process.nextTick(function () {
-  if (!queue.listeners('error')) {
+  if (!queue.listeners('error').length) {
     queue.on('error', function (err) {
       resource.logger.error('Error while processing queue:');
       resource.logger.error(err);
