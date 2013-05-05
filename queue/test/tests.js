@@ -2,6 +2,8 @@ var tap = require('tap'),
     resource = require('resource');
 
 resource.use('queue');
+resource.use('http');
+var request = resource.http.request;
 
 var counter = resource.counter = resource.define('counter');
 counter.property('message', {
@@ -28,7 +30,7 @@ resource.queue.on('error', function (err) {
 });
 
 tap.test('create a queue with repeat', function (t) {
-  resource.queue.create({ repeat: true }, function (err, _queue) {
+  resource.queue.create({ id: 'test-queue', repeat: true }, function (err, _queue) {
 
     t.equal(_queue.concurrency, 1, 'default concurrency is 1');
     t.equal(_queue.interval, 5000, 'default interval is 5000');
@@ -175,5 +177,72 @@ tap.test('queue elements processed as expected', function (t) {
         return c.message === msg;
       });
     }
+  });
+});
+
+tap.test('destroy all counter documents', function (t) {
+  t.plan(4);
+
+  counter.all(function (err, counts) {
+    t.error(err, 'no error');
+
+    counts.forEach(function (c) {
+      counter.destroy(c.id, function (err) {
+        t.error(err, 'destroyed ' + c.id);
+      });
+    });
+  });
+});
+
+
+tap.test('modify the queue while it is running', function (t) {
+
+  //
+  // Couchdb is most likely to cause collision problems
+  //
+  resource.queue.persist('couchdb');
+
+  t.plan(5);
+
+  resource.queue.updateOrCreate(queue, function (err, _queue) {
+    t.error(err, 'no error');
+
+    queue = _queue;
+
+    var els = queue.elements.slice();
+
+    t.doesNotThrow(function () {
+      queue.start();
+    }, 'queue starts');
+
+    setTimeout(function () {
+      //
+      // Request the couchdb document
+      //
+      request({
+        uri: 'http://localhost:5984/big/queue%2Ftest-queue',
+        json: true
+      }, function (err, res, body) {
+        t.error(err, 'no error requesting document');
+
+        //
+        // Modify the document
+        //
+        body.elements = els;
+
+        request({
+          method: 'POST',
+          uri: 'http://localhost:5984/big/queue%2Ftest-queue',
+          json: body
+        }, function (err, res) {
+          t.error(err, 'no error modifying document');
+        });
+      });
+    }, 6000);
+    setTimeout(function () {
+      t.doesNotThrow(function () {
+        queue.stop();
+      }, 'queue stops');
+    }, 11000);
   });
 });
