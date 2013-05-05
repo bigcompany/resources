@@ -216,7 +216,7 @@ http.method('request', request, {
         },
         "json": {
           "description": "JSON data in the request body",
-          "type": "object",
+          "type": "any",
           "required": false
         },
         "multipart": {
