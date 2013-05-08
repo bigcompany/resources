@@ -546,8 +546,9 @@ function unban (options, callback) {
   irc.command(options, callback);
 }
 
-exports.irc = irc;
-exports.dependencies = {
+irc.dependencies = {
   "irc": "0.3.4",
   "optimist": "0.3.5"
 };
+
+exports.irc = irc;

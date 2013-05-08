@@ -141,9 +141,8 @@ view.middle = function (options) {
   };
 };
 
-
-exports.view = view;
-
-exports.dependencies = {
+view.dependencies = {
   "cheerio": "0.9.x"
 };
+
+exports.view = view;
