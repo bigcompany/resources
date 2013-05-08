@@ -206,7 +206,8 @@ function accessToken (options, callback) {
   });
 }
 
-exports.oauth = oauth;
-exports.dependencies = {
+oauth.dependencies = {
   "oauth": "~0.9.8"
 };
+
+exports.oauth = oauth;

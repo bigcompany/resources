@@ -10,16 +10,16 @@ var resource = require('resource'),
 //
 // Read "/resources/" directory
 //
-var npmResourcesPath = require.resolve('resources').replace('index.js', '');
+var resourcesPath = __dirname + '/';
 
-var _resources = fs.readdirSync(npmResourcesPath);
+var _resources = fs.readdirSync(resourcesPath);
 
 //
 // Filter out any potential non-resource files / folders
 //
 _resources = _resources.filter(function (val) {
   var isResource = false;
-  val = npmResourcesPath + val;
+  val = resourcesPath + val;
   isResource = resource.isResource(val);
   return isResource;
 });

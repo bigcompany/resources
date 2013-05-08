@@ -306,9 +306,9 @@ function dashboard () {
 
 };
 
-exports.admin = admin;
-
-exports.dependencies = {
+admin.dependencies = {
   "connect": "2.7.1",
   "highlight": "0.2.3"
 };
+
+exports.admin = admin;
