@@ -573,6 +573,7 @@ function addMethods (instance, next) {
   [
     'push',
     'shift',
+    'unshift',
     'take',
     'extend',
     'process',
