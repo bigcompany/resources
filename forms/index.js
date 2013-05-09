@@ -8,19 +8,31 @@ forms.schema.description = "for generating HTML forms";
 forms.method("generate", generate, { 
   "description": "generates a new form based on a resource schema",
   "properties": {
-    "resource": {
-      "description": "the resource which the form represents",
-      "type": "any"
+    "options": {
+      "properties": {
+        "resource": {
+          "type": "string",
+          "required": true
+        },
+        "method": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "callback": {
+        "type": "function"
+      }
     }
   }
 });
 
 function generate (options, callback) {
-  var view = resource.view.create({ path: __dirname + '/view', input: "html"});
-  var str = '', form;
-  form = view.form[options.method] || view.form['method'];
-  form.render();
-  form.present(options, callback);
+  resource.view.create({ path: __dirname + '/view', input: "html"}, function (err, view) {
+    var str = '', form;
+    form = view.form[options.method] || view.form['method'];
+    form.render();
+    form.present(options, callback);
+  });
 };
 
 exports.forms = forms;
