@@ -246,3 +246,39 @@ tap.test('modify the queue while it is running', function (t) {
     }, 11000);
   });
 });
+
+tap.test('push to the queue while it is running', function (t) {
+
+  t.plan(5);
+
+  resource.queue.updateOrCreate(queue, function (err, _queue) {
+    t.error(err, 'no error');
+    queue = _queue;
+
+    queue.elements = [];
+
+    resource.queue.update(queue, function (err, _queue) {
+      t.error(err, 'no error');
+      queue = _queue;
+
+      t.doesNotThrow(function () {
+        queue.start();
+      }, 'queue starts');
+
+      setTimeout(function () {
+        queue.push({
+          method: 'counter::create',
+          with: { timestamp: new Date(), message: 'four' }
+        }, function (err, q) {
+          t.error(err, 'no error');
+        });
+
+      }, 6000);
+      setTimeout(function () {
+        t.doesNotThrow(function () {
+          queue.stop();
+        }, 'queue stops');
+      }, 11000);
+    });
+  });
+});
