@@ -176,7 +176,6 @@ queue.method('take', take, {
   }
 });
 function take (q, callback) {
-
   var n = q.concurrency, xs = [];
   //
   // We do multiple shifts instead of a concat because q is actually a different
@@ -528,6 +527,7 @@ function unload(q) {
 //
 queue.after('create', addMethods);
 queue.after('get', addMethods);
+queue.after('update', addMethods);
 queue.after('updateOrCreate', addMethods);
 queue.after('all', addMethods);
 queue.after('find', addMethods);
