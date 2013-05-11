@@ -37,6 +37,11 @@ resource.use('hook', { datasource: "fs"});
 resource.use('forms');
 
 //
+// Meta-resource used for using and creating resources at run-time through resource interfaces
+//
+resource.use('resource');
+
+//
 // The standard http resource for creating http servers
 //
 resource.use('http');
@@ -79,18 +84,18 @@ function listen (options, callback) {
     //
     // Create view middleware using /admin/view
     //
-    resource.http.app.use(resource.view.middle({ viewPath: __dirname + '/view', prefix: '/admin'}));
-
-    //
-    // Serve the /public/ admin folder
-    //
-    resource.http.app.use(connect.static(__dirname + '/public'));
-
-    resource.view.create({ path: __dirname + '/view'}, function (err, view) {
+    resource.view.create({ path: __dirname + '/view' }, function(err, view) {
       if (err) {
         callback(err);
         return;
       }
+
+      resource.http.app.use(resource.view.middle({ view: view, prefix: '/admin' }));
+
+      //
+      // Serve the /public/ admin folder
+      //
+      resource.http.app.use(connect.static(__dirname + '/public'));
 
       //
       // TODO: cleanup route handlers / make into common methods
@@ -260,7 +265,10 @@ function listen (options, callback) {
       });
 
       callback(null, resource.http.server);
+
     });
+
+
   }
 }
 

@@ -50,15 +50,13 @@ function create (options, callback) {
       var view = new viewful.View({
         template: options.template,
         input: options.input,
-        output: options.ouput,
-        prefix: options.prefix
+        output: options.ouput
       });
     } else {
       var view = new viewful.View({
         path: options.path,
         input: options.input,
-        output: options.ouput,
-        prefix: options.prefix
+        output: options.ouput
       });
     }
     //
@@ -91,18 +89,18 @@ function create (options, callback) {
 //
 view.middle = function (options) {
 
-  options = options || {};
-  options.viewPath = options.viewPath || process.cwd() + '/view';
   options.prefix = options.prefix || '';
 
-  resource.view.create({ path: options.viewPath }, function(err, _view){
-    resource.http.view = _view;
-  });
-
   return function (req, res, next) {
-    var view = resource.http.view;
-    if (view) {
-      var _view = view;
+    if (options.view) {
+      //
+      // If the view was mounted with a prefix and that prefix was not found in the incoming url,
+      // do not attempt to use that view
+      //
+      if (options.prefix.length > 0 && req.url.search(options.prefix) === -1) {
+        return next();
+      }
+      var _view = options.view;
       var parts = require('url').parse(req.url).pathname.replace(options.prefix, '').split('/');
       parts.shift();
       parts.forEach(function(part) {
