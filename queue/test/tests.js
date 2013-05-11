@@ -26,6 +26,10 @@ counter.after('create', function (data, next) {
 var queue;
 
 resource.queue.on('error', function (err) {
+  console.log('queue error:');
+  if (!(err instanceof Error)) {
+    console.log(err);
+  }
   throw err;
 });
 
@@ -194,7 +198,6 @@ tap.test('destroy all counter documents', function (t) {
   });
 });
 
-
 tap.test('modify the queue while it is running', function (t) {
 
   //
@@ -236,49 +239,71 @@ tap.test('modify the queue while it is running', function (t) {
           json: body
         }, function (err, res) {
           t.error(err, 'no error modifying document');
+          setTimeout(function () {
+            t.doesNotThrow(function () {
+              queue.stop();
+            }, 'queue stops');
+          }, 5000);
         });
       });
     }, 6000);
-    setTimeout(function () {
-      t.doesNotThrow(function () {
-        queue.stop();
-      }, 'queue stops');
-    }, 11000);
   });
 });
 
 tap.test('push to the queue while it is running', function (t) {
+  var id = queue.id;
 
-  t.plan(5);
+  resource.queue.get(id, function (err, _queue) {
+    if (err) {
+      console.log(err); // This is not an instanceof Error due to cradle
+    }
+    t.error(err, 'no error while getting queue');
 
-  resource.queue.updateOrCreate(queue, function (err, _queue) {
-    t.error(err, 'no error');
-    queue = _queue;
+    _queue.elements = [];
 
-    queue.elements = [];
-
-    resource.queue.update(queue, function (err, _queue) {
-      t.error(err, 'no error');
-      queue = _queue;
+    resource.queue.update(_queue, function (err, _queue) {
+      if (err) {
+        console.log(err);
+      }
+      t.error(err, 'no error while updating queue');
 
       t.doesNotThrow(function () {
-        queue.start();
+        _queue.start();
       }, 'queue starts');
 
       setTimeout(function () {
-        queue.push({
-          method: 'counter::create',
-          with: { timestamp: new Date(), message: 'four' }
-        }, function (err, q) {
-          t.error(err, 'no error');
-        });
+        resource.queue.get(id, function (err, _queue) {
+          if (err) {
+            console.log(err);
+          }
+          t.error(err, 'no error while getting queue');
 
+          _queue.push({
+            method: 'counter::create',
+            with: { timestamp: new Date(), message: 'four' }
+          }, function (err, _queue) {
+            if (err) {
+              console.log(err);
+            }
+            t.error(err, 'no error while pushing to queue');
+
+            setTimeout(function () {
+              resource.queue.get(queue.id, function (err, _queue) {
+                if (err) {
+                  console.log(err);
+                }
+                t.error(err, 'no error while getting queue');
+
+                t.doesNotThrow(function () {
+                  _queue.stop();
+                }, 'queue stops');
+
+                t.end();
+              });
+            }, 5000);
+          });
+        });
       }, 6000);
-      setTimeout(function () {
-        t.doesNotThrow(function () {
-          queue.stop();
-        }, 'queue stops');
-      }, 11000);
     });
   });
 });
