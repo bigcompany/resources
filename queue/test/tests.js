@@ -1,15 +1,14 @@
 var tap = require('tap'),
-    resource = require('resource');
-
-resource.use('queue');
-resource.use('http');
-var request = resource.http.request;
+    resource = require('resource'),
+    queue = resource.use('queue'),
+    http = resource.use('http'),
+    request = http.request;
 
 var counter = resource.counter = resource.define('counter');
 counter.property('message', {
   type: 'string'
 });
-counter.property('timestamp');
+counter.property('timestamp', { type: 'any' });
 
 counter.persist('memory');
 
@@ -23,9 +22,7 @@ counter.after('create', function (data, next) {
   next(null, data);
 });
 
-var queue;
-
-resource.queue.on('error', function (err) {
+queue.on('error', function (err) {
   console.log('queue error:');
   if (!(err instanceof Error)) {
     console.log(err);
@@ -33,39 +30,37 @@ resource.queue.on('error', function (err) {
   throw err;
 });
 
+var id = 'test-queue';
+
 tap.test('create a queue with repeat', function (t) {
-  resource.queue.create({ id: 'test-queue', repeat: true }, function (err, _queue) {
+  queue.create({ id: id, repeat: true }, function (err, _queue) {
 
     t.equal(_queue.concurrency, 1, 'default concurrency is 1');
     t.equal(_queue.interval, 5000, 'default interval is 5000');
     t.equal(_queue.wait, true, 'default wait is true');
     t.equal(_queue.repeat, true, 'repeat is set to true');
-    t.equal(_queue.autosave, true, 'default autosave is true');
+    //t.equal(_queue.autosave, true, 'default autosave is true');
     t.doesNotThrow(function () {
       t.equal(_queue.elements.length, 0, 'elements.length is 0');
     }, 'elements has a length property');
 
-    queue = _queue;
- 
     t.end();
   });
 });
 
 tap.test('push an element onto the queue', function (t) {
-  t.equal(queue.elements.length, 0, 'queue length is now 0');
-  queue.push({
+  queue.push(id, {
     method: 'counter::create',
     with: { timestamp: new Date(), message: 'one' }
   }, function (err, _queue) {
     t.error(err, 'queue.push called successfully');
     t.equal(_queue.elements.length, 1, 'queue length is now 1');
-    queue = _queue;
     t.end();
   });
 });
 
 tap.test('extend the queue with multiple elements', function (t) {
-  queue.extend([
+  queue.extend(id, [
     {
       method: 'counter::create',
       with: { timestamp: new Date(), message: 'two' }
@@ -75,21 +70,16 @@ tap.test('extend the queue with multiple elements', function (t) {
       with: { timestamp: new Date(), message: 'three' }
     }
   ], function (err, _queue) {
-
     t.error(err, 'queue.extend called successfully');
     t.equal(_queue.elements.length, 3, 'queue length is now 3');
-    queue = _queue;
     t.end();
   });
 });
 
 tap.test('shift an element off the queue', function (t) {
-  var element;
-  element = queue.shift(function (err, _queue) {
+  queue.shift(id, function (err, element, _queue) {
     t.error(err, 'queue.shift called successfully');
     t.equal(_queue.elements.length, 2, 'queue length is now 2');
-
-    queue = _queue;
 
     t.equal(element.with.message, 'one', 'message is "one"');
     t.end();
@@ -97,30 +87,37 @@ tap.test('shift an element off the queue', function (t) {
 });
 
 tap.test('take multiple elements from the queue', function (t) {
-  t.plan(5);
+  queue.get(id, function (err, _queue) {
+    t.error(err, 'queue.get called successfully');
+    _queue.concurrency = 2;
 
-  queue.concurrency = 2;
+    queue.update(_queue, function (err, _queue) {
+      t.error(err, 'queue.update called successfully');
+      var elems;
 
-  var elems;
+      queue.take(id, function (err, elems, _queue) {
+        t.error(err, 'queue.take called successfully');
 
-  elems = queue.take(function (err, _queue) {
-    t.error(err, 'queue.take called successfully');
+        t.equal(_queue.elements.length, 0, 'queue length is now 0');
 
-    t.equal(_queue.elements.length, 0, 'queue length is now 0');
+        t.doesNotThrow(function () {
+          t.equal(elems[0].with.message, 'two', 'message is "two"');
+          t.equal(elems[1].with.message, 'three', 'message is "three"');
+        }, 'take returned 2 elements');
 
-    queue = _queue;
-    queue.concurrency = 1;
+        _queue.concurrency = 1;
 
-    t.doesNotThrow(function () {
-      t.equal(elems[0].with.message, 'two', 'message is "two"');
-      t.equal(elems[1].with.message, 'three', 'message is "three"');
-    }, 'take returned 2 elements');
-    t.end();
+        queue.update(_queue, function (err, _queue) {
+          t.error(err, 'queue.update called successfully');
+          t.end();
+        });
+      });
+    });
   });
 });
 
 tap.test('repopulate the queue', function (t) {
-  queue.extend([
+  queue.extend(id, [
     {
       method: 'counter::create',
       with: { timestamp: new Date(), message: 'one' }
@@ -137,26 +134,23 @@ tap.test('repopulate the queue', function (t) {
     t.error(err, 'queue.extend called successfully');
     t.equal(_queue.elements.length, 3, 'queue length is now 3');
 
-    queue = _queue;
-
     t.end();
   });
 });
 
 tap.test('start the queue and run for 11 seconds', function (t) {
-  t.doesNotThrow(function () {
-    queue.start();
-  }, 'queue starts');
-  t.end();
+  queue.start(id, function (err, _queue) {
+    t.error(err, 'queue starts');
+    t.end();
+  });
 });
 
 tap.test('stop the queue after 11 seconds', function (t) {
   setTimeout(function () {
-    t.doesNotThrow(function () {
-      queue.stop();
-    }, 'queue stops');
-
-    t.end();
+    queue.stop(id, function (err) {
+      t.error(err, 'queue stops');
+      t.end();
+    });
   }, 11000);
 });
 
@@ -169,12 +163,16 @@ tap.test('queue elements processed as expected', function (t) {
     t.ok(hasMessage('two'), 'second job was executed');
     t.ok(hasMessage('three'), 'third job was executed');
 
-    t.equal(queue.elements.length, 3, 'queue has 3 elements');
-    t.equal(queue.elements[0].with.message, 'one', 'first job is now first in queue');
-    t.equal(queue.elements[1].with.message, 'two', 'second job is now second in queue');
-    t.equal(queue.elements[2].with.message, 'three', 'third job is now third in queue');
-
-    t.end();
+    queue.get(id, function (err, _queue) {
+      t.error(err, 'successfully got queue');
+      t.equal(_queue.elements.length, 3, 'queue has 3 elements');
+      t.doesNotThrow(function () {
+        t.equal(_queue.elements[0].with.message, 'one', 'first job is now first in queue');
+        t.equal(_queue.elements[1].with.message, 'two', 'second job is now second in queue');
+        t.equal(_queue.elements[2].with.message, 'three', 'third job is now third in queue');
+      }, 'queue elements have expected properties');
+      t.end();
+    });
 
     function hasMessage(msg) {
       return counts.some(function (c) {
@@ -205,105 +203,84 @@ tap.test('modify the queue while it is running', function (t) {
   //
   resource.queue.persist('couchdb');
 
-  t.plan(5);
-
-  resource.queue.updateOrCreate(queue, function (err, _queue) {
+  resource.queue.updateOrCreate(id, function (err, _queue) {
     t.error(err, 'no error');
 
-    queue = _queue;
+    var els = _queue.elements.slice();
 
-    var els = queue.elements.slice();
-
-    t.doesNotThrow(function () {
-      queue.start();
-    }, 'queue starts');
-
-    setTimeout(function () {
-      //
-      // Request the couchdb document
-      //
-      request({
-        uri: 'http://localhost:5984/big/queue%2Ftest-queue',
-        json: true
-      }, function (err, res, body) {
-        t.error(err, 'no error requesting document');
-
-        //
-        // Modify the document
-        //
-        body.elements = els;
-
-        request({
-          method: 'POST',
-          uri: 'http://localhost:5984/big/queue%2Ftest-queue',
-          json: body
-        }, function (err, res) {
-          t.error(err, 'no error modifying document');
-          setTimeout(function () {
-            t.doesNotThrow(function () {
-              queue.stop();
-            }, 'queue stops');
-          }, 5000);
-        });
-      });
-    }, 6000);
-  });
-});
-
-tap.test('push to the queue while it is running', function (t) {
-  var id = queue.id;
-
-  resource.queue.get(id, function (err, _queue) {
-    if (err) {
-      console.log(err); // This is not an instanceof Error due to cradle
-    }
-    t.error(err, 'no error while getting queue');
-
-    _queue.elements = [];
-
-    resource.queue.update(_queue, function (err, _queue) {
-      if (err) {
-        console.log(err);
-      }
-      t.error(err, 'no error while updating queue');
-
-      t.doesNotThrow(function () {
-        _queue.start();
-      }, 'queue starts');
+    queue.start(id, function (err, _queue) {
+      t.error(err, 'queue starts');
 
       setTimeout(function () {
-        resource.queue.get(id, function (err, _queue) {
-          if (err) {
-            console.log(err);
-          }
-          t.error(err, 'no error while getting queue');
+        //
+        // Request the couchdb document
+        //
+        request({
+          uri: 'http://localhost:5984/big/queue%2Ftest-queue',
+          json: true
+        }, function (err, res, body) {
+          t.error(err, 'no error requesting document');
 
-          _queue.push({
-            method: 'counter::create',
-            with: { timestamp: new Date(), message: 'four' }
-          }, function (err, _queue) {
-            if (err) {
-              console.log(err);
-            }
-            t.error(err, 'no error while pushing to queue');
+          //
+          // Modify the document
+          //
+          body.elements = els;
 
+          request({
+            method: 'POST',
+            uri: 'http://localhost:5984/big/queue%2Ftest-queue',
+            json: body
+          }, function (err, res) {
+            t.error(err, 'no error modifying document');
             setTimeout(function () {
-              resource.queue.get(queue.id, function (err, _queue) {
-                if (err) {
-                  console.log(err);
-                }
-                t.error(err, 'no error while getting queue');
-
-                t.doesNotThrow(function () {
-                  _queue.stop();
-                }, 'queue stops');
-
+              queue.stop(id, function (err, _queue) {
+                t.error(err, 'queue stops');
                 t.end();
               });
             }, 5000);
           });
         });
       }, 6000);
+    });
+  });
+});
+
+tap.test('push to the queue while it is running', function (t) {
+  queue.get(id, function (err, _queue) {
+    t.error(err, 'no error while getting queue');
+
+    _queue.elements = [];
+
+    queue.update(_queue, function (err, _queue) {
+      t.error(err, 'no error while updating queue');
+
+      queue.start(id, function (err, _queue) {
+        t.error(err, 'queue starts');
+
+        setTimeout(function () {
+          resource.queue.get(id, function (err, _queue) {
+            t.error(err, 'no error while getting queue');
+
+            queue.push(id, {
+              method: 'counter::create',
+              with: { timestamp: new Date(), message: 'four' }
+            }, function (err, _queue) {
+              t.error(err, 'no error while pushing to queue');
+
+              setTimeout(function () {
+                queue.get(id, function (err, _queue) {
+                  t.error(err, 'no error while getting queue');
+
+                  queue.stop(id, function (err, _queue) {
+                    t.error(err, 'queue stops');
+                    t.end();
+                  });
+                });
+              }, 5000);
+            });
+          });
+        }, 6000);
+      });
     });
   });
 });
