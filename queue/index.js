@@ -386,7 +386,7 @@ function start(id, callback) {
 
       _queue.inProgress.forEach(function (elem) {
         if (elem !== null) {
-          _queue.unshift(id, elem, function (err, _queue) {
+          queue.unshift(id, elem, function (err, _queue) {
             if (err) {
               queue.emit('error', err);
             }
