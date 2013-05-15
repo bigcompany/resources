@@ -16,9 +16,11 @@ a queue for resource events
 
   - [repeat](#queue-properties-repeat)
 
-  - [autosave](#queue-properties-autosave)
-
   - [elements](#queue-properties-elements)
+
+  - [started](#queue-properties-started)
+
+  - [inProgress](#queue-properties-inProgress)
 
 
 #### [methods](#queue-methods)
@@ -37,21 +39,23 @@ a queue for resource events
 
   - [destroy](#queue-methods-destroy) (id, callback)
 
-  - [push](#queue-methods-push) (queue, job)
+  - [push](#queue-methods-push) (id, job, callback)
 
-  - [shift](#queue-methods-shift) (options)
+  - [shift](#queue-methods-shift) (id, callback)
 
-  - [take](#queue-methods-take) (options)
+  - [unshift](#queue-methods-unshift) (id, job, callback)
 
-  - [extend](#queue-methods-extend) (instance, elems)
+  - [take](#queue-methods-take) (id, callback)
+
+  - [extend](#queue-methods-extend) (id, elems, callback)
 
   - [run](#queue-methods-run) (job, callback)
 
-  - [process](#queue-methods-process) (options, callback)
+  - [process](#queue-methods-process) (id, callback)
 
-  - [load](#queue-methods-load) (options)
+  - [start](#queue-methods-start) (id, callback)
 
-  - [unload](#queue-methods-unload) (options)
+  - [stop](#queue-methods-stop) (id, callback)
 
 
 <a name="queue-properties"></a>
@@ -95,17 +99,25 @@ a queue for resource events
 
   - **default** : false
 
-- **autosave** 
-
-  - **description** : automatically save the queue after a processing step
-
-  - **type** : boolean
-
-  - **default** : true
-
 - **elements** 
 
   - **description** : the elements currently inside the queue
+
+  - **type** : array
+
+  - **default**
+
+- **started** 
+
+  - **description** : whether or not the queue has been started
+
+  - **type** : boolean
+
+  - **default** : false
+
+- **inProgress** 
+
+  - **description** : the elements currently being processed
 
   - **type** : array
 
@@ -164,17 +176,25 @@ create a new queue
 
       - **default** : false
 
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
     - **elements** 
 
       - **description** : the elements currently inside the queue
+
+      - **type** : array
+
+      - **default**
+
+    - **started** 
+
+      - **description** : whether or not the queue has been started
+
+      - **type** : boolean
+
+      - **default** : false
+
+    - **inProgress** 
+
+      - **description** : the elements currently being processed
 
       - **type** : array
 
@@ -262,9 +282,9 @@ search for instances of queue
 
       - **required** : false
 
-    - **autosave** 
+    - **elements** 
 
-      - **description** : automatically save the queue after a processing step
+      - **description** : the elements currently inside the queue
 
       - **type** : any
 
@@ -272,9 +292,19 @@ search for instances of queue
 
       - **required** : false
 
-    - **elements** 
+    - **started** 
 
-      - **description** : the elements currently inside the queue
+      - **description** : whether or not the queue has been started
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
+    - **inProgress** 
+
+      - **description** : the elements currently being processed
 
       - **type** : any
 
@@ -344,17 +374,25 @@ updates a queue by id
 
       - **default** : false
 
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
     - **elements** 
 
       - **description** : the elements currently inside the queue
+
+      - **type** : array
+
+      - **default**
+
+    - **started** 
+
+      - **description** : whether or not the queue has been started
+
+      - **type** : boolean
+
+      - **default** : false
+
+    - **inProgress** 
+
+      - **description** : the elements currently being processed
 
       - **type** : array
 
@@ -412,17 +450,25 @@ updates a queue by id, and creates if necessary
 
       - **default** : false
 
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
     - **elements** 
 
       - **description** : the elements currently inside the queue
+
+      - **type** : array
+
+      - **default**
+
+    - **started** 
+
+      - **description** : whether or not the queue has been started
+
+      - **type** : boolean
+
+      - **default** : false
+
+    - **inProgress** 
+
+      - **description** : the elements currently being processed
 
       - **type** : array
 
@@ -452,67 +498,13 @@ destroys a queue by id
 
 <a name="queue-methods-push"></a> 
 
-### queue.push(queue, job)
+### queue.push(id, job, callback)
 
 push an element onto the queue
 
-- **queue** 
+- **id** 
 
-  - **description** : a queue for resource events
-
-  - **properties**
-
-    - **id** 
-
-      - **type** : any
-
-    - **concurrency** 
-
-      - **description** : how many jobs to run at once
-
-      - **type** : number
-
-      - **default** : 1
-
-    - **interval** 
-
-      - **description** : time interval between processing items (ms)
-
-      - **type** : number
-
-      - **default** : 5000
-
-    - **wait** 
-
-      - **description** : wait until all running jobs are completed before executing next set
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **repeat** 
-
-      - **description** : automatically push completed elements back onto the queue
-
-      - **type** : boolean
-
-      - **default** : false
-
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **elements** 
-
-      - **description** : the elements currently inside the queue
-
-      - **type** : array
-
-      - **default**
+  - **type** : any
 
 - **job** 
 
@@ -528,195 +520,113 @@ push an element onto the queue
 
       - **default**
 
+- **callback** 
+
+  - **type** : function
+
+  - **default** : function (err, _queue) {
+        if (err) {
+          queue.emit('error', err, _queue);
+        }
+      }
+
 <a name="queue-methods-shift"></a> 
 
-### queue.shift(options)
+### queue.shift(id, callback)
 
 shift an element off the queue
 
-- **options** 
+- **id** 
+
+  - **type** : any
+
+- **callback** 
+
+  - **type** : function
+
+  - **default** : function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
+
+<a name="queue-methods-unshift"></a> 
+
+### queue.unshift(id, job, callback)
+
+unshift an element onto the front of the queue
+
+- **id** 
+
+  - **type** : any
+
+- **job** 
 
   - **properties**
 
-    - **id** 
+    - **method** 
+
+      - **type** : string
+
+    - **with** 
 
       - **type** : any
 
-    - **concurrency** 
-
-      - **description** : how many jobs to run at once
-
-      - **type** : number
-
-      - **default** : 1
-
-    - **interval** 
-
-      - **description** : time interval between processing items (ms)
-
-      - **type** : number
-
-      - **default** : 5000
-
-    - **wait** 
-
-      - **description** : wait until all running jobs are completed before executing next set
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **repeat** 
-
-      - **description** : automatically push completed elements back onto the queue
-
-      - **type** : boolean
-
-      - **default** : false
-
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **elements** 
-
-      - **description** : the elements currently inside the queue
-
-      - **type** : array
-
       - **default**
+
+- **callback** 
+
+  - **type** : function
+
+  - **default** : function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
 
 <a name="queue-methods-take"></a> 
 
-### queue.take(options)
+### queue.take(id, callback)
 
 take `queue.concurrency` elements off the queue
 
-- **options** 
+- **id** 
 
-  - **properties**
+  - **type** : any
 
-    - **id** 
+- **callback** 
 
-      - **type** : any
+  - **type** : function
 
-    - **concurrency** 
-
-      - **description** : how many jobs to run at once
-
-      - **type** : number
-
-      - **default** : 1
-
-    - **interval** 
-
-      - **description** : time interval between processing items (ms)
-
-      - **type** : number
-
-      - **default** : 5000
-
-    - **wait** 
-
-      - **description** : wait until all running jobs are completed before executing next set
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **repeat** 
-
-      - **description** : automatically push completed elements back onto the queue
-
-      - **type** : boolean
-
-      - **default** : false
-
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **elements** 
-
-      - **description** : the elements currently inside the queue
-
-      - **type** : array
-
-      - **default**
+  - **default** : function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
 
 <a name="queue-methods-extend"></a> 
 
-### queue.extend(instance, elems)
+### queue.extend(id, elems, callback)
 
 extend the queue with an array of elements
 
-- **instance** 
+- **id** 
 
-  - **properties**
-
-    - **id** 
-
-      - **type** : any
-
-    - **concurrency** 
-
-      - **description** : how many jobs to run at once
-
-      - **type** : number
-
-      - **default** : 1
-
-    - **interval** 
-
-      - **description** : time interval between processing items (ms)
-
-      - **type** : number
-
-      - **default** : 5000
-
-    - **wait** 
-
-      - **description** : wait until all running jobs are completed before executing next set
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **repeat** 
-
-      - **description** : automatically push completed elements back onto the queue
-
-      - **type** : boolean
-
-      - **default** : false
-
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **elements** 
-
-      - **description** : the elements currently inside the queue
-
-      - **type** : array
-
-      - **default**
+  - **type** : any
 
 - **elems** 
 
   - **type** : any
+
+- **callback** 
+
+  - **type** : function
+
+  - **default** : function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
 
 <a name="queue-methods-run"></a> 
 
@@ -746,199 +656,59 @@ run a job
 
 <a name="queue-methods-process"></a> 
 
-### queue.process(options, callback)
+### queue.process(id, callback)
 
 process elements off the queue
 
-- **options** 
+- **id** 
 
-  - **description** : a queue for resource events
-
-  - **properties**
-
-    - **id** 
-
-      - **type** : any
-
-    - **concurrency** 
-
-      - **description** : how many jobs to run at once
-
-      - **type** : number
-
-      - **default** : 1
-
-    - **interval** 
-
-      - **description** : time interval between processing items (ms)
-
-      - **type** : number
-
-      - **default** : 5000
-
-    - **wait** 
-
-      - **description** : wait until all running jobs are completed before executing next set
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **repeat** 
-
-      - **description** : automatically push completed elements back onto the queue
-
-      - **type** : boolean
-
-      - **default** : false
-
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **elements** 
-
-      - **description** : the elements currently inside the queue
-
-      - **type** : array
-
-      - **default**
+  - **type** : any
 
 - **callback** 
 
   - **type** : function
 
-<a name="queue-methods-load"></a> 
+  - **required** : true
 
-### queue.load(options)
+<a name="queue-methods-start"></a> 
 
-start processing a queue
-
-- **options** 
-
-  - **description** : a queue for resource events
-
-  - **properties**
-
-    - **id** 
-
-      - **type** : any
-
-    - **concurrency** 
-
-      - **description** : how many jobs to run at once
-
-      - **type** : number
-
-      - **default** : 1
-
-    - **interval** 
-
-      - **description** : time interval between processing items (ms)
-
-      - **type** : number
-
-      - **default** : 5000
-
-    - **wait** 
-
-      - **description** : wait until all running jobs are completed before executing next set
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **repeat** 
-
-      - **description** : automatically push completed elements back onto the queue
-
-      - **type** : boolean
-
-      - **default** : false
-
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **elements** 
-
-      - **description** : the elements currently inside the queue
-
-      - **type** : array
-
-      - **default**
-
-<a name="queue-methods-unload"></a> 
-
-### queue.unload(options)
+### queue.start(id, callback)
 
 start processing a queue
 
-- **options** 
+- **id** 
 
-  - **description** : a queue for resource events
+  - **type** : any
 
-  - **properties**
+- **callback** 
 
-    - **id** 
+  - **type** : function
 
-      - **type** : any
+  - **default** : function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
 
-    - **concurrency** 
+<a name="queue-methods-stop"></a> 
 
-      - **description** : how many jobs to run at once
+### queue.stop(id, callback)
 
-      - **type** : number
+start processing a queue
 
-      - **default** : 1
+- **id** 
 
-    - **interval** 
+  - **type** : any
 
-      - **description** : time interval between processing items (ms)
+- **callback** 
 
-      - **type** : number
+  - **type** : function
 
-      - **default** : 5000
-
-    - **wait** 
-
-      - **description** : wait until all running jobs are completed before executing next set
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **repeat** 
-
-      - **description** : automatically push completed elements back onto the queue
-
-      - **type** : boolean
-
-      - **default** : false
-
-    - **autosave** 
-
-      - **description** : automatically save the queue after a processing step
-
-      - **type** : boolean
-
-      - **default** : true
-
-    - **elements** 
-
-      - **description** : the elements currently inside the queue
-
-      - **type** : array
-
-      - **default**
+  - **default** : function (err) {
+        if (err) {
+          queue.emit('error', err);
+        }
+      }
 
 
 
