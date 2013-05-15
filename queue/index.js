@@ -339,7 +339,7 @@ function processQueue (id, callback) {
                 queue.emit('error', err);
               }
 
-              if (i === 0) {
+              if (i <= 0) {
                 modify(id, function (_queue) {
                   _queue.inProgress = [];
                   return _queue;
