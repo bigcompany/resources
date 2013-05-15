@@ -53,7 +53,7 @@ provides an HTTP API
 
   - **type** : string
 
-  - **default** : /Users/maraksquires/dev/big/public
+  - **default** : /home/josh/dev/bigcompany/big/public
 
 
 <a name="http-methods"></a> 
@@ -92,7 +92,7 @@ starts a listening http server
 
       - **type** : string
 
-      - **default** : /Users/maraksquires/dev/big/public
+      - **default** : /home/josh/dev/bigcompany/big/public
 
     - **enableUploads** 
 
@@ -140,7 +140,7 @@ starts a listening http server
 
       - **type** : string
 
-      - **default** : /Users/maraksquires/dev/big/public
+      - **default** : /home/josh/dev/bigcompany/big/public
 
     - **enableUploads** 
 
@@ -236,7 +236,7 @@ makes outgoing http client requests
 
       - **description** : JSON data in the request body
 
-      - **type** : object
+      - **type** : any
 
       - **required** : false
 
