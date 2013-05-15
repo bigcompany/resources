@@ -322,9 +322,9 @@ function processQueue (id, callback) {
           modify(id, function (_queue) {
             _queue.inProgress[j] = null;
             return _queue;
-          }, function (err, _queue) {
-            if (err) {
-              queue.emit('error', err);
+          }, function (_err, _queue) {
+            if (_err) {
+              queue.emit('error', _err);
             }
 
             if (_queue.repeat && !err) {
