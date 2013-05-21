@@ -25,7 +25,7 @@ bitcoin.property('server', {
     pass: {
       description: 'the password of the bitcoin server',
       type: 'string',
-      default: 'rpcpass'
+      default: 'rpcpassword'
     },
     ssl: {
       description: 'whether to enable ssl on bitcoin server',
@@ -59,24 +59,24 @@ bitcoin.method('connect', connect, {
   }
 });
 function connect(options, callback) {
-  var tuple = [options.host, options.port, options.user].join(':');
+  var tuple = [options.host, options.port, options.user].join(':'),
       Client = require('bitcoin').Client, // bitcoin client class
-      client;
+      client; // bitcoin client instance
 
   bitcoin.connections[tuple] = {};
-  client = bitcoin_lib.Client({
+  /*client = bitcoin.connections[tuple].client = Client({
     host: options.host,
     port: options.port,
     user: options.user,
     pass: options.pass
-  });
-  console.log(client);
+  });*/
+  bitcoin.connections[tuple].client = options;
+  return callback(null, bitcoin.connections[tuple]);
 }
 
 console.log(bitcoin);
 
 exports.bitcoin = bitcoin;
 exports.dependencies = {
-  "bitcoin": "1.7.0",
-  "optimist": "0.5.0"
+  "bitcoin": "1.7.0"
 };
