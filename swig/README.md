@@ -13,6 +13,8 @@ for parsing swig
 
   - [render](#swig-methods-render) ()
 
+  - [configure](#swig-methods-configure) ()
+
 
 for parsing swig
 
@@ -28,6 +30,12 @@ for parsing swig
 <a name="swig-methods-render"></a> 
 
 ### swig.render()
+
+
+
+<a name="swig-methods-configure"></a> 
+
+### swig.configure()
 
 
 
