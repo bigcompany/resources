@@ -51,16 +51,16 @@ test("start view from single template of given path", function (t) {
 	});
 });
 
-/*test("start view from single template and presenter of given path", function (t) {
+test("start view from single template and presenter of given path", function (t) {
 	view.create( { path: "./view2" } , function(err, _view) {
 		_view.index.render({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'render returns result');
 			console.log(_view);
 			t.equal(result,
-				'<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
+				'<div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n',
 				'render returns correct result');
 			t.end();
 		});
 	});
-});*/
+});
