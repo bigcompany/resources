@@ -48,7 +48,6 @@ function events() {
   };
 }
 
-
 mesh.method('connect', connect, {
   "description": "connect to the big mesh",
   "properties": {
@@ -285,7 +284,7 @@ function listen (options, callback) {
   }
 };
 
-exports.dependencies = {
+mesh.dependencies = {
   "engine.io": "0.3.9",
   "engine.io-client": "0.3.9",
   "eventemitter2": "*"
