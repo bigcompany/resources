@@ -18,6 +18,7 @@ resources for any occasion
  - [forms](https://github.com/bigcompany/resources/tree/master/forms) for generating HTML forms
  - [github](https://github.com/bigcompany/resources/tree/master/github) for interacting with the Github.com API
  - [hook](https://github.com/bigcompany/resources/tree/master/hook) for managing event hooks ( IF this THEN that )
+ - [html](https://github.com/bigcompany/resources/tree/master/html) for rendering html
  - [http](https://github.com/bigcompany/resources/tree/master/http) provides an HTTP API
  - [irc](https://github.com/bigcompany/resources/tree/master/irc) for managing communication with irc
  - [markdown](https://github.com/bigcompany/resources/tree/master/markdown) for parsing markdown
