@@ -90,28 +90,45 @@ View.prototype.load = function (viewPath, cb) {
   }
 }
 
+var layout = require('./layout');
 
 View.prototype.render = function (data, callback) {
   var self = this;
-  var inputEngine  = resource.view.engines[self.input],
-      outputEngine = resource.view.engines[self.output];
+  var inputEngine  = resource[self.input],
+      outputEngine = resource[self.output];
   
   //
   // TODO: Improve `loadEnv` / move it to View.detectQuerySelector
   //
-  function loadEnv(result) {
+  function loadEnv (result) {
     if(typeof self.$.load === 'function') {
       self.$ = self.$.load(result)
     }
   }
+
   if (callback) {
     return inputEngine.render(self, data, function(err, result){
       self.rendered = result;
-      loadEnv(self.rendered);
-      callback(err, result);
+      //
+      // Perform layout code
+      //
+      layout.render(self, data, function(err, str){
+        self.rendered = str;
+        loadEnv( self.rendered);
+        callback(err, result);
+      });
     });
   }
-  self.rendered = inputEngine.render(self, data);
+
+  //
+  // Render string
+  //
+  self.rendered = inputEngine.render(self.template, data);
+
+  //
+  // Perform layout code
+  //
+  self.rendered = layout.render(self, data);
   loadEnv(self.rendered);
   return self.rendered;
 };

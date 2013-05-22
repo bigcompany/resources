@@ -8,14 +8,6 @@ var resource = require('resource'),
 exports.View = View;
 view.View = View;
 
-view.engines = {};
-view.engines = {};
-view.engines['html'] = {};
-view.engines['html'].render = require('./lib/engines/html').render;
-view.engines['swig'] = {};
-view.engines['swig'].init = require('./lib/engines/swig').init;
-view.engines['swig'].render = require('./lib/engines/swig').render;
-
 view.schema.description = "for managing views";
 
 view.property("path", {
