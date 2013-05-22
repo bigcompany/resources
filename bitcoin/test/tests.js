@@ -23,4 +23,3 @@ test("generate bitcoin address", function (t) {
     });
   });
 });
-
