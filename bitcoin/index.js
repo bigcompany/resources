@@ -104,13 +104,14 @@ for (command in commands) {
   bitcoin.method(command, function(connection_id, args, callback) {
     console.log(command);
     // get client for connection_id
-    client = bitcoin.connections[connection_id].client;
+    var client = bitcoin.connections[connection_id].client;
     // add callback to end of args
     args.push(callback);
     // call client command with args
-    client[command].apply(client, args);
+    console.log(arguments);
+    client[command].apply(this, args);
   });
-};
+}
 
 console.log(bitcoin);
 
