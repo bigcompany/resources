@@ -1,13 +1,20 @@
 var resource = require('resource'),
     view = resource.define('view'),
-    viewful = require('./lib/viewful');
+    View = require('./lib/View');
 
 //
 // Export the View class for convenience
 //
-exports.View = viewful.View;
-view.View = viewful.View;
-view.engines = viewful.engines;
+exports.View = View;
+view.View = View;
+
+view.engines = {};
+view.engines = {};
+view.engines['html'] = {};
+view.engines['html'].render = require('./lib/engines/html').render;
+view.engines['swig'] = {};
+view.engines['swig'].init = require('./lib/engines/swig').init;
+view.engines['swig'].render = require('./lib/engines/swig').render;
 
 view.schema.description = "for managing views";
 
@@ -47,13 +54,13 @@ function create (options, callback) {
     // TODO: move this delegation / conditional logic to inside view engine
     //
     if(typeof options.template !== 'undefined') {
-      var view = new viewful.View({
+      var view = new View({
         template: options.template,
         input: options.input,
         output: options.ouput
       });
     } else {
-      var view = new viewful.View({
+      var view = new View({
         path: options.path,
         input: options.input,
         output: options.ouput
@@ -62,7 +69,7 @@ function create (options, callback) {
     //
     // Remark: View should not attempt to load if no path was entered
     //
-    // TODO: Should this fix be here or in the View prototype constructor ( viewful.View ) ?
+    // TODO: Should this fix be here or in the View prototype constructor ( View ) ?
     //
     if (typeof options.path === 'string') {
       view.load();
