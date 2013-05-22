@@ -15,6 +15,9 @@ github.method('activity', activity, {
           "type": "string"
         }
       }
+    },
+    "callback": {
+      "type": "function"
     }
   }
 });
@@ -28,7 +31,7 @@ function activity (options, callback) {
   if (options.authenticate) {
     conn.authenticate(options.authenticate);
   }
-  
+
   //
   // TODO: better conditional logic for determing user / org / project / etc
   //
@@ -51,7 +54,7 @@ function activity (options, callback) {
   callback(new Error('nothing to get'));
 }
 
-exports.dependencies = {
+github.dependencies = {
   "github": "*"
 };
 

@@ -11,7 +11,7 @@ module['exports'] = function (options, callback) {
     entity = options.resource || 'unknown',
     desc;
 
-  desc = method.schema.description;
+  desc = method.schema.description || '';
 
   if (desc.length === 0) {
     desc = options.method;

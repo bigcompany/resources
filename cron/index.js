@@ -56,7 +56,7 @@ cron.method('start', start, {
   "description": "starts the cron resource ( which will run all cron jobs )"
 });
 
-exports.dependencies = {
+cron.dependencies = {
   "cron": "1.0.1"
 };
 

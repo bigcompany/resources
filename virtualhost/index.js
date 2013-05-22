@@ -34,8 +34,8 @@ virtualhost.middle = function(req, res, next) {
   });
 };
 
-exports.virtualhost = virtualhost;
-
-exports.dependencies = {
+virtualhost.dependencies = {
   "connect": "2.7.1",
 };
+
+exports.virtualhost = virtualhost;

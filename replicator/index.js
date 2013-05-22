@@ -193,8 +193,8 @@ function pull (options, callback) {
   callback(null, options);
 }
 
-exports.replicator = replicator;
-
-exports.dependencies = {
+replicator.dependencies = {
   "pushover": "1.1.0"
 };
+
+exports.replicator = replicator;
