@@ -10,8 +10,8 @@ html.dependencies = {
 html.method('render', render);
 
 function render (selector, str, data) {
-  var html = require('html-lang');
-  return html.render(selector, str, data);
+  var _html = require('html-lang');
+  return _html.render(selector, str, data);
 };
 
 exports.html = html;
