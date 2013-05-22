@@ -1,4 +1,4 @@
-var viewful = require('./viewful');
+var resource = require('resource');
 
 var path = require('path'),
     fs = require('fs');
@@ -93,8 +93,8 @@ View.prototype.load = function (viewPath, cb) {
 
 View.prototype.render = function (data, callback) {
   var self = this;
-  var inputEngine  = viewful.engines[self.input],
-      outputEngine = viewful.engines[self.output];
+  var inputEngine  = resource.view.engines[self.input],
+      outputEngine = resource.view.engines[self.output];
   
   //
   // TODO: Improve `loadEnv` / move it to View.detectQuerySelector
