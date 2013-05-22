@@ -98,18 +98,15 @@ function connection_id(options, callback) {
   return [options.host, options.port, options.user].join(':');
 }
 
-for (command in commands) {
+for (var command in commands) {
   // define resource method for library command
   console.log(command);
   bitcoin.method(command, function(connection_id, args, callback) {
     console.log(command);
     // get client for connection_id
     var client = bitcoin.connections[connection_id].client;
-    // add callback to end of args
-    args.push(callback);
     // call client command with args
-    console.log(arguments);
-    client[command].apply(this, args);
+    client[command](args, callback);
   });
 }
 
