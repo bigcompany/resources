@@ -11,7 +11,6 @@ cli.method('start', start, {
 });
 
 function start (callback) {
-  logger.info('welcome to big');
 
   //
   // Don't allow a user to use the cli to call it's own start method
@@ -29,8 +28,6 @@ function start (callback) {
   cli.route = router.route;
   callback(null, router);
 };
-
-exports.cli = cli;
 
 //
 // Miniature cli router which works sufficiently for our use cases
@@ -106,8 +103,15 @@ var createRouter = function (resources, options) {
   //
   prompt.override = argv;
 
+  cli.prompt = prompt;
+
   options = options || {};
 
+  resources = resources || {};
+
+  //
+  // Convert resources into array for sorting
+  //
   if(typeof resources === 'object' && !Array.isArray(resources)) {
     var arr = [];
     var keys = Object.keys(resources);
@@ -133,31 +137,26 @@ var createRouter = function (resources, options) {
       resource.use(name);
     }
 
-    logger.info('resources'.magenta + ' available:');
+    if (resources.length) {
+      logger.info('resources'.magenta);
 
-    resources.forEach(function (resource) {
-      logger.info(' - ' + resource.name.magenta + ' ' + (resource.schema.description || '').grey);
-    });
-    logger.help('type ' + 'the ' + 'resource'.magenta + ' name to use');
-  });
-
-  //
-  // resource.use() route
-  //
-  router.on("use", function (_resource) {
-    if(typeof _resource === "undefined") {
-      logger.warn('resource name is required!');
-      var prop = {
-        "name": "resource",
-        "type": "string",
-        "message": "resource name",
-        "required": true
-      };
-      prompt.get(prop, function (err, data) {
-        resource.use(data.resource);
+      resources.forEach(function (resource) {
+        logger.info(' - ' + resource.name.magenta + ' ' + (resource.schema.description || '').grey);
       });
+
+      logger.help('type ' + 'a ' + 'resource'.magenta + ' name to explore it');
+    }
+
+    if(Object.keys(router._routes).length > 1) {
+      logger.info('commands'.magenta);
+      Object.keys(router._routes).forEach(function(route){
+        if (route.length) {
+          logger.info(' - ' + route.magenta);
+        }
+      });
+      logger.help('type a ' + 'command'.magenta + ' to execute it');
     } else {
-      resource.use(_resource);
+      logger.error('no commands or resources are available');
     }
   });
 
@@ -229,7 +228,7 @@ var createRouter = function (resources, options) {
 
 };
 
-cli.method('createRouter', createRouter);
+cli.method('createRouter', createRouter); // TODO: add schema for method
 
 function promptToList (resource, callback) {
   var property = {
@@ -250,8 +249,10 @@ function promptToList (resource, callback) {
 
 exports.route = router.route;
 
-exports.dependencies = {
+cli.dependencies = {
   "prompt-lite": "0.1.x",
   "optimist": "0.3.5",
   "colors": "*"
 };
+
+exports.cli = cli;

@@ -279,9 +279,7 @@ function build () {
         var _resource = require(resourcesPath + '/' + p);
         _resources[p] = {};
         if(typeof _resource[p] !== 'undefined') {
-          var deps = _resource.dependencies;
           _resource = _resource[p];
-          _resource.dependencies = deps;
 
           //
           // Generate resource documentation
@@ -316,8 +314,8 @@ function build () {
   resource.logger.info('wrote to core resource README.md file');
 }
 
-exports.docs = docs;
-
-exports.dependencies = {
+docs.dependencies = {
   "swig": "*"
 };
+
+exports.docs = docs;

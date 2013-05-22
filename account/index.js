@@ -14,7 +14,7 @@ account.property('email', {
 account.property('password', {
   "type": "string",
   "format": "password",
-  "required": true
+  "required": false
 });
 
 account.property('status', {

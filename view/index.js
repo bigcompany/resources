@@ -50,15 +50,13 @@ function create (options, callback) {
       var view = new viewful.View({
         template: options.template,
         input: options.input,
-        output: options.ouput,
-        prefix: options.prefix
+        output: options.ouput
       });
     } else {
       var view = new viewful.View({
         path: options.path,
         input: options.input,
-        output: options.ouput,
-        prefix: options.prefix
+        output: options.ouput
       });
     }
     //
@@ -89,24 +87,20 @@ function create (options, callback) {
 // View middleware
 // Creates a view from a folder and automatically route all urls to paths in that folder
 //
-view.middle = function(options) {
+view.middle = function (options) {
 
-  options = options || {};
-  options.viewPath = options.viewPath || process.cwd() + '/view';
   options.prefix = options.prefix || '';
-  var view;
-  try {
-    view = resource.view.create({ path: options.viewPath });
-    resource.http.view = view;
-  } catch (err) {
-    // Ignore missing view errors for now
-    //console.log(err)
-    view = null;
-  }
 
   return function (req, res, next) {
-    if (view) {
-      var _view = view;
+    if (options.view) {
+      //
+      // If the view was mounted with a prefix and that prefix was not found in the incoming url,
+      // do not attempt to use that view
+      //
+      if (options.prefix.length > 0 && req.url.search(options.prefix) === -1) {
+        return next();
+      }
+      var _view = options.view;
       var parts = require('url').parse(req.url).pathname.replace(options.prefix, '').split('/');
       parts.shift();
       parts.forEach(function(part) {
@@ -145,9 +139,8 @@ view.middle = function(options) {
   };
 };
 
-
-exports.view = view;
-
-exports.dependencies = {
+view.dependencies = {
   "cheerio": "0.9.x"
 };
+
+exports.view = view;

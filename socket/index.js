@@ -42,8 +42,8 @@ function start (options, callback) {
   );
 }
 
-exports.socket = socket;
-
-exports.dependencies = {
+socket.dependencies = {
   "socket.io": "0.9.x"
 };
+
+exports.socket = socket;
