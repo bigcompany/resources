@@ -2,6 +2,7 @@ var resource = require('resource'),
     forms = resource.define('forms');
 
 resource.use('view');
+resource.use('html');
 
 forms.schema.description = "for generating HTML forms";
 
