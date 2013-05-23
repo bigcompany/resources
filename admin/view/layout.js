@@ -4,5 +4,5 @@ module['exports'] = function (options, callback) {
   // Set active class on navbar button
   //
   //$('.navbar').remove();
-  return $.html();
+  return callback(null, $.html());
 }
