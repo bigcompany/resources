@@ -96,7 +96,11 @@ View.prototype.render = function (data, callback) {
   var self = this;
   var inputEngine  = resource[self.input],
       outputEngine = resource[self.output];
-  
+
+  if (typeof inputEngine === 'undefined') {
+    throw new Error(self.input + ' resource not loaded' + ' try .use("' + self.input + '")');
+  }
+
   //
   // TODO: Improve `loadEnv` / move it to View.detectQuerySelector
   //
