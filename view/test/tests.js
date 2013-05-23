@@ -35,7 +35,7 @@ test("start a view with a given template", function (t) {
 // TODO: test different input/output types
 
 test("start view from single template of given path", function (t) {
-	var viewPath = "./view1";
+	var viewPath = __dirname + "/view1";
 	view.create( { path: viewPath } , function(err, _view) {
 		t.error(err, 'no error');
 		t.ok(_view, 'view is returned');
@@ -44,16 +44,16 @@ test("start view from single template of given path", function (t) {
 		_view.index.render({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'render returns result');
-			//t.equal(result,
-			//	'<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
-			//	'render returns correct result');
+			t.equal(result,
+				'<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
+				'render returns correct result');
 			t.end();
 		});
 	});
 });
 
 test("start view from single template and presenter of given path", function (t) {
-	view.create( { path: "./view2" } , function(err, _view) {
+	view.create( { path: __dirname + "/view2" } , function(err, _view) {
 		_view.index.render({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'render returns result');
