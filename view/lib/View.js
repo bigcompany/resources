@@ -205,8 +205,6 @@ View.prototype._loadSync = function () {
           };
         }
 
-        //console.log(subViewName, typeof self[subViewName] )
-
         //
         // presenter, attempt to load
         //
@@ -280,31 +278,59 @@ View.prototype._loadAsync = function (cb) {
       //
       callbacks ++;
 
-      var lastPresenter = function(){};
+      var lastPresenter =  function (data, callback) {
+        if(typeof callback === "function") {
+          callback(null, this.$.html());
+        } else {
+          return this.$.html();
+        }
+      };
 
       // determine if file is template or presenter ( presenters end in .js and are node modules )
       if (ext === ".js") {
         callbacks--;
-        lastPresenter = require(process.cwd() + '/' + root + '/' + _path);
+        // don't do anything
       } else {
 
         //
         // load the file as the current template
         //
         fs.readFile(root + '/' + _path, function(err, result) {
+          if (err) {
+            throw err;
+          }
           result = result.toString();
           var presenter, template;
           //
           // determine if file is template or presenter
           //
           template = result;
+
+          var presenterPath = root +  '/' + _path.replace(ext, '.js');
+
           //
-          // presenter, attempt to load
+          // Determine if presenter file exists first before attempting to require it
           //
+
+          // TODO: replace with async stat
+          var exists = false;
+          try {
+            var stat = fs.statSync(presenterPath);
+            exists = true;
+          } catch (err) {
+            exists = false;
+          }
+
+          if (exists) {
+            presenterPath = presenterPath.replace('.js', '');
+            lastPresenter = require(presenterPath);
+          }
+
           self[subViewName] = new View({
             template: template,
             input: self.input,
-            present: lastPresenter
+            present: lastPresenter,
+            parent: self
           });
 
           callbacks--;
@@ -322,7 +348,8 @@ View.prototype._loadAsync = function (cb) {
       //
       self[subViewName] = new View({
         path: root + '/' + _path,
-        input: self.input
+        input: self.input,
+        parent: self
       });
       //
       // increase callback count
