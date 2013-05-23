@@ -35,6 +35,10 @@ view.method('create', create, {
   "properties": {
     "options": {
       "type": "object"
+    },
+    "callback": {
+      "type": "function",
+      "required": true
     }
   }
 });
