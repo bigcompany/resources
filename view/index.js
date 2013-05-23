@@ -41,45 +41,30 @@ view.method('create', create, {
 
 function create (options, callback) {
   options = options || {};
-  try {
-    //
-    // TODO: move this delegation / conditional logic to inside view engine
-    //
-    if(typeof options.template !== 'undefined') {
-      var view = new View({
-        template: options.template,
-        input: options.input,
-        output: options.ouput
-      });
-    } else {
-      var view = new View({
-        path: options.path,
-        input: options.input,
-        output: options.ouput
-      });
-    }
-    //
-    // Remark: View should not attempt to load if no path was entered
-    //
-    // TODO: Should this fix be here or in the View prototype constructor ( View ) ?
-    //
-    if (typeof options.path === 'string') {
-      view.load();
-    }
-  }
-  catch (err) {
-    if (callback) {
-      return callback(err);
-    }
-    throw err;
+
+  if(typeof options.template !== 'undefined') {
+    var view = new View({
+      template: options.template,
+      input: options.input,
+      output: options.ouput
+    });
+  } else {
+    var view = new View({
+      path: options.path,
+      input: options.input,
+      output: options.ouput
+    });
   }
 
-  if (callback) {
-    callback(null, view);
+  //
+  // Remark: View should not attempt to load if no path was entered
+  //
+  if (typeof options.path === 'string') {
+    return view.load(callback);
   }
-  else {
-    return view;
-  }
+
+  return callback(null, view);
+
 }
 
 //
