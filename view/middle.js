@@ -27,22 +27,23 @@ module['exports'] = function (options) {
       if(typeof _view === "undefined") {
         return next();
       }
-      var str = _view.render({
+      _view.render({
         request: req,
         response: res,
         data: req.big.params
+      }, function (err, str){
+        if (typeof _view.present === "function") {
+          _view.present({
+            request: req,
+            response: res,
+            data: req.big.params
+            }, function (err, rendered) {
+            res.end(rendered);
+          });
+        } else {
+          next();
+        }
       });
-      if (typeof _view.present === "function") {
-        _view.present({
-          request: req,
-          response: res,
-          data: req.big.params
-          }, function (err, rendered) {
-          res.end(rendered);
-        });
-      } else {
-        next();
-      }
     } else {
       //
       // No view was found, do not use middleware
@@ -50,5 +51,5 @@ module['exports'] = function (options) {
       next();
     }
   };
-  
+
 };
