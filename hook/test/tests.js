@@ -13,7 +13,9 @@ counter.property('timestamp', { type: 'any' });
 counter.persist('memory');
 
 counter.before('create', function (c, cb) {
-  c.timestamp = new Date();
+  if (!c.timestamp) {
+    c.timestamp = new Date();
+  }
   cb(null, c);
 });
 
@@ -22,7 +24,7 @@ creature.method('poke', function (text, cb) {
     cb = text;
     text = 'poked!';
   }
-  cb(null, text);
+  cb(null, { message: text });
 });
 
 counter.after('create', function (c, cb) {
@@ -44,7 +46,7 @@ test("create hooks",function (t) {
   var hooks = [
     { if: 'creature::create', then: 'counter::create', with: { message: 'creature create' }},
     { if: 'creature::poke', then: 'creature::create', with: { life: 100 }},
-    { if: 'creature::poke', then: 'counter::create', with: { message: 'creature poke' }}
+    { if: 'creature::poke', then: 'counter::create', with: { timestamp: 'prehistoric' }}
   ];
 
   t.plan(3);
@@ -80,7 +82,7 @@ test("create creatures", function (t) {
 
 test("call poke", function (t) {
   creature.poke(function (err, text) {
-    t.equal(text, 'poked!', 'creature was poked');
+    t.equal(text.message, 'poked!', 'creature was poked');
     t.end();
   });
 });
@@ -129,7 +131,7 @@ test("hooks fired", function (t) {
     t.equal(counters.length, 3, 'three counters from creature::create');
   });
 
-  counter.find({ message: 'creature poke' }, function (err, counters) {
+  counter.find({ timestamp: 'prehistoric' }, function (err, counters) {
     t.error(err, 'got counters from creature::poke');
     t.equal(counters.length, 1, 'one counter from creature::poke');
   });
