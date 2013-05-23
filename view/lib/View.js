@@ -1,4 +1,4 @@
-var viewful = require('./viewful');
+var resource = require('resource');
 
 var path = require('path'),
     fs = require('fs');
@@ -90,28 +90,44 @@ View.prototype.load = function (viewPath, cb) {
   }
 }
 
+var layout = require('./layout');
 
 View.prototype.render = function (data, callback) {
   var self = this;
-  var inputEngine  = viewful.engines[self.input],
-      outputEngine = viewful.engines[self.output];
-  
+  var inputEngine  = resource[self.input],
+      outputEngine = resource[self.output];
+
+  if (typeof inputEngine === 'undefined') {
+    throw new Error(self.input + ' resource not loaded' + ' try .use("' + self.input + '")');
+  }
+
   //
   // TODO: Improve `loadEnv` / move it to View.detectQuerySelector
   //
-  function loadEnv(result) {
+  function loadEnv (result) {
     if(typeof self.$.load === 'function') {
       self.$ = self.$.load(result)
     }
   }
+
   if (callback) {
-    return inputEngine.render(self, data, function(err, result){
-      self.rendered = result;
+    self.rendered = self.template;
+    //
+    // Perform layout code
+    //
+    return layout.render(self, data, function(err, str){
+      self.rendered = str;
       loadEnv(self.rendered);
       callback(err, result);
     });
   }
-  self.rendered = inputEngine.render(self, data);
+
+  self.rendered = self.template;
+
+  //
+  // Perform layout code
+  //
+  self.rendered = layout.render(self, data);
   loadEnv(self.rendered);
   return self.rendered;
 };

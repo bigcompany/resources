@@ -5,6 +5,7 @@ exports.render = function (view, data, cb) {
     if (cb) {
       return view.parent.layout.present(data, function(err, content){
         var $ = cheerio.load(content);
+        $('#main').html(view.template);
         return cb(null, $.html());
       });
     } else {

@@ -12,13 +12,16 @@ resources for any occasion
  - [creature](https://github.com/bigcompany/resources/tree/master/creature) example resource for creatures like dragons, unicorns, and ponies
  - [cron](https://github.com/bigcompany/resources/tree/master/cron) for managing cron jobs
  - [datasource](https://github.com/bigcompany/resources/tree/master/datasource) perists resources to data storage engines
+ - [datetime](https://github.com/bigcompany/resources/tree/master/datetime) date and time helper
  - [docs](https://github.com/bigcompany/resources/tree/master/docs) for generating documentation
  - [email](https://github.com/bigcompany/resources/tree/master/email) for sending emails
  - [forms](https://github.com/bigcompany/resources/tree/master/forms) for generating HTML forms
  - [github](https://github.com/bigcompany/resources/tree/master/github) for interacting with the Github.com API
  - [hook](https://github.com/bigcompany/resources/tree/master/hook) for managing event hooks ( IF this THEN that )
+ - [html](https://github.com/bigcompany/resources/tree/master/html) for rendering html
  - [http](https://github.com/bigcompany/resources/tree/master/http) provides an HTTP API
  - [irc](https://github.com/bigcompany/resources/tree/master/irc) for managing communication with irc
+ - [markdown](https://github.com/bigcompany/resources/tree/master/markdown) for parsing markdown
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) provides a distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes
  - [oauth](https://github.com/bigcompany/resources/tree/master/oauth) for managing oauth providers and sessions
