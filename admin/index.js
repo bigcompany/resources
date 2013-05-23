@@ -9,6 +9,11 @@ admin.schema.description = "a web based admin panel";
 resource.use('view');
 
 //
+// The html resource provides simple HTML templating
+//
+resource.use('html');
+
+//
 // The system resource helps gather information about the system
 //
 resource.use('system');
@@ -105,9 +110,10 @@ function listen (options, callback) {
         var _r = _resources();
         view.index.render({
           system: JSON.stringify(dashboard(), true, 2)
+        }, function(){
+          var str = view.index.present({ resources: resource.resources });
+          res.end(str);
         });
-        str = view.index.present({ resources: resource.resources });
-        res.end(str);
       });
 
       /*
@@ -128,25 +134,28 @@ function listen (options, callback) {
 
       resource.http.app.get('/admin/datasources/:datasource', auth, function (req, res, next) {
        resource.datasource.get(req.param('datasource'), function(err, result){
-         view.datasource.render({});
-         str = view.datasource.present({ datasource: result });
-         res.end(str);
+         view.datasource.render({}, function(){
+           str = view.datasource.present({ datasource: result });
+           res.end(str);
+         });
        });
       });
 
       resource.http.app.get('/admin/resources/:resource', auth, function (req, res, next) {
-        view.resource.render({});
-        view.resource.present({
-          resource: req.param('resource')
-        }, function(err, str){
-          res.end(str);
+        view.resource.render({}, function(){
+          view.resource.present({
+            resource: req.param('resource')
+          }, function(err, str){
+            res.end(str);
+          });
         });
       });
 
       resource.http.app.get('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
-        view.method.render();
-        view.method.present({ resource: req.param('_resource'), method: req.param('_method') }, function(err, str){
-          res.end(str);
+        view.method.render({}, function(){
+          view.method.present({ resource: req.param('_resource'), method: req.param('_method') }, function(err, str){
+            res.end(str);
+          });
         });
       });
 
@@ -191,29 +200,31 @@ function listen (options, callback) {
           }
         });
 
-        view.method.render();
-
-        view.method.present({
-          resource: req.param('_resource'),
-          method: req.param('_method'),
-          data: data,
-          action: 'post',
-          id: id
-        }, function(err, str){
-          res.end(str);
+        view.method.render({}, function(){
+          view.method.present({
+            resource: req.param('_resource'),
+            method: req.param('_method'),
+            data: data,
+            action: 'post',
+            id: id
+          }, function(err, str){
+            res.end(str);
+          });
         });
+
 
       });
 
       resource.http.app.get('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
         var _id = req.param('id');
-        view.method.render();
-        view.method.present({
-          resource: req.param('_resource'),
-          method: req.param('_method'),
-          id: _id
-        }, function(err, str){
-          res.end(str);
+        view.method.render({}, function(){
+          view.method.present({
+            resource: req.param('_resource'),
+            method: req.param('_method'),
+            id: _id
+          }, function(err, str){
+            res.end(str);
+          });
         });
       });
 
@@ -248,18 +259,19 @@ function listen (options, callback) {
           }
         });
 
-        view.method.render();
-
-        view.method.present({
-          resource: req.param('_resource'),
-          method: req.param('_method'),
-          id: req.param('id'),
-          data: data,
-          request: req,
-          response: res,
-          action: 'post'
-        }, function(err, str){
-          res.end(str);
+        view.method.render({}, function(){
+          view.method.present({
+            resource: req.param('_resource'),
+            method: req.param('_method'),
+            id: req.param('id'),
+            data: data,
+            request: req,
+            response: res,
+            action: 'post'
+          }, function(err, str){
+            console.log(err)
+            res.end(str);
+          });
         });
 
       });
