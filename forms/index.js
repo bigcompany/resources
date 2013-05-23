@@ -31,8 +31,12 @@ function generate (options, callback) {
   resource.view.create({ path: __dirname + '/view', input: "html"}, function (err, view) {
     var str = '', form;
     form = view.form[options.method] || view.form['method'];
-    form.render();
-    form.present(options, callback);
+    form.render({}, function(err){
+      if(err) {
+        throw err;
+      }
+      form.present(options, callback);
+    });
   });
 };
 
