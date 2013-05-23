@@ -1,13 +1,12 @@
 var resource = require('resource'),
     view = resource.define('view'),
-    viewful = require('./lib/viewful');
+    View = require('./lib/View');
 
 //
 // Export the View class for convenience
 //
-exports.View = viewful.View;
-view.View = viewful.View;
-view.engines = viewful.engines;
+exports.View = View;
+view.View = View;
 
 view.schema.description = "for managing views";
 
@@ -47,13 +46,13 @@ function create (options, callback) {
     // TODO: move this delegation / conditional logic to inside view engine
     //
     if(typeof options.template !== 'undefined') {
-      var view = new viewful.View({
+      var view = new View({
         template: options.template,
         input: options.input,
         output: options.ouput
       });
     } else {
-      var view = new viewful.View({
+      var view = new View({
         path: options.path,
         input: options.input,
         output: options.ouput
@@ -62,7 +61,7 @@ function create (options, callback) {
     //
     // Remark: View should not attempt to load if no path was entered
     //
-    // TODO: Should this fix be here or in the View prototype constructor ( viewful.View ) ?
+    // TODO: Should this fix be here or in the View prototype constructor ( View ) ?
     //
     if (typeof options.path === 'string') {
       view.load();
@@ -87,57 +86,7 @@ function create (options, callback) {
 // View middleware
 // Creates a view from a folder and automatically route all urls to paths in that folder
 //
-view.middle = function (options) {
-
-  options.prefix = options.prefix || '';
-
-  return function (req, res, next) {
-    if (options.view) {
-      //
-      // If the view was mounted with a prefix and that prefix was not found in the incoming url,
-      // do not attempt to use that view
-      //
-      if (options.prefix.length > 0 && req.url.search(options.prefix) === -1) {
-        return next();
-      }
-      var _view = options.view;
-      var parts = require('url').parse(req.url).pathname.replace(options.prefix, '').split('/');
-      parts.shift();
-      parts.forEach(function(part) {
-        if(part.length > 0 && typeof _view !== 'undefined') {
-          _view = _view[part];
-        }
-      });
-      if (_view && _view['index']) {
-        _view = _view['index'];
-      }
-      if(typeof _view === "undefined") {
-        return next();
-      }
-      var str = _view.render({
-        request: req,
-        response: res,
-        data: req.big.params
-      });
-      if (typeof _view.present === "function") {
-        _view.present({
-          request: req,
-          response: res,
-          data: req.big.params
-          }, function (err, rendered) {
-          res.end(rendered);
-        });
-      } else {
-        next();
-      }
-    } else {
-      //
-      // No view was found, do not use middleware
-      //
-      next();
-    }
-  };
-};
+view.middle = require('./middle');
 
 view.dependencies = {
   "cheerio": "0.9.x"
