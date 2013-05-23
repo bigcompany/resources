@@ -3,7 +3,7 @@ var resource = require('resource'),
     path = require('path'),
     fs = require('fs');
 
-var view = resource.use('view');
+var swig = resource.use('swig');
 
 docs.schema.description = "for generating documentation";
 
@@ -41,12 +41,7 @@ function generate (_resource, template, callback) {
 
   template = fs.readFileSync(__dirname + '/template.md').toString();
 
-  var _view = view.create({
-    template: template, 
-    input: "swig"
-  });
-
-  view.engines.swig.init({
+  swig.configure({
       autoescape: false
   });
 
@@ -61,12 +56,12 @@ function generate (_resource, template, callback) {
     footer: generateFooter()
   };
 
-  var s = _view.render(data);
+  var str = swig.render(template, data);
 
   if(callback) {
-    return callback(null, s);
+    return callback(null, str);
   } else {
-    return s;
+    return str;
   }
 
 };
@@ -313,9 +308,5 @@ function build () {
   fs.writeFileSync(resourcesPath + '/README.md', str);
   resource.logger.info('wrote to core resource README.md file');
 }
-
-docs.dependencies = {
-  "swig": "*"
-};
 
 exports.docs = docs;
