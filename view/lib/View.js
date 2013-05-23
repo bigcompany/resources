@@ -111,23 +111,18 @@ View.prototype.render = function (data, callback) {
   }
 
   if (callback) {
-    return inputEngine.render(self, data, function(err, result){
-      self.rendered = result;
-      //
-      // Perform layout code
-      //
-      layout.render(self, data, function(err, str){
-        self.rendered = str;
-        loadEnv( self.rendered);
-        callback(err, result);
-      });
+    self.rendered = self.template;
+    //
+    // Perform layout code
+    //
+    return layout.render(self, data, function(err, str){
+      self.rendered = str;
+      loadEnv(self.rendered);
+      callback(err, result);
     });
   }
 
-  //
-  // Render string
-  //
-  self.rendered = inputEngine.render(self.template, data);
+  self.rendered = self.template;
 
   //
   // Perform layout code
