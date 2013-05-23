@@ -1,8 +1,7 @@
 var layout = exports;
-var viewful = require('../../../view/lib/viewful');
+var resource = require('resource');
 
-// TODO: use resource.view.create instead of directly referencing view lib
-var controls = new viewful.View({ path: __dirname + '/controls', input: 'html' });
+var controls = new resource.view.View({ path: __dirname + '/controls', input: 'html' });
 controls.load();
 
 //
