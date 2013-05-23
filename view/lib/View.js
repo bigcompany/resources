@@ -61,7 +61,6 @@ var View = function (options) {
 
 //
 // Loads a template file or directory by path
-// Can work sync or async depending on if a callback is provided
 //
 View.prototype.load = function (viewPath, cb) {
   var self = this;
@@ -80,14 +79,11 @@ View.prototype.load = function (viewPath, cb) {
   self.templatePath  = self.viewPath + '/';
   self.presenterPath = self.viewPath + '/';
 
-  //
-  // Is this a sync or async operation?
-  //
-  if (cb) {
-    return self._loadAsync(cb);
-  } else {
-    return self._loadSync();
+  if (typeof cb !== 'function') {
+    throw new Error("callback is required")
   }
+
+  return self._loadAsync(cb);
 }
 
 var layout = require('./layout');
@@ -130,113 +126,6 @@ View.prototype.render = function (data, callback) {
   self.rendered = layout.render(self, data);
   loadEnv(self.rendered);
   return self.rendered;
-};
-
-View.prototype._loadSync = function () {
-  var self = this;
-
-  if (!fs.existsSync(self.viewPath)) {
-    throw new Error('invalid view path ' + self.viewPath + ' unable to load view');
-  }
-
-  var root = self.viewPath;
-  var dir = fs.readdirSync(root);
-
-  dir.forEach(function(p){
-    var stat = fs.statSync(root + '/' + p);
-    if (stat.isDirectory()){
-      delegate('dir', p);
-    } else {
-      delegate('file', p);
-    }
-  });
-
-  function delegate (type, _path){
-    var ext = self.detect(_path),
-        input,
-        subViewName;
-
-    subViewName = _path;
-
-    if(type === "file") {
-
-      subViewName = _path.replace(ext, '');
-
-      //
-      // load the file as the current template
-      //
-      result = fs.readFileSync(root + '/' + _path).toString();
-
-      var presenter, template;
-      //
-      // determine if file is View template or View Presenter
-      //
-      if (ext === ".js") {
-        //
-        // Remark: Don't create subviews for ".js" files, as they are Presenters, not template files
-        //
-      } else {
-        template = result;
-        presenter = function () {};
-        try {
-          var _present = root +  '/' + _path.replace(ext, '');
-          presenter = require(_present);
-        } catch(ex) {
-          //
-          // TODO: better handling and reporting of presenter load failure
-          //
-          //
-          // No valid presenter was found,
-          // perhaps there was a syntax error in require
-          //
-          // console.log(ex.stack)
-          // throw ex;
-          // console.log(_present, ex);
-
-          //
-          // Create a default presenter that will return the view's current HTML content
-          //
-          presenter = function (data, callback) {
-            if(typeof callback === "function") {
-              callback(null, this.$.html());
-            } else {
-              return this.$.html();
-            }
-          };
-        }
-
-        //
-        // presenter, attempt to load
-        //
-        self[subViewName] = new View({
-          name: subViewName,
-          template: template,
-          input: self.input,
-          present: presenter,
-          parent: self
-        });
-
-      }
-    }
-
-    if(type === "dir") {
-      //
-      // create a new subview
-      //
-      self[subViewName] = new View({
-        name: subViewName,
-        path: root + '/' + _path,
-        input: self.input,
-        parent: self
-      });
-      //
-      // load viewself[subViewName]
-      //
-      self[subViewName].load();
-    }
-
-  }
-  return self;
 };
 
 View.prototype._loadAsync = function (cb) {
