@@ -2,7 +2,7 @@ var layout = exports;
 var resource = require('resource');
 
 var controls = new resource.view.View({ path: __dirname + '/controls', input: 'html' });
-controls.load();
+controls.load(function(){});
 
 //
 // Remark: Bind controls to layout for convience
