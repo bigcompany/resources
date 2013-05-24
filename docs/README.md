@@ -52,7 +52,5 @@ generates markdown documentation for a single resource
 builds README.md files for all resources
 
 
-## dependencies 
-- [swig](http://npmjs.org/package/swig)
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
