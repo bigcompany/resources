@@ -34,8 +34,8 @@ var View = function (options) {
     self.$ = query(self.template);
   }
 
-  if (options.present) {
-    self.present = options.present;
+  if (options.presenter) {
+    self.presenter = options.presenter;
   }
 
   if (options.parent) {
@@ -139,57 +139,41 @@ View.prototype._loadAsync = function (cb) {
           template = result;
 
           //
-          // Perform layout code on template
+          // get presenter, if it exists
           //
-          return layout.render(self, template, function(err, str) {
-            template = str;
-            self.$ = query(template);
-            //
-            // get presenter, if it exists
-            //
-            var presenterPath = root +  '/' + _path.replace(ext, '.js');
+          var presenterPath = root +  '/' + _path.replace(ext, '.js');
 
-            //
-            // Determine if presenter file exists first before attempting to require it
-            //
-            // TODO: replace with async stat
-            var exists = false;
-            try {
-              var stat = fs.statSync(presenterPath);
-              exists = true;
-            } catch (err) {
-              exists = false;
-            }
+          //
+          // Determine if presenter file exists first before attempting to require it
+          //
+          // TODO: replace with async stat
+          var exists = false;
+          try {
+            var stat = fs.statSync(presenterPath);
+            exists = true;
+          } catch (err) {
+            exists = false;
+          }
 
-            if (exists) {
-              presenterPath = presenterPath.replace('.js', '');
-              presenter = require(presenterPath);
-            } else {
-              presenter = function (data, callback) {
-                if (typeof callback === "function") {
-                  callback(null, self.$.html());
-                } else {
-                  return self.$.html();
-                }
-              };
-            }
+          if (exists) {
+            presenterPath = presenterPath.replace('.js', '');
+            presenter = require(presenterPath);
+          }
 
-            self[subViewName] = new View({
-              template: template,
-              input: self.input,
-              present: presenter,
-              parent: self
-            });
-
-            callbacks--;
-            if(callbacks === 0){
-              cb(null, self);
-            }
+          self[subViewName] = new View({
+            template: template,
+            input: self.input,
+            presenter: presenter,
+            parent: self
           });
+
+          callbacks--;
+          if(callbacks === 0) {
+            cb(null, self);
+          }
 
         });
       }
-
     }
 
     if(type === "dir") {
@@ -221,6 +205,32 @@ View.prototype._loadAsync = function (cb) {
   }
   return;
 
+};
+
+View.prototype.present = function(data, callback) {
+
+  var self = this;
+
+  var defaultPresenter = function (data, callback) {
+    if (typeof callback === "function") {
+      callback(null, this.$.html());
+    } else {
+      return this.$.html();
+    }
+  };
+
+  layout.render(this, data, function(err, result) {
+    if (err)
+      throw err;
+
+    // update template and reload query
+    self.template = result;
+    this.$ = query(self.template);
+
+    // if we have presenter, use it,
+    // otherwise fallback to default presenter
+    (self.presenter || defaultPresenter)(data, callback);
+  });
 };
 
 

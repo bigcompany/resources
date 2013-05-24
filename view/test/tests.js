@@ -37,7 +37,6 @@ test("start view from single template of given path", function (t) {
 		_view.index.present({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'present returns result');
-			console.log("object yo:", result);
 			t.equal(result,
 				'<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
 				'present returns correct result');
@@ -50,11 +49,9 @@ test("start view from single template and presenter of given path", function (t)
   view.create( { path: __dirname + "/view2" } , function(err, _view) {
 		t.error(err, 'no error');
 		t.ok(_view, 'view is returned');
-		console.log(view);
-		view.index.present({}, function (err, result) {
+		_view.index.present({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'present returns result');
-			console.log("result: ", result);
 			t.equal(result,
 				'<div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n',
 				'render returns correct result');

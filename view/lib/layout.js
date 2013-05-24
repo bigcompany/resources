@@ -15,9 +15,7 @@ exports.render = function (view, data, cb) {
       $('#main').html(view.template);
     }
   } else {
-    console.log("template", view.template);
     $ = query(view.template);
-    console.log("rendered!",$.html());
   }
 
   if (cb) {
