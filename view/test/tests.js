@@ -5,15 +5,8 @@ var test = require("tap").test,
 	markdown = resource.use("markdown"),
 	view = resource.use('view');
 
-/*test("start a view with no callback", function (t) {
-	_view = view.create( {} ); // empty options
-	t.ok(_view, 'view is returned');
-
-	t.end();
-});*/
-
-test("start a view with a callback", function (t) {
-	view.create( {} , function (err, _view) {
+test("start a view", function (t) {
+  view.create( {} , function (err, _view) {
 		t.error(err, 'no error');
 		t.ok(_view, 'view is returned');
 
@@ -40,30 +33,31 @@ test("start view from single template of given path", function (t) {
 		t.error(err, 'no error');
 		t.ok(_view, 'view is returned');
 		t.equal(_view.viewPath, viewPath,
-			'viewPath was correctly set to path: '+viewPath);
-		_view.index.render({}, function (err, result) {
+			'viewPath was correctly set to path: ' + viewPath);
+		_view.index.present({}, function (err, result) {
 			t.error(err, 'no error');
-			t.ok(result, 'render returns result');
+			t.ok(result, 'present returns result');
+			console.log(result);
 			t.equal(result,
 				'<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
-				'render returns correct result');
+				'present returns correct result');
 			t.end();
 		});
 	});
 });
 
 test("start view from single template and presenter of given path", function (t) {
-	view.create( { path: __dirname + "/view2" } , function(err, _view) {
-		_view.index.render({}, function (err, result) {
+  view.create( { path: __dirname + "/view2" } , function(err, _view) {
+		t.error(err, 'no error');
+		t.ok(_view, 'view is returned');
+		console.log(view);
+		view.index.present({}, function (err, result) {
 			t.error(err, 'no error');
-			t.ok(result, 'render returns result');
-			_view.index.present({}, function(err, result) {
-				//console.log("result:",result);
-			});
-			//console.log("result: ",result);
-			//t.equal(result,
-			//	'<div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n',
-			//	'render returns correct result');
+			t.ok(result, 'present returns result');
+			console.log("result: ", result);
+			t.equal(result,
+				'<div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n',
+				'render returns correct result');
 			t.end();
 		});
 	});

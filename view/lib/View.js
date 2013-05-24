@@ -8,7 +8,6 @@ var View = function (options) {
   var self = this;
 
   options = options || {};
-  self.$ = View.detectQuerySelector();
 
   self.viewPath = options.path || process.cwd();
 
@@ -27,14 +26,9 @@ var View = function (options) {
   if (options.template) {
     self.template = options.template;
     //
-    // TODO: cleanup and move $.load
-    //
-    //
     // Remark: If we have been passed in a template as a string, the querySelectorAll context needs to be updated
     //
-    if(typeof self.$.load === 'function') {
-      self.$ = self.$.load(self.template);
-    }
+    self.$ = View.detectQuerySelector(self.template);
   }
 
   if (options.present) {
@@ -45,10 +39,6 @@ var View = function (options) {
     self.parent = options.parent;
   }
 
-  if (options.render) {
-    self.render = options.render;
-  }
-
   if (typeof options === "string") {
     this.load(options);
   }
@@ -56,6 +46,7 @@ var View = function (options) {
   this.input = options.input || 'html';
   this.output = "html";
 
+  console.log(this);
   return this;
 };
 
@@ -88,46 +79,6 @@ View.prototype.load = function (viewPath, cb) {
 
 var layout = require('./layout');
 
-View.prototype.render = function (data, callback) {
-  var self = this;
-  var inputEngine  = resource[self.input],
-      outputEngine = resource[self.output];
-
-  if (typeof inputEngine === 'undefined') {
-    throw new Error(self.input + ' resource not loaded' + ' try .use("' + self.input + '")');
-  }
-
-  //
-  // TODO: Improve `loadEnv` / move it to View.detectQuerySelector
-  //
-  function loadEnv (result) {
-    if(typeof self.$.load === 'function') {
-      self.$ = self.$.load(result);
-    }
-  }
-
-  if (callback) {
-    self.rendered = self.template;
-    //
-    // Perform layout code
-    //
-    return layout.render(self, data, function(err, str){
-      self.rendered = str;
-      loadEnv(self.rendered);
-      callback(err, result);
-    });
-  }
-
-  self.rendered = self.template;
-
-  //
-  // Perform layout code
-  //
-  self.rendered = layout.render(self, data);
-  loadEnv(self.rendered);
-  return self.rendered;
-};
-
 View.prototype._loadAsync = function (cb) {
 
   var self = this,
@@ -140,8 +91,8 @@ View.prototype._loadAsync = function (cb) {
     if (err) {
       return cb(err);
     }
-    dir.forEach(function(p){
-      fs.stat(root + '/' + p, function(err, stat){
+    dir.forEach(function(p) {
+      fs.stat(root + '/' + p, function(err, stat) {
         if (stat.isDirectory()){
           delegate('dir', p);
         } else {
@@ -151,7 +102,7 @@ View.prototype._loadAsync = function (cb) {
     });
    });
 
-  function delegate (type, _path){
+  function delegate (type, _path) {
     var ext = self.detect(_path),
         input,
         subViewName;
@@ -194,38 +145,47 @@ View.prototype._loadAsync = function (cb) {
           // determine if file is template or presenter
           //
           template = result;
-
-          var presenterPath = root +  '/' + _path.replace(ext, '.js');
-
           //
-          // Determine if presenter file exists first before attempting to require it
+          // Perform layout code on template
           //
-          // TODO: replace with async stat
-          var exists = false;
-          try {
-            var stat = fs.statSync(presenterPath);
-            exists = true;
-          } catch (err) {
-            exists = false;
-          }
+          /*return layout.render(self, template, function(err, str) {
+            template = str;*/
+            //
+            // get presenter, if it exists
+            //
+            var presenterPath = root +  '/' + _path.replace(ext, '.js');
 
-          if (exists) {
-            presenterPath = presenterPath.replace('.js', '');
-            lastPresenter = require(presenterPath);
-          }
+            //
+            // Determine if presenter file exists first before attempting to require it
+            //
+            // TODO: replace with async stat
+            var exists = false;
+            try {
+              var stat = fs.statSync(presenterPath);
+              exists = true;
+            } catch (err) {
+              exists = false;
+            }
 
-          self[subViewName] = new View({
-            template: template,
-            input: self.input,
-            present: lastPresenter,
-            parent: self
+            if (exists) {
+              presenterPath = presenterPath.replace('.js', '');
+              lastPresenter = require(presenterPath);
+            }
+
+            self[subViewName] = new View({
+              template: template,
+              input: self.input,
+              present: lastPresenter,
+              parent: self
+            });
+
+            callbacks--;
+            if(callbacks === 0){
+              cb(null, self);
+            }
           });
 
-          callbacks--;
-          if(callbacks === 0){
-            cb(null, self);
-          }
-        });
+        //});
       }
 
     }
@@ -246,13 +206,14 @@ View.prototype._loadAsync = function (cb) {
       //
       // load view
       //
-      self[subViewName].load(function(){
+      self[subViewName].load(function(callback) {
         //
         // decrease callback count
         //
         callbacks--;
+        console.log(callbacks);
         if(callbacks === 0){
-          cb(null, self);
+          cb(null, callback(null, self));
         }
       });
     }
@@ -284,12 +245,13 @@ View.prototype.breadcrumb = function () {
   return this.parent.breadcrumb() + '/' + this.name;
 };
 
-View.detectQuerySelector = function () {
+View.detectQuerySelector = function (template) {
   //
   // TODO: Add better feature detection here for $
   //
+  var $,
+      cheerio;
 
-  var cheerio;
   try {
    cheerio = require('cheerio');
   } catch (err) {
@@ -300,10 +262,16 @@ View.detectQuerySelector = function () {
   // Detected server-side node.js, use cheerio
   //
   if(typeof cheerio !== 'undefined') {
-    return cheerio;
+    $ = cheerio;
+  }
+  else
+  {
+    $ = function(){};
   }
 
-  return function(){};
+  if(typeof $.load === 'function') {
+    $ = $.load(result);
+  return $;
 
   //
   // Detected client-side jQuery, use jQuery
@@ -319,6 +287,7 @@ View.detectQuerySelector = function () {
   // Client-side, but no $ found. Using Zepto fallback
   //
   // TODO
+  }
 };
 
 module['exports'] = View;

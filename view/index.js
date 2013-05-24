@@ -12,9 +12,9 @@ view.schema.description = "for managing views";
 
 view.property("path", {
   "type": "string",
-  "default": ".", 
+  "default": ".",
   "description": "the path to the view",
-  "format": "uri" 
+  "format": "uri"
 });
 
 view.property("template", {
@@ -46,14 +46,15 @@ view.method('create', create, {
 function create (options, callback) {
   options = options || {};
 
+  var view;
   if(typeof options.template !== 'undefined') {
-    var view = new View({
+    view = new View({
       template: options.template,
       input: options.input,
       output: options.ouput
     });
   } else {
-    var view = new View({
+    view = new View({
       path: options.path,
       input: options.input,
       output: options.ouput
