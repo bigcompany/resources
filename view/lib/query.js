@@ -1,4 +1,4 @@
-var query = function (template) {
+var query = function (content) {
   //
   // TODO: Add better feature detection here for $
   //
@@ -23,7 +23,8 @@ var query = function (template) {
   }
 
   if(typeof $.load === 'function') {
-    $ = $.load(result);
+    $ = $.load(content);
+  }
   return $;
 
   //
@@ -40,7 +41,6 @@ var query = function (template) {
   // Client-side, but no $ found. Using Zepto fallback
   //
   // TODO
-  }
 };
 
 module['exports'] = query;
