@@ -13,7 +13,7 @@ var View = function (options) {
   self.viewPath = options.path || process.cwd();
 
   if (options.path) {
-    self.viewPath      = options.path
+    self.viewPath      = options.path;
     self.templatePath  = self.viewPath + '/';
     self.presenterPath = self.viewPath + '/';
   }
@@ -33,7 +33,7 @@ var View = function (options) {
     // Remark: If we have been passed in a template as a string, the querySelectorAll context needs to be updated
     //
     if(typeof self.$.load === 'function') {
-      self.$ = self.$.load(self.template)
+      self.$ = self.$.load(self.template);
     }
   }
 
@@ -57,7 +57,7 @@ var View = function (options) {
   this.output = "html";
 
   return this;
-}
+};
 
 //
 // Loads a template file or directory by path
@@ -80,11 +80,11 @@ View.prototype.load = function (viewPath, cb) {
   self.presenterPath = self.viewPath + '/';
 
   if (typeof cb !== 'function') {
-    throw new Error("callback is required")
+    throw new Error("callback is required");
   }
 
   return self._loadAsync(cb);
-}
+};
 
 var layout = require('./layout');
 
@@ -102,7 +102,7 @@ View.prototype.render = function (data, callback) {
   //
   function loadEnv (result) {
     if(typeof self.$.load === 'function') {
-      self.$ = self.$.load(result)
+      self.$ = self.$.load(result);
     }
   }
 
@@ -200,7 +200,6 @@ View.prototype._loadAsync = function (cb) {
           //
           // Determine if presenter file exists first before attempting to require it
           //
-
           // TODO: replace with async stat
           var exists = false;
           try {
@@ -268,7 +267,7 @@ View.prototype._loadAsync = function (cb) {
 //
 View.prototype.detect = function (p) {
   return path.extname(p);
-}
+};
 
 /* TODO: Remove this unless we will need async loading for start
 viewful.engines.init(function (err) {
