@@ -11,7 +11,7 @@ for generating HTML forms
 
 #### [methods](#forms-methods)
 
-  - [generate](#forms-methods-generate) (resource)
+  - [generate](#forms-methods-generate) (options)
 
 
 for generating HTML forms
@@ -27,15 +27,29 @@ for generating HTML forms
 
 <a name="forms-methods-generate"></a> 
 
-### forms.generate(resource)
+### forms.generate(options)
 
 generates a new form based on a resource schema
 
-- **resource** 
+- **options** 
 
-  - **description** : the resource which the form represents
+  - **properties**
 
-  - **type** : any
+    - **resource** 
+
+      - **type** : string
+
+      - **required** : true
+
+    - **method** 
+
+      - **type** : string
+
+      - **required** : true
+
+  - **callback**
+
+    - type : *function*
 
 
 

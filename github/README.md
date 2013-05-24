@@ -11,7 +11,7 @@ for interacting with the Github.com API
 
 #### [methods](#github-methods)
 
-  - [activity](#github-methods-activity) (options)
+  - [activity](#github-methods-activity) (options, callback)
 
 
 for interacting with the Github.com API
@@ -27,7 +27,7 @@ for interacting with the Github.com API
 
 <a name="github-methods-activity"></a> 
 
-### github.activity(options)
+### github.activity(options, callback)
 
 gets event activity for a user or organization
 
@@ -42,6 +42,10 @@ gets event activity for a user or organization
     - **org** 
 
       - **type** : string
+
+- **callback** 
+
+  - **type** : function
 
 
 ## dependencies 

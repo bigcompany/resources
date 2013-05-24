@@ -36,6 +36,7 @@ resources for any occasion
  - [ssh](https://github.com/bigcompany/resources/tree/master/ssh) ssh interface resource
  - [stdin](https://github.com/bigcompany/resources/tree/master/stdin) allows application to listen for input from STDIN
  - [stdout](https://github.com/bigcompany/resources/tree/master/stdout) outputs all events as new-line delimited JSON fragments to STDOUT
+ - [swig](https://github.com/bigcompany/resources/tree/master/swig) for parsing swig
  - [system](https://github.com/bigcompany/resources/tree/master/system) for interacting with the operating system
  - [tag](https://github.com/bigcompany/resources/tree/master/tag) a simple hierarchical tagging system
  - [twitter](https://github.com/bigcompany/resources/tree/master/twitter) for interacting with the Twitter API

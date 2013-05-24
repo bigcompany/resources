@@ -63,7 +63,7 @@ for managing accounts
 
   - **format** : password
 
-  - **required** : true
+  - **required** : false
 
 - **status** 
 
@@ -128,7 +128,7 @@ create a new account
 
       - **format** : password
 
-      - **required** : true
+      - **required** : false
 
     - **status** 
 
@@ -282,7 +282,7 @@ updates a account by id
 
       - **format** : password
 
-      - **required** : true
+      - **required** : false
 
     - **status** 
 
@@ -346,7 +346,7 @@ updates a account by id, and creates if necessary
 
       - **format** : password
 
-      - **required** : true
+      - **required** : false
 
     - **status** 
 
