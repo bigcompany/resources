@@ -37,7 +37,7 @@ test("start view from single template of given path", function (t) {
 		_view.index.present({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'present returns result');
-			console.log(result);
+			console.log("object yo:", result);
 			t.equal(result,
 				'<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
 				'present returns correct result');

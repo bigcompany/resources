@@ -3,6 +3,9 @@ var resource = require('resource');
 var path = require('path'),
     fs = require('fs');
 
+var query = require('./query'),
+    layout = require('./layout');
+
 var View = function (options) {
 
   var self = this;
@@ -28,7 +31,7 @@ var View = function (options) {
     //
     // Remark: If we have been passed in a template as a string, the querySelectorAll context needs to be updated
     //
-    self.$ = View.detectQuerySelector(self.template);
+    self.$ = query(self.template);
   }
 
   if (options.present) {
@@ -46,7 +49,6 @@ var View = function (options) {
   this.input = options.input || 'html';
   this.output = "html";
 
-  console.log(this);
   return this;
 };
 
@@ -76,8 +78,6 @@ View.prototype.load = function (viewPath, cb) {
 
   return self._loadAsync(cb);
 };
-
-var layout = require('./layout');
 
 View.prototype._loadAsync = function (cb) {
 
@@ -118,14 +118,6 @@ View.prototype._loadAsync = function (cb) {
       //
       callbacks ++;
 
-      var lastPresenter =  function (data, callback) {
-        if(typeof callback === "function") {
-          callback(null, this.$.html());
-        } else {
-          return this.$.html();
-        }
-      };
-
       // determine if file is template or presenter ( presenters end in .js and are node modules )
       if (ext === ".js") {
         callbacks--;
@@ -145,11 +137,13 @@ View.prototype._loadAsync = function (cb) {
           // determine if file is template or presenter
           //
           template = result;
+
           //
           // Perform layout code on template
           //
-          /*return layout.render(self, template, function(err, str) {
-            template = str;*/
+          return layout.render(self, template, function(err, str) {
+            template = str;
+            self.$ = query(template);
             //
             // get presenter, if it exists
             //
@@ -169,13 +163,21 @@ View.prototype._loadAsync = function (cb) {
 
             if (exists) {
               presenterPath = presenterPath.replace('.js', '');
-              lastPresenter = require(presenterPath);
+              presenter = require(presenterPath);
+            } else {
+              presenter = function (data, callback) {
+                if (typeof callback === "function") {
+                  callback(null, self.$.html());
+                } else {
+                  return self.$.html();
+                }
+              };
             }
 
             self[subViewName] = new View({
               template: template,
               input: self.input,
-              present: lastPresenter,
+              present: presenter,
               parent: self
             });
 
@@ -185,7 +187,7 @@ View.prototype._loadAsync = function (cb) {
             }
           });
 
-        //});
+        });
       }
 
     }
@@ -206,14 +208,13 @@ View.prototype._loadAsync = function (cb) {
       //
       // load view
       //
-      self[subViewName].load(function(callback) {
+      self[subViewName].load(function() {
         //
         // decrease callback count
         //
         callbacks--;
-        console.log(callbacks);
         if(callbacks === 0){
-          cb(null, callback(null, self));
+          cb(null, self);
         }
       });
     }
@@ -230,64 +231,11 @@ View.prototype.detect = function (p) {
   return path.extname(p);
 };
 
-/* TODO: Remove this unless we will need async loading for start
-viewful.engines.init(function (err) {
-  if (err) {
-    console.log(err);
-  }
-});
-*/
-
 View.prototype.breadcrumb = function () {
   if (typeof this.parent === "undefined") {
     return this.name;
   }
   return this.parent.breadcrumb() + '/' + this.name;
-};
-
-View.detectQuerySelector = function (template) {
-  //
-  // TODO: Add better feature detection here for $
-  //
-  var $,
-      cheerio;
-
-  try {
-   cheerio = require('cheerio');
-  } catch (err) {
-    // Do nothing
-  }
-
-  //
-  // Detected server-side node.js, use cheerio
-  //
-  if(typeof cheerio !== 'undefined') {
-    $ = cheerio;
-  }
-  else
-  {
-    $ = function(){};
-  }
-
-  if(typeof $.load === 'function') {
-    $ = $.load(result);
-  return $;
-
-  //
-  // Detected client-side jQuery, use jQuery
-  //
-  // TODO
-
-  //
-  // Detected client-side querySelectorAll, using querySelectorAll
-  //
-  // TODO
-
-  //
-  // Client-side, but no $ found. Using Zepto fallback
-  //
-  // TODO
-  }
 };
 
 module['exports'] = View;
