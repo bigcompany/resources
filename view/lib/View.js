@@ -4,7 +4,8 @@ var path = require('path'),
     fs = require('fs');
 
 var query = require('./query'),
-    layout = require('./layout');
+    layout = require('./layout'),
+    render = require('./render');
 
 var View = function (options) {
 
@@ -116,7 +117,7 @@ View.prototype._loadAsync = function (cb) {
       //
       // increase the callback count
       //
-      callbacks ++;
+      callbacks++;
 
       // determine if file is template or presenter ( presenters end in .js and are node modules )
       if (ext === ".js") {
@@ -161,6 +162,7 @@ View.prototype._loadAsync = function (cb) {
           }
 
           self[subViewName] = new View({
+            name: subViewName,
             template: template,
             input: self.input,
             presenter: presenter,
@@ -181,6 +183,7 @@ View.prototype._loadAsync = function (cb) {
       // create a new subview
       //
       self[subViewName] = new View({
+        name: subViewName,
         path: root + '/' + _path,
         input: self.input,
         parent: self
@@ -207,30 +210,39 @@ View.prototype._loadAsync = function (cb) {
 
 };
 
-View.prototype.present = function(data, callback) {
+View.prototype.present = function(options, callback) {
 
   var self = this;
 
-  var defaultPresenter = function (data, callback) {
-    if (typeof callback === "function") {
-      callback(null, this.$.html());
-    } else {
-      return this.$.html();
-    }
-  };
+  console.log("in .present()", this, self.name != "layout");
 
-  layout.render(this, data, function(err, result) {
-    if (err)
-      throw err;
+  // if this is not a layout, do perform layout
+  if (self.name != "layout") {
+    // load query
+    options.$ = query(self.template);
+    layout(this, options, function(err, result) {
+      if (err)
+        throw err;
 
-    // update template and reload query
-    self.template = result;
-    this.$ = query(self.template);
+      // update template and reload query
+      console.log(result);
+      options.$ = query(result);
+
+      // if we have presenter, use it,
+      // otherwise fallback to default presenter
+      return (self.presenter || render)(options, callback);
+    });
+  } else {
+    // load query
+    options.$ = query(self.template);
 
     // if we have presenter, use it,
     // otherwise fallback to default presenter
-    (self.presenter || defaultPresenter)(data, callback);
-  });
+    return (self.presenter || render)(options, function(err, result) {
+      console.log(result);
+      return callback(err, result);
+    });
+  }
 };
 
 
