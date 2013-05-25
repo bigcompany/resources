@@ -3,8 +3,6 @@ var query = require('./query');
 module['exports'] = function (view, data, cb) {
   var $;
 
-  console.log("in layout()", view);
-
   if(typeof view.parent !== "undefined" && typeof view.parent.layout !== "undefined" && typeof view.parent.layout.present === 'function') {
     if (cb) {
       return view.parent.layout.present(data, function(err, content) {

@@ -214,32 +214,28 @@ View.prototype.present = function(options, callback) {
 
   var self = this;
 
-  console.log("in .present()", this, self.name != "layout");
-
   // if this is not a layout, do perform layout
   if (self.name != "layout") {
     // load query
-    options.$ = query(self.template);
-    layout(this, options, function(err, result) {
+    self.$ = query(self.template);
+    layout.call(self, self, options, function(err, result) {
       if (err)
         throw err;
 
       // update template and reload query
-      console.log(result);
-      options.$ = query(result);
+      self.$ = query(result);
 
       // if we have presenter, use it,
       // otherwise fallback to default presenter
-      return (self.presenter || render)(options, callback);
+      return (self.presenter || render).call(self, options, callback);
     });
   } else {
     // load query
-    options.$ = query(self.template);
+    self.$ = query(self.template);
 
     // if we have presenter, use it,
     // otherwise fallback to default presenter
-    return (self.presenter || render)(options, function(err, result) {
-      console.log(result);
+    return (self.presenter || render).call(self, options, function(err, result) {
       return callback(err, result);
     });
   }
