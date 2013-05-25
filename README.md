@@ -6,9 +6,11 @@ resources for any occasion
  - [admin](https://github.com/bigcompany/resources/tree/master/admin) a web based admin panel
  - [analytics](https://github.com/bigcompany/resources/tree/master/analytics) real-time analytics by google
  - [api](https://github.com/bigcompany/resources/tree/master/api) provides a web API for interacting with resources
+ - [bitcoin](https://github.com/bigcompany/resources/tree/master/bitcoin) for managing bitcoins
  - [calculator](https://github.com/bigcompany/resources/tree/master/calculator) a basic calculator
  - [cli](https://github.com/bigcompany/resources/tree/master/cli) provides a command line interface
  - [config](https://github.com/bigcompany/resources/tree/master/config) 
+ - [couchdb](https://github.com/bigcompany/resources/tree/master/couchdb) adds couchdb persistence
  - [creature](https://github.com/bigcompany/resources/tree/master/creature) example resource for creatures like dragons, unicorns, and ponies
  - [cron](https://github.com/bigcompany/resources/tree/master/cron) for managing cron jobs
  - [datasource](https://github.com/bigcompany/resources/tree/master/datasource) perists resources to data storage engines
