@@ -13,8 +13,6 @@ provides a web API for interacting with resources
 
 #### [methods](#api-methods)
 
-  - [listen](#api-methods-listen) (options, callback)
-
 
 <a name="api-properties"></a>
 
@@ -37,38 +35,6 @@ provides a web API for interacting with resources
 <a name="api-methods"></a> 
 
 ## methods 
-
-<a name="api-methods-listen"></a> 
-
-### api.listen(options, callback)
-
-when the api resource starts
-
-- **options** 
-
-  - **type** : object
-
-  - **properties**
-
-    - **id** 
-
-      - **type** : any
-
-    - **version** 
-
-      - **description** : the semantic version of the API
-
-      - **type** : string
-
-      - **default** : v0.0.1
-
-- **callback** 
-
-  - **description** : the callback executed after server listen
-
-  - **type** : function
-
-  - **required** : false
 
 
 

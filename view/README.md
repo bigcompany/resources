@@ -19,7 +19,7 @@ for managing views
 
 #### [methods](#view-methods)
 
-  - [create](#view-methods-create) (options)
+  - [create](#view-methods-create) (options, callback)
 
 
 <a name="view-properties"></a>
@@ -62,13 +62,19 @@ for managing views
 
 <a name="view-methods-create"></a> 
 
-### view.create(options)
+### view.create(options, callback)
 
 creates a new view
 
 - **options** 
 
   - **type** : object
+
+- **callback** 
+
+  - **type** : function
+
+  - **required** : true
 
 
 ## dependencies 
