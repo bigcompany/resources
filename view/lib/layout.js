@@ -1,7 +1,9 @@
 var query = require('./query');
 
-exports.render = function (view, data, cb) {
+module['exports'] = function (view, data, cb) {
   var $;
+
+  console.log("in layout()", view);
 
   if(typeof view.parent !== "undefined" && typeof view.parent.layout !== "undefined" && typeof view.parent.layout.present === 'function') {
     if (cb) {
