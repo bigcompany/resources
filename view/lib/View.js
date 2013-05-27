@@ -47,9 +47,6 @@ var View = function (options) {
     this.load(options);
   }
 
-  this.input = options.input || 'html';
-  this.output = "html";
-
   return this;
 };
 
@@ -105,7 +102,6 @@ View.prototype._loadAsync = function (cb) {
 
   function delegate (type, _path) {
     var ext = self.detect(_path),
-        input,
         subViewName;
 
     subViewName = _path;
@@ -164,7 +160,6 @@ View.prototype._loadAsync = function (cb) {
           self[subViewName] = new View({
             name: subViewName,
             template: template,
-            input: self.input,
             presenter: presenter,
             parent: self
           });
@@ -185,7 +180,6 @@ View.prototype._loadAsync = function (cb) {
       self[subViewName] = new View({
         name: subViewName,
         path: root + '/' + _path,
-        input: self.input,
         parent: self
       });
       //
@@ -240,7 +234,6 @@ View.prototype.present = function(options, callback) {
     });
   }
 };
-
 
 //
 // TODO: Detects view type based on current path
