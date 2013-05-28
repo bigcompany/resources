@@ -7,5 +7,7 @@ module['exports'] = function (options, callback) {
   $('.user > .name').html('Bob');
   $('.user > .email').html('bob@bob.com');
 
+  $('h1').html('big');
+
   callback(null, $.html());
 };
