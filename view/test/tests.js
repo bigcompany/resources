@@ -51,8 +51,7 @@ test("start a view with a given template and presenter", function (t) {
   });
 });
 
-// TODO: ask marak if this even needs to be tested
-/*test("start a view with a given presenter", function (t) {
+test("start a view with a given presenter but no template", function (t) {
 	var _presenter = function (options, callback) {
 			callback(null, 'hi');
 	};
@@ -60,7 +59,7 @@ test("start a view with a given template and presenter", function (t) {
 		t.error(err, 'no error');
 		t.ok(_view, 'view is returned');
 		t.equal(_view.presenter, _presenter, 'view loaded given presenter');
-
+		t.equal(_view.template, undefined, 'view loaded empty string as template');
 		_view.present({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'present returns result');
@@ -68,7 +67,7 @@ test("start a view with a given template and presenter", function (t) {
 			t.end();
 		});
   });
-});*/
+});
 
 test("start view from single template at given path", function (t) {
 	var viewPath = __dirname + "/view1";
@@ -118,23 +117,21 @@ test("start view from given path containing single template and presenter with l
 	});
 });
 
-
-// TODO: make the following test a layout with a presenter but no template.
-// ask marak expected functionality
-/*test("start view from given path containing single template and presenter with layout template and presenter", function (t) {
+// TODO: is this test valid?
+test("start view from given path containing single template and presenter with layout presenter", function (t) {
   view.create( { path: __dirname + "/view4" } , function(err, _view) {
 		t.error(err, 'no error');
 		t.ok(_view, 'view is returned');
 		_view.index.present({}, function (err, result) {
 			t.error(err, 'no error');
 			t.ok(result, 'present returns result');
-			t.equal(result,"hi");
+			t.equal(result,'<div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n');
 			t.end();
 		});
 	});
-});*/
+});
 
-test("start view given path containing single template and presenter with layout template and presenter", function (t) {
+test("start from view given path containing single template and presenter with layout template and presenter", function (t) {
   view.create( { path: __dirname + "/view5" } , function(err, _view) {
 		t.error(err, 'no error');
 		t.ok(_view, 'view is returned');
@@ -292,3 +289,6 @@ test("multiple views with a layout and presenter, as well as options", function 
 		});
 	});
 });
+
+// TODO: test nested views and layouts. check functionality,
+// ensure with Marak it is expected

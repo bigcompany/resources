@@ -59,6 +59,12 @@ function create (options, callback) {
       template: options.template
     });
 
+  // given just presenter
+  } else if(typeof options.presenter !== 'undefined') {
+    view = new View({
+      presenter: options.presenter
+    });
+
   // given neither template nor presenter
   } else {
     view = new View({
