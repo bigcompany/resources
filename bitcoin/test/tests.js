@@ -3,8 +3,9 @@ var test = require("tap").test,
     supertest = require('supertest'),
     nock = require('nock'),
     //decimal = require('decimal'),
-    bitcoin_lib = require('bitcoin'),
     bitcoin = resource.use('bitcoin');
+
+bitcoin.start();
 
 //nock.recorder.rec();
 
