@@ -2,7 +2,10 @@ var resource = require('resource');
 
 module['exports'] = function (options, callback) {
 
-  var $ = this.$;
+	  var $ = this.$;
 
-  callback(null, "<div id='main'></div>");
+		$('.table').html('steve');
+
+		callback(null, $.html());
 };
+
