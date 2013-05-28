@@ -4,5 +4,8 @@ module['exports'] = function (options, callback) {
 
   var $ = this.$;
 
-  callback(null, "hi");
+  $('h1').html('big');
+  $('.main').html('big');
+
+  callback(null, $.html());
 };
