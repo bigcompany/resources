@@ -1,7 +1,5 @@
 var resource = require('resource'),
-    bitcoin_lib = require('bitcoin'),
-    bitcoin = resource.define('bitcoin'),
-    commands = require(require.resolve('bitcoin') + '/../commands');
+    bitcoin = resource.define('bitcoin')
 
 bitcoin.schema.description = "for managing bitcoins";
 
@@ -55,7 +53,7 @@ bitcoin.method('connect', connect, {
 });
 function connect(options, callback) {
   var connection_id = bitcoin.connection_id(options);
-      Client = bitcoin_lib.Client; // bitcoin client class
+      Client = require('bitcoin').Client; // bitcoin client class
 
   // lookup table of bitcoin connections
   bitcoin.connections[connection_id] = {
@@ -98,16 +96,22 @@ function connection_id(options, callback) {
   return [options.host, options.port, options.user].join(':');
 }
 
-Object.keys(commands).forEach(function(command) {
-  // define resource method for library command
-  bitcoin.method(command, function(connection_id, args, callback) {
-    // get client for connection_id
-    var client = bitcoin.connections[connection_id].client;
-    // add callback to end of args
-    args.push(callback);
-    // call client command with args
-    client[command].apply(client, args);
+bitcoin.method('start', function() {
+
+  commands = require(require.resolve('bitcoin') + '/../commands');
+
+  Object.keys(commands).forEach(function(command) {
+    // define resource method for library command
+    bitcoin.method(command, function(connection_id, args, callback) {
+      // get client for connection_id
+      var client = bitcoin.connections[connection_id].client;
+      // add callback to end of args
+      args.push(callback);
+      // call client command with args
+      client[command].apply(client, args);
+    });
   });
+
 });
 
 exports.bitcoin = bitcoin;
