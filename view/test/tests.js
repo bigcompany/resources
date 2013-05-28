@@ -244,3 +244,51 @@ test("multiple views with a layout and presenter", function (t) {
 		});
 	});
 });
+
+test("layout presenter and template presenter both see passed options", function (t) {
+  view.create( { path: __dirname + "/view12" } , function(err, _view) {
+		t.error(err, 'no error');
+		t.ok(_view, 'view is returned');
+		_view.index.present({
+			name: "Bob",
+			email: "bob@bob.com",
+			company: "big"
+		}, function (err, result) {
+			t.error(err, 'no error');
+			t.ok(result, 'present returns result');
+			t.equal(result,
+				'<h1>big</h1>\n<div id="main"><div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n</div>',
+				'present() returns correct result');
+			t.end();
+		});
+	});
+});
+
+test("multiple views with a layout and presenter, as well as options", function (t) {
+  view.create( { path: __dirname + "/view13" } , function(err, _view) {
+		t.error(err, 'no error');
+		t.ok(_view, 'view is returned');
+		_view.index.present({
+			name: "Bob",
+			email: "bob@bob.com",
+			company: "big"
+		}, function (err, result) {
+			t.error(err, 'no error');
+			t.ok(result, 'present returns result');
+			t.equal(result,
+				'<h1>big</h1>\n<div id="main"><div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n</div>',
+				'present() returns correct result');
+		});
+		_view.table.present({
+			table: "steve",
+			company: "company"
+		}, function (err, result) {
+			t.error(err, 'no error');
+			t.ok(result, 'present returns result');
+			t.equal(result,
+				'<h1>company</h1>\n<div id="main"><div class="table">steve</div>\n</div>',
+				'present() returns correct result');
+			t.end();
+		});
+	});
+});
