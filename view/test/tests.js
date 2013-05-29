@@ -290,5 +290,46 @@ test("multiple views with a layout and presenter, as well as options", function 
 	});
 });
 
-// TODO: test nested views and layouts. check functionality,
-// ensure with Marak it is expected
+test("nested views, no layouts", function(t) {
+  view.create( { path: __dirname + "/view15" } , function(err, _view) {
+		t.error(err, 'no error');
+		t.ok(_view, 'view is returned');
+		_view.index.present({}, function (err, result) {
+			t.error(err, 'no error');
+			t.ok(result, 'present returns result');
+			t.equal(result,
+				'<div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n',
+				'present() returns correct result');
+		});
+		_view.test.table.present({}, function (err, result) {
+			t.error(err, 'no error');
+			t.ok(result, 'present returns result');
+			t.equal(result,
+				'<div class="table">steve</div>\n',
+				'present() returns correct result');
+			t.end();
+		});
+	});
+});
+
+test("nested views, nested layouts affect only appropriate directory level", function(t) {
+  view.create( { path: __dirname + "/view16" } , function(err, _view) {
+		t.error(err, 'no error');
+		t.ok(_view, 'view is returned');
+		_view.index.present({}, function (err, result) {
+			t.error(err, 'no error');
+			t.ok(result, 'present returns result');
+			t.equal(result,
+				'<h1>big</h1>\n<h2>nothing</h2>\n<div id="main"><div class="user">\n\t<div class="name">Bob</div>\n\t<div class="email">bob@bob.com</div>\n</div>\n</div>',
+				'present() returns correct result');
+		});
+		_view.test.table.present({}, function (err, result) {
+			t.error(err, 'no error');
+			t.ok(result, 'present returns result');
+			t.equal(result,
+				'<h1>nothing</h1>\n<h2>big</h2>\n<div id="main"><div class="table">steve</div>\n</div>',
+				'present() returns correct result');
+			t.end();
+		});
+	});
+});
