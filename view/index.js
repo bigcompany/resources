@@ -12,9 +12,9 @@ view.schema.description = "for managing views";
 
 view.property("path", {
   "type": "string",
-  "default": ".", 
+  "default": ".",
   "description": "the path to the view",
-  "format": "uri" 
+  "format": "uri"
 });
 
 view.property("template", {
@@ -22,12 +22,9 @@ view.property("template", {
   "description": "the string template of the view"
 });
 
-view.property("input", {
-  "type": "string"
-});
-
-view.property("output", {
-  "type": "string"
+view.property("presenter", {
+  "type": "function",
+  "description:": "the presenter function of the view"
 });
 
 view.method('create', create, {
@@ -46,17 +43,32 @@ view.method('create', create, {
 function create (options, callback) {
   options = options || {};
 
-  if(typeof options.template !== 'undefined') {
-    var view = new View({
+  var view;
+
+  // given template and presenter
+  if (typeof options.template !== 'undefined' &&
+    typeof options.presenter !== 'undefined') {
+    view = new View({
       template: options.template,
-      input: options.input,
-      output: options.ouput
+      presenter: options.presenter
     });
+
+  // given just template
+  } else if(typeof options.template !== 'undefined') {
+    view = new View({
+      template: options.template
+    });
+
+  // given just presenter
+  } else if(typeof options.presenter !== 'undefined') {
+    view = new View({
+      presenter: options.presenter
+    });
+
+  // given neither template nor presenter
   } else {
-    var view = new View({
-      path: options.path,
-      input: options.input,
-      output: options.ouput
+    view = new View({
+      path: options.path
     });
   }
 
@@ -77,7 +89,7 @@ function create (options, callback) {
 //
 view.middle = require('./middle');
 
-view.dependencies = {
+exports.dependencies = {
   "cheerio": "0.9.x"
 };
 
