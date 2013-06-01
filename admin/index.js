@@ -108,10 +108,7 @@ function listen (options, callback) {
 
       resource.http.app.get('/admin', auth, function (req, res, next) {
         var _r = _resources();
-        view.index.render({
-          system: JSON.stringify(dashboard(), true, 2)
-        }, function(){
-          var str = view.index.present({ resources: resource.resources });
+        view.index.present({ resources: resource.resources }, function(err, str){
           res.end(str);
         });
       });
