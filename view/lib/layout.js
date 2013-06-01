@@ -1,24 +1,26 @@
-exports.render = function (view, data, cb) {
-  var cheerio = require('cheerio'),
-      str;
+var query = require('./query');
+
+module['exports'] = function (view, data, cb) {
+  var $;
+
   if(typeof view.parent !== "undefined" && typeof view.parent.layout !== "undefined" && typeof view.parent.layout.present === 'function') {
     if (cb) {
-      return view.parent.layout.present(data, function(err, content){
-        var $ = cheerio.load(content);
+      return view.parent.layout.present(data, function(err, content) {
+        $ = query(content);
         $('#main').html(view.template);
         return cb(null, $.html());
       });
     } else {
-      var $ = cheerio.load(view.parent.layout.present(data));
+      $ = query(view.parent.layout.present(data));
       $('#main').html(view.template);
     }
   } else {
-    var $ = cheerio.load(view.template);
+    $ = query(view.template);
   }
-  str = $.html();
+
   if (cb) {
-    return cb(null, str);
+    return cb(null, $.html());
   } else {
-    return str;
+    return $.html();
   }
-}
+};
