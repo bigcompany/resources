@@ -1,15 +1,12 @@
 var resource = require('resource'),
-    wallet = resource.define('wallet'),
-    queue = resource.use('queue'),
-    transfer = resource.use('transfer'),
-    transaction = resource.use('transaction');
+    wallet = resource.define('wallet');
 
 wallet.schema.description = 'for managing inventory';
 
-wallet.connections = {};
+wallet.persist('memory');
 
 wallet.property('fee', {
-  description: 'function that applies fee to outgoing transactions',
+  description: 'function that appies fee to outgoing transactions',
   type: 'function'
 });
 
@@ -18,12 +15,8 @@ wallet.property('account', {
   type: 'string'
 });
 
-wallet.property('address', {
-  description: 'address of wallet'
-});
-
 wallet.property('servers', {
-  description: 'list of active coin servers',
+  description: 'list of active wallet servers',
   type: 'array',
   items: {
     type: 'string'
@@ -31,48 +24,22 @@ wallet.property('servers', {
   uniqueItems: true
 });
 
-function connect(_wallet, coin_name, options, callback) {
-  // use coin resource
-  var coin = resource.use(coin_name);
-  coin.start();
-  // connect to coin server
-  coin.connect(options, function(err, conn) {
+function connect(_wallet, options, callback) {
+  // use bitcoin resource
+  var bitcoin = resource.use('bitcoin');
+  bitcoin.start();
+  // connect to bitcoin server
+  bitcoin.connect(options, function(err, conn) {
     if (err) {
       throw err;
     }
-    // generate wallet connectId
-    var connectId = "bitcoin:" + conn.id;
-    //
-    // add to connections of wallet resource
-    //
-    // TODO: add to queue
-    if (!wallet.connections[connectId]) {
-    // if no connections yet on this server
-      wallet.connections[connectId] = [_wallet.id];
-    } else if (wallet.connections[connectId].indexOf(_wallet.id) == -1) {
-    // if we don't already have a connection with this server
-      wallet.connections[connectId].push(_wallet.id);
-    }
-    //
-    // add to servers of wallet instance
-    //
-    if (!_wallet.servers) {
     // if no servers already
-      _wallet.servers = [connectId];
-      wallet.update({
-        id: _wallet.id,
-        account: _wallet.account,
-        servers: [connectId]
-      }, callback);
-    } else if (_wallet.servers.indexOf(connectId) == -1) {
+    if (!_wallet.servers) {
+      _wallet.servers = [conn.id];
     // if we don't already have a connection with this server
-      wallet.update({
-        id: _wallet.id,
-        account: _wallet.account,
-        servers: _wallet.servers.concat([connectId])
-      }, callback);
+    } else if (_wallet.servers.indexOf(conn.id) == -1) {
+      _wallet.servers.push(conn.id);
     }
-    wallet.repeatedlyPoll(connectId);
     callback(null, _wallet);
   });
 }
@@ -81,9 +48,6 @@ wallet.method('connect', connect, {
   properties: {
     _wallet: {
       type: 'object'
-    },
-    coin_name: {
-      type: 'string'
     },
     server: {
       type: 'object'
@@ -94,8 +58,8 @@ wallet.method('connect', connect, {
   }
 });
 
-wallet.property('journal', {
-  description: 'list of all transactions of this wallet',
+wallet.property('history', {
+  description: 'list of all relevant wallet transaction ids',
   type: 'array',
   items: {
     type: 'string'
@@ -160,97 +124,12 @@ wallet.method('request', request, {
   }
 });
 
-function poll(connectId, callback) {
-  var strsplit = require('strsplit');
-  var coin_server = strsplit(connectId, ':', 2);
-  var coin_name = coin_server[0];
-  var server = coin_server[1];
-
-  var coin = resource.use(coin_name);
-
-  coin.start();
-
-  // TODO:
-  // bitcoin.getTrasactions() -> filter -> generate transaction resources
-  coin.listTransactions(server,
-    ['*', 1000, 0],
-    function(err, txs) {
-    txs.forEach(function(tx) {
-      if (tx.account === null) {
-      } else {
-        console.log("account", tx.account);
-        wallet.find({account: tx.account}, function(err, result) {
-          if (err) {
-            throw err;
-          }
-          // for each wallet with that account name
-          // should only be one
-          if (result.length > 1) {
-            throw "every wallet account should be unique!";
-          }
-          // prepare post-update callback
-          var postUpdate = function(err, _wallet) {
-            if (err) {
-              throw err;
-            }
-            console.log(tx.txid, _wallet.account, _wallet.journal.length);
-          };
-          //
-          // add transaction to journal
-          _wallet = result[0];
-          //console.log(_wallet.account, _wallet.journal);
-          // update journal appropriately
-          if (!_wallet.journal) {
-            // journal does not already exist
-            wallet.update({
-              id: _wallet.id,
-              account: _wallet.account,
-              servers: _wallet.servers,
-              address: _wallet.address,
-              journal: [tx.txid]
-            }, postUpdate);
-          } else if (_wallet.journal.indexOf(tx.txid) == -1) {
-            // transaction is not in journal
-            wallet.update({
-              id: _wallet.id,
-              account: _wallet.account,
-              servers: _wallet.servers,
-              address: _wallet.address,
-              journal: _wallet.journal.concat([tx.txid])
-            }, postUpdate);
-          }
-        });
-      }
-    });
-  });
-}
-wallet.method('poll', poll, {
-  description: 'poll for incoming transactions',
-  properties: {
-    connectId: {
-      type: 'string'
-    },
-    callback: {
-      type: 'function'
-    }
-  }
-});
-
-function repeatedlyPoll(connectId, callback) {
-  wallet.poll(connectId, callback);
-
-  // TODO:
-  // implement queue to repeatedly poll the servers
-  // for new confirmed transactions and call .receive on the
-  // receipient wallets with wallet.receive(transaction)
-  //
-}
-wallet.method('repeatedlyPoll', repeatedlyPoll, {
-  description: 'repeatedly poll for incoming transactions'
-});
+//
+// implement queue to repeatedly poll the blockchain 
+// for new transactions and call .receive on them
+//
 
 exports.wallet = wallet;
 exports.dependencies = {
-  'decimal': '*',
-  'strsplit': '*'
+  'decimal': '*'
 };
