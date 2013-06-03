@@ -1,4 +1,3 @@
-'use strict';
 var resource = require('resource'),
     bitcoin = resource.define('bitcoin');
 
