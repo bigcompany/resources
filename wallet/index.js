@@ -7,6 +7,13 @@ var resource = require('resource'),
 wallet.schema.description = 'for managing inventory';
 
 wallet.connections = {};
+queue.create({repeat: true, elements: []},
+  function(err, _queue) {
+    if (err) {
+      throw err;
+    }
+    wallet.queue = _queue;
+});
 
 wallet.property('fee', {
   description: 'function that applies fee to outgoing transactions',
@@ -41,39 +48,53 @@ function connect(_wallet, coin_name, options, callback) {
       throw err;
     }
     // generate wallet connectId
-    var connectId = "bitcoin:" + conn.id;
+    var connectId = coin_name + ":" + conn.id;
+    var postQueue = function(err, _queue) {
+      if (err) {
+        throw err;
+      }
+      if ((!!_queue) && !_queue.started) {
+        queue.start(_queue.id, postQueue);
+      }
+      //
+      // add to servers of wallet instance
+      //
+      if (!_wallet.servers) {
+      // if no servers already
+        _wallet.servers = [connectId];
+        wallet.update({
+          id: _wallet.id,
+          account: _wallet.account,
+          servers: [connectId]
+        }, callback);
+      } else if (_wallet.servers.indexOf(connectId) == -1) {
+      // if we don't already have a connection with this server
+        wallet.update({
+          id: _wallet.id,
+          account: _wallet.account,
+          servers: _wallet.servers.concat([connectId])
+        }, callback);
+      }
+      wallet.repeatedlyPoll(connectId);
+      callback(null, _wallet);
+    };
     //
     // add to connections of wallet resource
     //
-    // TODO: add to queue
+    var job = {
+      method: "wallet::poll",
+      with: connectId
+    };
     if (!wallet.connections[connectId]) {
     // if no connections yet on this server
       wallet.connections[connectId] = [_wallet.id];
+      return queue.push(wallet.queue.id, job, postQueue);
     } else if (wallet.connections[connectId].indexOf(_wallet.id) == -1) {
     // if we don't already have a connection with this server
       wallet.connections[connectId].push(_wallet.id);
+      return queue.push(wallet.queue.id, job, postQueue);
     }
-    //
-    // add to servers of wallet instance
-    //
-    if (!_wallet.servers) {
-    // if no servers already
-      _wallet.servers = [connectId];
-      wallet.update({
-        id: _wallet.id,
-        account: _wallet.account,
-        servers: [connectId]
-      }, callback);
-    } else if (_wallet.servers.indexOf(connectId) == -1) {
-    // if we don't already have a connection with this server
-      wallet.update({
-        id: _wallet.id,
-        account: _wallet.account,
-        servers: _wallet.servers.concat([connectId])
-      }, callback);
-    }
-    wallet.repeatedlyPoll(connectId);
-    callback(null, _wallet);
+    return postQueue(null, null);
   });
 }
 wallet.method('connect', connect, {
@@ -161,6 +182,7 @@ wallet.method('request', request, {
 });
 
 function poll(connectId, callback) {
+  var async = require('async');
   var strsplit = require('strsplit');
   var coin_server = strsplit(connectId, ':', 2);
   var coin_name = coin_server[0];
@@ -175,10 +197,9 @@ function poll(connectId, callback) {
   coin.listTransactions(server,
     ['*', 1000, 0],
     function(err, txs) {
-    txs.forEach(function(tx) {
+    async.eachSeries(txs, function(tx, callback) {
       if (tx.account === null) {
       } else {
-        console.log("account", tx.account);
         wallet.find({account: tx.account}, function(err, result) {
           if (err) {
             throw err;
@@ -193,7 +214,8 @@ function poll(connectId, callback) {
             if (err) {
               throw err;
             }
-            console.log(tx.txid, _wallet.account, _wallet.journal.length);
+            console.log(_wallet.account, 'has new transaction: ', tx.txid);
+            callback(null);
           };
           //
           // add transaction to journal
@@ -218,9 +240,17 @@ function poll(connectId, callback) {
               address: _wallet.address,
               journal: _wallet.journal.concat([tx.txid])
             }, postUpdate);
+          } else {
+            return callback(null);
           }
         });
       }
+    },
+    function(err) {
+      if (err) {
+        throw err;
+      }
+      callback(null);
     });
   });
 }
@@ -237,7 +267,6 @@ wallet.method('poll', poll, {
 });
 
 function repeatedlyPoll(connectId, callback) {
-  wallet.poll(connectId, callback);
 
   // TODO:
   // implement queue to repeatedly poll the servers
@@ -252,5 +281,6 @@ wallet.method('repeatedlyPoll', repeatedlyPoll, {
 exports.wallet = wallet;
 exports.dependencies = {
   'decimal': '*',
-  'strsplit': '*'
+  'strsplit': '*',
+  'async': '*'
 };

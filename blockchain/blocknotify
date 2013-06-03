@@ -1,0 +1,14 @@
+#!/usr/local/bin/node
+
+var io = require('socket.io-client'),
+    socket = io.connect('http://localhost:8888');
+
+socket.on('connect', function() {
+  socket.emit('blockchain', 'blocknotify', process.argv[2], function(err, block) {
+    if (err) {
+      throw err;
+    }
+    console.log(block);
+    socket.disconnect();
+  });
+});
