@@ -280,7 +280,7 @@ function request (options, callback) {
   requestModule(options, callback);
 }
 
-http.dependencies = {
+exports.dependencies = {
   "connect": "2.7.1",
   "express": "3.0.4",
   "request": "2.12.0"
