@@ -1,16 +1,8 @@
-var layout = exports;
-var resource = require('resource');
+module['exports'] = function (options, callback) {
 
-var controls = new resource.view.View({ path: __dirname + '/controls', input: 'html' });
-controls.load(function(){});
-
-//
-// Remark: Bind controls to layout for convience
-//
-layout.controls = controls;
-
-layout.renderControl = function (control, options, callback) {
-  var output = "", _control, v;
+  var output = "", _control, v, 
+  self = this,
+  control = options.control;
   //
   // determine the type of control to render
   //
@@ -36,7 +28,7 @@ layout.renderControl = function (control, options, callback) {
   //
   // determine if there is a View available for that type of control
   //
-  if(typeof controls.inputs[_control] === 'undefined') {
+  if(typeof self.parent.parent.inputs[_control] === 'undefined') {
     throw new Error('invalid control ' + _control);
   }
 
@@ -44,8 +36,8 @@ layout.renderControl = function (control, options, callback) {
   // If there is an index.js available, use that as the presenter,
   // if not, use the control itself
   //
-  v = controls.inputs[_control].index || controls.inputs[_control];
+  v = self.parent.parent.inputs[_control].index || self.parent.parent.inputs[_control];
 
   // Present the View template
-  v.present(control, options, callback);
+  v.present(options, callback);
 }

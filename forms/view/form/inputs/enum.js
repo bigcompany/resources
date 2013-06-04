@@ -2,12 +2,13 @@
 // enum.js - input fields for String types, bound by enum constraint
 //
 
-module['exports'] = function (input, options, callback) {
+module['exports'] = function (options, callback) {
 
   //
   // Todo: This load statement should be moved to Viewful
   //
-  var $ = this.$.load(this.template);
+  var $ = this.$.load(this.template),
+      input = options.control;
 
   if(input.error) {
     $('.control-group').addClass('error');

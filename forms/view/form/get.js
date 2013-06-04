@@ -1,4 +1,3 @@
-var layout = require('./layout');
 
 var resource = require('resource');
 
@@ -142,7 +141,8 @@ module['exports'] = function(options, callback) {
     $('input[type="submit"]').attr('value', 'Get ' + entity);
 
     if (input.writeable !== false) {
-      output += layout.renderControl(input, options, function(err, result){
+      options.control = input;
+      self.parent.inputs.index.present(options, function(err, result){
         $('.inputs').html(result);
         callback(null, $.html());
       });
