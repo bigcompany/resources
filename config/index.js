@@ -4,6 +4,8 @@ var resource = require('resource'),
 var _persist = config.persist,
     engine;
 
+config.schema.description = "configuration management for resources";
+
 config.persist = function (opts) {
   if (typeof opts === 'string') {
     engine = opts;
