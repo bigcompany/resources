@@ -2,6 +2,8 @@
 
 for managing bitcoins
 
+[best API documentation](https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list)
+
 ## API
 
 #### [properties](#bitcoin-properties)
@@ -15,7 +17,7 @@ for managing bitcoins
 
   - [connect](#bitcoin-methods-connect) (options, callback)
 
-  - [connection_id](#bitcoin-methods-connection_id) (options, callback)
+  - [connectId](#bitcoin-methods-connectId) (options, callback)
 
   - [addMultiSigAddress](#bitcoin-methods-addMultiSigAddress) ()
 
@@ -145,6 +147,7 @@ for managing bitcoins
 
   - [walletPassphraseChange](#bitcoin-methods-walletPassphraseChange) ()
 
+  - [start](#bitcoin-methods-start) ()
 
 <a name="bitcoin-properties"></a>
 
@@ -262,11 +265,11 @@ connects to a bitcoin server
 
   - **type** : function
 
-<a name="bitcoin-methods-connection_id"></a> 
+<a name="bitcoin-methods-connectId"></a> 
 
-### bitcoin.connection_id(options, callback)
+### bitcoin.connectId(options)
 
-converts connect info to connection_id
+converts connect info to connectId
 
 - **options** 
 
@@ -301,6 +304,10 @@ converts connect info to connection_id
 - **callback** 
 
   - **type** : function
+
+<a name="bitcoin-methods-start"></a> 
+
+### bitcoin.start()
 
 <a name="bitcoin-methods-addMultiSigAddress"></a> 
 

@@ -1,4 +1,3 @@
-'use strict';
 var test = require('tap').test,
     resource = require('resource'),
     //supertest = require('supertest'),
@@ -13,7 +12,7 @@ bitcoin.start();
 test('connect()', function (t) {
   // setup json-rpc mock
   nock('http://localhost:8332')
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
@@ -33,7 +32,7 @@ test('connect()', function (t) {
 test('getNewAddress()', function (t) {
   // setup json-rpc mock
   nock('http://localhost:8332')
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
@@ -51,7 +50,7 @@ test('getNewAddress()', function (t) {
 test('getBalance()', function (t) {
   // setup json-rpc mock
   nock('http://localhost:8332')
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
@@ -69,13 +68,13 @@ test('getBalance()', function (t) {
 test('getBalance(account)', function (t) {
   // setup json-rpc mock
   nock('http://localhost:8332')
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':0.10000000,'error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
@@ -100,37 +99,37 @@ test('getBalance(account)', function (t) {
 test('accounts', function (t) {
   // setup json-rpc mock
   nock('http://localhost:8332')
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':'16w8hqgFMRcCzn5vvN1Hz1wjB55uA2myUd','error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':'big_test_address3','error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':['16w8hqgFMRcCzn5vvN1Hz1wjB55uA2myUd'],'error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':'1JS9EXRcREGBiSbf6rCFehbox8Vjo4554C','error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':'big_test_address3','error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
@@ -181,7 +180,7 @@ test('accounts', function (t) {
 test('setTxFee(amount)', function(t) {
  // setup json-rpc mock
   nock('http://localhost:8332')
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
@@ -201,37 +200,37 @@ test('setTxFee(amount)', function(t) {
 test('send', function(t) {
   // setup json-rpc mock
   nock('http://localhost:8332')
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':0.09550000,'error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':'1258PcucRHGw3L2kQ7aT278C6uvz6RRpcD','error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':'0af7c6255c0eb53f089599b172d2acff5492491197c513b1f15704ac020c7983','error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result': {'amount':0.00000000, 'fee': -0.00050000, 'confirmations': 0, 'txid': '0af7c6255c0eb53f089599b172d2acff5492491197c513b1f15704ac020c7983','details':[{'account':'big_test_address42','address':'1258PcucRHGw3L2kQ7aT278C6uvz6RRpcD','category':'send','amount':-0.01000000,'fee':-0.00050000},{'account':'big_test_address42','address':'16Xc5H6f5Dtjuk4qabBJwPVDd2FUKMuxxz','category':'send','amount':-0.08600000,'fee':-0.00050000},{'account':'big_test_address420','address':'1258PcucRHGw3L2kQ7aT278C6uvz6RRpcD','category':'receive','amount':0.01000000},{'account':'big_test_address42','address':'16Xc5H6f5Dtjuk4qabBJwPVDd2FUKMuxxz','category':'receive','amount':0.08600000}]},'error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
       {'result':0.08500000,'error':null},
       {'connection': 'close','content-type': 'application/json'})
-    .filteringRequestBody(function(path) {return '*'; })
+    .filteringRequestBody(function() {return '*'; })
     .post('/', '*')
     .reply(
       200,
