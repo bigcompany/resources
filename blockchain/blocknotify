@@ -1,10 +1,15 @@
 #!/usr/local/bin/node
 
+// config
+var coin = 'bitcoin',
+    connectId = 'localhost:8332:rpcuser';
+// endconfig
+
 var io = require('socket.io-client'),
     socket = io.connect('http://localhost:8888');
 
 socket.on('connect', function() {
-  socket.emit('blockchain', 'blocknotify', process.argv[2], function(err, block) {
+  socket.emit('blockchain', 'blocknotify', coin, connectId, process.argv[2], function(err, block) {
     if (err) {
       throw err;
     }

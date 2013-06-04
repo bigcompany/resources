@@ -19,9 +19,11 @@ transaction.property('source', {
   description: 'source of the transaction',
   properties: {
     name: {
+      description: 'ie. coin name',
       type: 'string'
     },
     id: {
+      description: 'ie. block hash',
       type: 'string'
     }
   }
@@ -36,3 +38,4 @@ exports.transaction = transaction;
 exports.dependencies = {
   'decimal': '*'
 };
+exports.license = "AGPLv3";

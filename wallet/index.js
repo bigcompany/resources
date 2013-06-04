@@ -284,3 +284,4 @@ exports.dependencies = {
   'strsplit': '*',
   'async': '*'
 };
+exports.license = "AGPLv3";

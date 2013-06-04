@@ -32,3 +32,4 @@ exports.transfer = transfer;
 exports.dependencies = {
   'decimal': '*'
 };
+exports.license = "AGPLv3";

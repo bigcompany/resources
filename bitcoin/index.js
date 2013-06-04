@@ -115,3 +115,4 @@ exports.bitcoin = bitcoin;
 exports.dependencies = {
   'bitcoin': '1.7.0'
 };
+exports.license = "MIT";
