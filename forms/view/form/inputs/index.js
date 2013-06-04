@@ -1,7 +1,5 @@
-console.log('aa')
 module['exports'] = function (options, callback) {
 
-  console.log('run', options)
   var output = "", _control, v, 
   self = this,
   control = options.control;
