@@ -89,7 +89,7 @@ function create (options, callback) {
 //
 view.middle = require('./middle');
 
-exports.dependencies = {
+view.dependencies = {
   "cheerio": "0.9.x"
 };
 
