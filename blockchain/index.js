@@ -94,51 +94,6 @@ blockchain.property('transactions', {
 });
 */
 
-function updatetx(options, callback) {
-  logger.info('.updatetx(',options.coinName, options.tx, callback, ')');
-  var txObj = {
-    id: options.tx.txid,
-    type: options.coinName,
-    source: options.tx.blockhash
-  };
-  logger.info(txObj.id);
-  transaction.get(txObj.id, function(err, tx) {
-    if (err) {
-      if (err.message === (txObj.id + " not found")) {
-        return transaction.create(txObj, function(err, result) {
-            return callback(null, options.tx);
-          });
-      }
-      else {
-        throw err;
-      }
-    } else if ((tx.type != txObj.type) ||
-        (tx.source != txObj.source)) {
-      throw "transaction id " + txObj.id + "already existed!";
-    }
-    return callback(null, options.tx);
-  });
-}
-blockchain.method('updatetx', updatetx, {
-  description: 'updates the transaction',
-  properties: {
-    options: {
-      type: 'object',
-      properties: {
-        coinName: {
-          type: 'string'
-        },
-        tx: {
-          type: 'object'
-        }
-      }
-    },
-    callback: {
-      type: 'function'
-    }
-  }
-});
-
 function walletnotify(options, callback) {
   logger.info('.walletnotify(', options.coinName, options.connectId, options.txid, callback, ')');
   var coin = resource.use(options.coinName),
@@ -157,12 +112,13 @@ function walletnotify(options, callback) {
           // blockchain instance is not connected to server
           log.debug('blockchain', _blockchain.id, 'not connected to server', connectId);
           // ignore walletnotify tx
-          callback(null, tx);
+          callback(null, null);
         } else {
           // blockchain instance is connected to server
-          blockchain.updatetx({
-            coinName: options.coinName,
-            tx: tx
+          transaction.init({
+            id: tx.txid,
+            type: options.coinName,
+            source: tx.blockhash
           }, callback);
         }
       }, function(err) {
