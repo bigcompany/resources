@@ -1,4 +1,5 @@
 var resource = require('resource'),
+    logger = resource.logger,
     transfer = resource.use('transfer'),
     transaction = resource.define('transaction');
 
@@ -36,8 +37,12 @@ function init(options, callback) {
       if (err.message === (options.id + " not found")) {
         // transaction does not yet exist, create it
         return transaction.create(options, function(err, result) {
-            return callback(null, result);
-          });
+          if (err) {
+            throw err;
+          }
+          logger.info("created transaction", JSON.stringify(result));
+          return callback(null, result);
+        });
       }
       else {
         throw err;
@@ -45,8 +50,9 @@ function init(options, callback) {
     } else if ((tx.type !== options.type) ||
         (tx.source !== options.source)) {
       // a different transaction with same id already exists
-      throw "transaction id " + options.id + "already existed!";
+      throw "different transaction with same id " + options.id + "already exists!";
     }
+    logger.info("transaction", options.id, "already initialized");
     return callback(null, tx);
   });
 }

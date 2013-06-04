@@ -114,6 +114,7 @@ test('blockchain receives walletnotify', function (t) {
   });
 });
 
+/*
 test('destroy blockchain', function(t) {
   client.emit('blockchain', 'destroy', 'test', function(err, result) {
     t.error(err, 'no error');
@@ -141,3 +142,4 @@ test("stop everything", function (t) {
     t.pass('server disconnected');
   });
 });
+*/
