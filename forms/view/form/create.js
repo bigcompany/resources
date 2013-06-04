@@ -1,5 +1,4 @@
-var layout = require('./layout'),
-    resource = require('resource');
+var resource = require('resource');
 
 module['exports'] = function (options, callback) {
 
@@ -57,7 +56,9 @@ module['exports'] = function (options, callback) {
       if(data && typeof data[property] !== "undefined") {
         input.value = data[property];
       }
-      layout.renderControl(input, options, cont);
+
+      options.control = input;
+      self.parent.inputs.index.present(options, cont);
     };
 
     var arr = Object.keys(r.schema.properties);

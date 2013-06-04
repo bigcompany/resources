@@ -1,5 +1,4 @@
-var layout = require('./layout'),
-    resource = require('resource');
+var resource = require('resource');
 
 
 module['exports'] = function(options, callback) {
@@ -67,7 +66,9 @@ module['exports'] = function(options, callback) {
       var input = _props[property];
       input.name = property;
       input.value = '';
-      layout.renderControl(input, options, cont);
+      options.control = input;
+      self.parent.inputs.index.present(options, cont);
+
     };
     var arr = Object.keys(_props);
     arr.reverse();

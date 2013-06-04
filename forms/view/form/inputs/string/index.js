@@ -1,11 +1,12 @@
 //
 // string.js - input fields for String types
 //
-module['exports'] = function (input, options, callback) {
+module['exports'] = function (options, callback) {
+
   //
   // Todo: This load statement should be moved to Viewful
   //
-
+  var input = options.control;
   var $ = this.$.load(this.template);
   if(typeof input.error !== 'undefined') {
     $('.control-group').addClass('error');
