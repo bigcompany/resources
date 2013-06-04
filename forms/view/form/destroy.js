@@ -1,5 +1,4 @@
-var layout = require('./layout'),
-    resource = require('resource');
+var resource = require('resource');
 
 module['exports'] = function (options, callback) {
 

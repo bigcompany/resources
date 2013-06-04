@@ -1,5 +1,4 @@
-var layout = require('./layout'),
-    resource = require('resource');
+var resource = require('resource');
 
 module['exports'] = function (options, callback) {
 
@@ -8,9 +7,9 @@ module['exports'] = function (options, callback) {
   var output = '',
      $ = this.$,
      self = this,
-     inflect = 'foos',
+     inflect = '',
      record = options.data || {},
-     entity  = 'foo',
+     entity  = '',
      _props = r.methods.update.schema.properties.options.properties,
      shouldGet;
 
@@ -55,7 +54,8 @@ module['exports'] = function (options, callback) {
     var input = _props['id'];
     input.name = 'id';
     input.value = input.default || '';
-    layout.renderControl(input, options, function(err, re){
+    options.control = input;
+    self.parent.inputs.index.present(options, function(err, re){
       $('h1').html(entity + ' - create');
       $('input[type="submit"]').attr('value', 'Get ' + entity);
       $('.inputs').html(re);
@@ -91,7 +91,8 @@ module['exports'] = function (options, callback) {
         }
       }
 
-      layout.renderControl(input, options, cont);
+      options.control = input;
+      self.parent.inputs.index.present(options, cont);
     };
     var arr = Object.keys(r.schema.properties);
     arr.reverse();
