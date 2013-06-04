@@ -12,9 +12,7 @@ for managing views
 
   - [template](#view-properties-template)
 
-  - [input](#view-properties-input)
-
-  - [output](#view-properties-output)
+  - [presenter](#view-properties-presenter)
 
 
 #### [methods](#view-methods)
@@ -47,13 +45,11 @@ for managing views
 
   - **description** : the string template of the view
 
-- **input** 
+- **presenter** 
 
-  - **type** : string
+  - **type** : function
 
-- **output** 
-
-  - **type** : string
+  - **description:** : the presenter function of the view
 
 
 <a name="view-methods"></a> 
