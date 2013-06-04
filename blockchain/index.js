@@ -94,64 +94,82 @@ blockchain.property('transactions', {
 });
 */
 
-function updatetx(coinName, tx, callback) {
-  logger.info('.updatetx(',coinName, tx, callback, ')');
+function updatetx(options, callback) {
+  logger.info('.updatetx(',options.coinName, options.tx, callback, ')');
   var txObj = {
-    id: tx.txid,
-    type: coinName,
-    source: tx.blockhash
+    id: options.tx.txid,
+    type: options.coinName,
+    source: options.tx.blockhash
   };
   logger.info(txObj.id);
-  transaction.get(txObj.id, function(err, transaction) {
+  transaction.get(txObj.id, function(err, tx) {
     if (err) {
-      throw err;
-    }
-    if (!transaction) {
-      return transaction.create(
-        {id: txid, type: coinName, source: tx.blockhash},
-        function(err, result) {
-          callback(null, result);
-        });
-    } else if ((transaction.type != txObj.type) ||
-        (transaction.source != txObj.source)) {
+      if (err.message === (txObj.id + " not found")) {
+        return transaction.create(txObj, function(err, result) {
+            return callback(null, options.tx);
+          });
+      }
+      else {
+        throw err;
+      }
+    } else if ((tx.type != txObj.type) ||
+        (tx.source != txObj.source)) {
       throw "transaction id " + txObj.id + "already existed!";
     }
-    return callback(null, result);
+    return callback(null, options.tx);
   });
 }
 blockchain.method('updatetx', updatetx, {
-  description: 'updates the transaction'
+  description: 'updates the transaction',
+  properties: {
+    options: {
+      type: 'object',
+      properties: {
+        coinName: {
+          type: 'string'
+        },
+        tx: {
+          type: 'object'
+        }
+      }
+    },
+    callback: {
+      type: 'function'
+    }
+  }
 });
 
-function walletnotify(coinName, connectId, txid, callback) {
-  logger.info('.walletnotify(', coinName, connectId, txid, callback, ')');
-  var coin = resource.use(coinName),
+function walletnotify(options, callback) {
+  logger.info('.walletnotify(', options.coinName, options.connectId, options.txid, callback, ')');
+  var coin = resource.use(options.coinName),
       async = require('async');
   coin.start();
-  coin.getTransaction(connectId, [txid], function(err, tx) {
+  coin.getTransaction(options.connectId, [options.txid], function(err, tx) {
     if (err) {
       throw err;
     }
     logger.info('walletnotify tx is', JSON.stringify(tx));
     blockchain.find({
-      coin: coinName
+      coin: options.coinName
     }, function(err, _blockchains) {
       return async.each(_blockchains, function(_blockchain, callback) {
-        if (_blockchain.servers.indexOf(connectId) == -1) {
+        if (_blockchain.servers.indexOf(options.connectId) == -1) {
           // blockchain instance is not connected to server
           log.debug('blockchain', _blockchain.id, 'not connected to server', connectId);
           // ignore walletnotify tx
           callback(null, tx);
         } else {
           // blockchain instance is connected to server
-          blockchain.updatetx(coinName, tx, callback);
-          logger.info('tx', JSON.stringify(tx));
+          blockchain.updatetx({
+            coinName: options.coinName,
+            tx: tx
+          }, callback);
         }
-      }, function(err, txs) {
+      }, function(err) {
         if (err) {
           throw err;
         }
-        return callback(null, txs);
+        return callback(null, tx);
       });
     });
   });
@@ -159,45 +177,52 @@ function walletnotify(coinName, connectId, txid, callback) {
 blockchain.method('walletnotify', walletnotify, {
   description: 'notification of new wallet transaction',
   properties: {
-    coinName: {
-      type: 'string'
-    },
-    connectId: {
-      type: 'string'
-    },
-    txid: {
-      type: 'string'
+    options: {
+      type: 'object',
+      properties: {
+        coinName: {
+          type: 'string'
+        },
+        connectId: {
+          type: 'string'
+        },
+        txid: {
+          type: 'string'
+        }
+      }
     },
     callback: {
       type: 'function'
     }
   }
 });
-function blocknotify(coinName, connectId, blockhash, callback) {
-  logger.info('.blocknotify(', coinName, connectId, blockhash, callback,')');
-  var coin = resource.use(coinName),
+function blocknotify(options, callback) {
+  logger.info('.blocknotify(', options.coinName, options.connectId, options.blockhash, callback,')');
+  var coin = resource.use(options.coinName),
       async = require('async');
   coin.start();
-  coin.getBlock(connectId, [blockhash], function(err, block) {
+  coin.getBlock(options.connectId, [options.blockhash], function(err, block) {
     if (err) {
       throw err;
     }
     logger.info('blocknotify block is', JSON.stringify(block));
     blockchain.find({
-      coin: coinName
+      coin: options.coinName
     }, function(err, _blockchains) {
       return async.each(_blockchains, function(_blockchain, callback) {
-        if (_blockchain.servers.indexOf(connectId) == -1) {
+        if (_blockchain.servers.indexOf(options.connectId) == -1) {
           // blockchain instance is not connected to server
           // ignore blocknotify tx
         } else {
           // blockchain instance is connected to server
           //blockchain.updatetx(_blockchain.id, tx, callback);
         }
+        callback(null, block);
       }, function(err) {
         if (err) {
           throw err;
         }
+        logger.info("Asdfasdf");
         return callback(null, block);
       });
     });
@@ -206,14 +231,19 @@ function blocknotify(coinName, connectId, blockhash, callback) {
 blockchain.method('blocknotify', blocknotify, {
   description: 'notification of new wallet transaction',
   properties: {
-    coinName: {
-      type: 'string'
-    },
-    connectId: {
-      type: 'string'
-    },
-    blockhash: {
-      type: 'string'
+    options: {
+      type: 'object',
+      properties: {
+        coinName: {
+          type: 'string'
+        },
+        connectId: {
+          type: 'string'
+        },
+        blockhash: {
+          type: 'string'
+        }
+      }
     },
     callback: {
       type: 'function'
