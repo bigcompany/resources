@@ -1,5 +1,4 @@
-var layout = require('./layout'),
-    resource = require('resource');
+var resource = require('resource');
 
 module['exports'] = function (options, callback) {
 
@@ -79,7 +78,8 @@ module['exports'] = function (options, callback) {
         } else {
           input.value = input.default || '';
         }
-        layout.renderControl(input, options, function(err, str){
+        options.control = input;
+        self.parent.inputs.index.present(options, function(err, str){
           cont(err, str);
         });
       };

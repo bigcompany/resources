@@ -209,7 +209,7 @@ View.prototype.present = function(options, callback) {
   var self = this;
 
   // if this is not a layout, do perform layout
-  if (self.name != "layout") {
+  if (self.name !== "layout") {
     // load query
     self.$ = query(self.template);
     layout.call(self, self, options, function(err, result) {

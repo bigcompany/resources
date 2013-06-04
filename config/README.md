@@ -1,6 +1,6 @@
 # config
 
-
+configuration management for resources
 
 ## API
 
@@ -30,7 +30,7 @@
   - [attach](#config-methods-attach) (options, callback)
 
 
-
+configuration management for resources
 
 - **id** 
 

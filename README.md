@@ -9,7 +9,7 @@ resources for any occasion
  - [bitcoin](https://github.com/bigcompany/resources/tree/master/bitcoin) for managing bitcoins
  - [calculator](https://github.com/bigcompany/resources/tree/master/calculator) a basic calculator
  - [cli](https://github.com/bigcompany/resources/tree/master/cli) provides a command line interface
- - [config](https://github.com/bigcompany/resources/tree/master/config) 
+ - [config](https://github.com/bigcompany/resources/tree/master/config) configuration management for resources
  - [couchdb](https://github.com/bigcompany/resources/tree/master/couchdb) adds couchdb persistence
  - [creature](https://github.com/bigcompany/resources/tree/master/creature) example resource for creatures like dragons, unicorns, and ponies
  - [cron](https://github.com/bigcompany/resources/tree/master/cron) for managing cron jobs
