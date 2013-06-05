@@ -278,10 +278,10 @@ wallet.method('repeatedlyPoll', repeatedlyPoll, {
   description: 'repeatedly poll for incoming transactions'
 });
 
-exports.wallet = wallet;
-exports.dependencies = {
+wallet.dependencies = {
   'decimal': '*',
   'strsplit': '*',
   'async': '*'
 };
-exports.license = "AGPLv3";
+wallet.license = "AGPLv3";
+exports.wallet = wallet;

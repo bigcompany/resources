@@ -63,9 +63,9 @@ block.method('init', init, {
   }
 });
 
-exports.block = block;
-exports.dependencies = {
+block.dependencies = {
   'decimal': '*',
   'async': '*'
 };
-exports.license = "AGPLv3";
+block.license = "AGPLv3";
+exports.block = block;

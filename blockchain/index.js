@@ -232,10 +232,10 @@ blockchain.method('blocknotify', blocknotify, {
   }
 });
 
-exports.blockchain = blockchain;
-exports.dependencies = {
+blockchain.dependencies = {
   'decimal': '*',
   'socket.io': '*',
   'async': '*'
 };
-exports.license = "AGPLv3";
+blockchain.license = "AGPLv3";
+exports.blockchain = blockchain;

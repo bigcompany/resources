@@ -71,8 +71,8 @@ transaction.method('init', init, {
   }
 });
 
-exports.transaction = transaction;
-exports.dependencies = {
+transaction.dependencies = {
   'decimal': '*'
 };
-exports.license = "AGPLv3";
+transaction.license = "AGPLv3";
+exports.transaction = transaction;

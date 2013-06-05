@@ -28,8 +28,8 @@ transfer.property('comment', {
   type: 'string'
 });
 
-exports.transfer = transfer;
-exports.dependencies = {
+transfer.dependencies = {
   'decimal': '*'
 };
-exports.license = "AGPLv3";
+transfer.license = "AGPLv3";
+exports.transfer = transfer;
