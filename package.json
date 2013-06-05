@@ -1,9 +1,9 @@
 {
     "name": "resources",
     "description": "resources for any occasion",
-    "version": "0.3.8-1",
+    "version": "0.4.0",
     "dependencies": {
-      "resource": "0.3.x"
+      "resource": "0.4.x"
     },
     "devDependencies": {
       "tap": "*",
