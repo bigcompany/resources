@@ -100,33 +100,43 @@ function walletnotify(options, callback) {
   var coin = resource.use(options.coinName),
       async = require('async');
   coin.start();
-  coin.getTransaction(options.connectId, [options.txid], function(err, tx) {
+  coin.getTransaction(options.connectId, [options.txid], function(err, coinTx) {
     if (err) {
       throw err;
     }
-    logger.info('walletnotify tx is', JSON.stringify(tx));
-    blockchain.find({
-      coin: options.coinName
-    }, function(err, _blockchains) {
-      return async.each(_blockchains, function(_blockchain, callback) {
-        if (_blockchain.servers.indexOf(options.connectId) == -1) {
-          // blockchain instance is not connected to server
-          log.debug('blockchain', _blockchain.id, 'not connected to server', connectId);
-          // ignore walletnotify tx
-          callback(null, null);
-        } else {
-          // blockchain instance is connected to server
-          transaction.init({
-            id: tx.txid,
-            type: options.coinName,
-            source: tx.blockhash
-          }, callback);
-        }
-      }, function(err) {
-        if (err) {
-          throw err;
-        }
-        return callback(null, tx);
+    logger.info('walletnotify coinTx is', JSON.stringify(coinTx));
+    // initialize coinTx
+    var txObj = {
+      id: coinTx.txid,
+      type: options.coinName,
+      source: coinTx.blockhash,
+      index: coinTx.blockindex,
+      time: coinTx.time
+    };
+    logger.info("about to init coinTx", JSON.stringify(txObj));
+    transaction.init(txObj, function(err, _transaction) {
+      if (err) {
+        throw err;
+      }
+      blockchain.find({
+        coin: options.coinName
+      }, function(err, _blockchains) {
+        return async.each(_blockchains, function(_blockchain, callback) {
+          if (_blockchain.servers.indexOf(options.connectId) == -1) {
+            // blockchain instance is not connected to server
+            log.info('blockchain', _blockchain.id, 'not connected to server', connectId);
+            // ignore walletnotify tx
+            return callback(null, null);
+          } else {
+            // blockchain instance is connected to server
+            return callback(null, null);
+          }
+        }, function(err) {
+          if (err) {
+            throw err;
+          }
+          return callback(null, _transaction);
+        });
       });
     });
   });
@@ -163,30 +173,38 @@ function blocknotify(options, callback) {
       throw err;
     }
     logger.info('blocknotify block is', JSON.stringify(coinBlock));
-    blockchain.find({
-      coin: options.coinName
-    }, function(err, _blockchains) {
-      return async.each(_blockchains, function(_blockchain, callback) {
-        if (_blockchain.servers.indexOf(options.connectId) == -1) {
-          // blockchain instance is not connected to server
-          // ignore blocknotify tx
-          return callback(null, null);
-        } else {
-          // blockchain instance is connected to server
-          logger.info("coinBlock", JSON.stringify(coinBlock));
-          var blockObj = {
-            id: coinBlock.hash,
-            type: options.coinName,
-            index: coinBlock.height
-          };
-          logger.info("about to init block", JSON.stringify(blockObj));
-          return block.init(blockObj, callback);
-        }
-      }, function(err) {
-        if (err) {
-          throw err;
-        }
-        return callback(null, coinBlock);
+    // initialize block
+    var blockObj = {
+      id: coinBlock.hash,
+      type: options.coinName,
+      index: coinBlock.height,
+      txs: coinBlock.tx,
+      time: coinBlock.time
+    };
+    logger.info("about to init block", JSON.stringify(blockObj));
+    return block.init(blockObj, function(err, _block) {
+      if (err) {
+        throw err;
+      }
+      blockchain.find({
+        coin: options.coinName
+      }, function(err, _blockchains) {
+        return async.each(_blockchains, function(_blockchain, callback) {
+          if (_blockchain.servers.indexOf(options.connectId) == -1) {
+            // blockchain instance is not connected to server
+            // ignore blocknotify tx
+            log.info('blockchain', _blockchain.id, 'not connected to server', connectId);
+            return callback(null, null);
+          } else {
+            // blockchain instance is connected to server
+            return callback(null, null);
+          }
+        }, function(err) {
+          if (err) {
+            throw err;
+          }
+          return callback(null, _block);
+        });
       });
     });
   });

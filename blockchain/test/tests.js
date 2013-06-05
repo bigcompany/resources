@@ -68,22 +68,15 @@ test('blockchain receives blocknotify', function (t) {
   // run test
   var blockhash = '00000000dfd5d65c9d8561b4b8f60a63018fe3933ecb131fb37f905f87da951a';
   logger.info('calling (blockchain::blocknotify', coinName, connectId, blockhash, function() {},')');
-  client.emit('blockchain', 'blocknotify', {coinName: coinName, connectId: connectId, blockhash: blockhash}, function (err, block) {
+  client.emit('blockchain', 'blocknotify', {coinName: coinName, connectId: connectId, blockhash: blockhash}, function (err, _block) {
     if (err) { throw err; }
     t.error(err, 'no error');
-    t.type(block, 'object', 'block is object');
-    t.equal(block.hash, "00000000dfd5d65c9d8561b4b8f60a63018fe3933ecb131fb37f905f87da951a", 'block hash is correct');
-    t.equal(block.size, 216, 'block size is correct');
-    t.equal(block.height, 2000, 'block height is correct');
-    t.equal(block.version, 1, 'block version is correct');
-    t.equal(block.merkleroot, "10f072e631081ad6bcddeabb90bc34d787fe7d7116fe0298ff26c50c5e21bfea", 'block merkleroot is correct');
-    t.equal(block.tx.length, 1, 'block has correct number of txs');
-    t.equal(block.tx[0], "10f072e631081ad6bcddeabb90bc34d787fe7d7116fe0298ff26c50c5e21bfea", 'block tx is correct');
-    t.equal(block.time, 1233046715, 'block time is correct');
-    t.equal(block.bits, "1d00ffff", 'block diff is correct');
-    t.equal(block.difficulty, 1.00000000, 'block difficulty is correct');
-    t.equal(block.previousblockhash, "00000000a1496d802a4a4074590ec34074b76a8ea6b81c1c9ad4192d3c2ea226", 'block previousblockhash is correct');
-    t.equal(block.nextblockhash, "0000000067217a46c49054bad67cda2da943607d326e89896786de10b07cb7c0", 'block nextblockhash is correct');
+    t.equal(_block.id, "00000000dfd5d65c9d8561b4b8f60a63018fe3933ecb131fb37f905f87da951a", 'block hash is correct');
+    t.equal(_block.type, coinName, 'block type is correct');
+    t.equal(_block.index, 2000, 'block height is correct');
+    t.equal(_block.txs.length, 1, 'block has correct number of txs');
+    t.equal(_block.txs[0], "10f072e631081ad6bcddeabb90bc34d787fe7d7116fe0298ff26c50c5e21bfea", 'block tx is correct');
+    t.equal(_block.time, 1233046715, 'block time is correct');
     t.end();
   });
 });
@@ -105,12 +98,8 @@ test('blockchain receives walletnotify', function (t) {
     if (err) { throw err; }
     t.error(err, 'no error');
     t.type(tx, 'object', 'tx is object');
-    t.equal(tx.amount, 0.00000000, 'tx amount is correct');
-    t.equal(tx.fee, -0.00050000, 'tx fee is correct');
-    t.equal(tx.blockhash, '0000000000000106a87885b978c14934aa1e04cbb21fd58c625088aeaa020752', 'tx blockhash is correct');
-    t.equal(tx.blockindex, 106, 'tx blockindex is correct');
-    t.equal(tx.blocktime, 1370172561, 'tx blocktime is correct');
-    t.equal(tx.txid, "a499a51f44f26258c258d40aa6d12da005820df947d103135c3d995a4a3749b4", 'tx id is correct');
+    t.equal(tx.id, txid, 'tx id is correct');
+    t.equal(tx.source, '0000000000000106a87885b978c14934aa1e04cbb21fd58c625088aeaa020752', 'tx blockhash is correct');
     t.equal(tx.time, 1370172369, 'tx time is correct');
     t.end();
   });

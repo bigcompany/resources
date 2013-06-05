@@ -14,6 +14,19 @@ block.property('index', {
   type: 'number'
 });
 
+block.property('txs', {
+  description: 'ids of txs in block',
+  type: 'array',
+  items: {
+    type: 'string'
+  }
+});
+
+block.property('time', {
+  description: 'time of block',
+  type: 'number'
+});
+
 function init(options, callback) {
   block.get(options.id, function(err, _block) {
     if (err) {

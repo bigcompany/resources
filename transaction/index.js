@@ -15,14 +15,19 @@ transaction.property('source', {
   type: 'string'
 });
 
+transaction.property('index', {
+  description: 'index of source of transaction, ie. block index',
+  type: 'number'
+});
+
 transaction.property('transfer', {
   description: 'list of transfers in transaction',
   type: 'array',
   items: transfer.schema
 });
 
-transaction.property('timestamp', {
-  description: 'timestamp of transaction',
+transaction.property('time', {
+  description: 'time of transaction',
   type: 'number'
 });
 
