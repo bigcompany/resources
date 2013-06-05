@@ -27,22 +27,12 @@ module['exports'] = function (options) {
       if(typeof _view === "undefined") {
         return next();
       }
-      _view.render({
+      _view.present({
         request: req,
         response: res,
         data: req.big.params
-      }, function (err, str){
-        if (typeof _view.present === "function") {
-          _view.present({
-            request: req,
-            response: res,
-            data: req.big.params
-            }, function (err, rendered) {
-            res.end(rendered);
-          });
-        } else {
-          next();
-        }
+        }, function (err, rendered) {
+        res.end(rendered);
       });
     } else {
       //

@@ -111,8 +111,8 @@ bitcoin.method('start', function() {
 
 });
 
-exports.bitcoin = bitcoin;
-exports.dependencies = {
+bitcoin.dependencies = {
   'bitcoin': '1.7.0'
 };
-exports.license = "MIT";
+bitcoin.license = "MIT";
+exports.bitcoin = bitcoin;

@@ -1,2 +1,0 @@
-cd "$(dirname "$0")"
-rm -rf ../../resources/ && node tests.js

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# find where script is located, cd to the directory above
+DIR=$(cd $(dirname "$0") && pwd)
+
+rm -rf $DIR/../../resources/
+#node tests.js
+node middle-tests.js
+
