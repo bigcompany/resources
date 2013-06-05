@@ -6,7 +6,7 @@ var test = require('tap').test,
     block = resource.use('block'),
     transaction = resource.use('transaction'),
     logger = resource.logger,
-    coinName,
+    type = 'bitcoin',
     connectId,
     chain;
 
@@ -41,10 +41,9 @@ test('connect to socket server', function (t) {
 });
 
 test('create a blockchain instance', function(t) {
-  coinName = 'bitcoin';
-  client.emit('blockchain', 'create', {id: 'test', coin: coinName}, function(err, _blockchain) {
+  client.emit('blockchain', 'create', {id: 'test', type: type}, function(err, _blockchain) {
     t.error(err, 'no error');
-    t.equal(_blockchain.coin, coinName, 'blockchain instance has correct coin property');
+    t.equal(_blockchain.type, type, 'blockchain instance has correct type property');
     blockchain.connect(_blockchain.id, {}, function(err, _blockchain) {
       t.error(err, 'no error');
       chain = _blockchain;
@@ -67,15 +66,13 @@ test('blockchain receives blocknotify', function (t) {
   server: 'bitcoin-json-rpc/v0.8.1-beta' });
   // run test
   var blockhash = '00000000dfd5d65c9d8561b4b8f60a63018fe3933ecb131fb37f905f87da951a';
-  logger.info('calling (blockchain::blocknotify', coinName, connectId, blockhash, function() {},')');
-  client.emit('blockchain', 'blocknotify', {coinName: coinName, connectId: connectId, blockhash: blockhash}, function (err, _block) {
+  logger.info('calling (blockchain::blocknotify', type, connectId, blockhash, function() {},')');
+  client.emit('blockchain', 'blocknotify', {type: type, connectId: connectId, blockhash: blockhash}, function (err, _block) {
     if (err) { throw err; }
     t.error(err, 'no error');
     t.equal(_block.id, "00000000dfd5d65c9d8561b4b8f60a63018fe3933ecb131fb37f905f87da951a", 'block hash is correct');
-    t.equal(_block.type, coinName, 'block type is correct');
+    t.equal(_block.type, type, 'block type is correct');
     t.equal(_block.index, 2000, 'block height is correct');
-    t.equal(_block.txs.length, 1, 'block has correct number of txs');
-    t.equal(_block.txs[0], "10f072e631081ad6bcddeabb90bc34d787fe7d7116fe0298ff26c50c5e21bfea", 'block tx is correct');
     t.equal(_block.time, 1233046715, 'block time is correct');
     t.end();
   });
@@ -93,8 +90,11 @@ test('blockchain receives walletnotify', function (t) {
   server: 'bitcoin-json-rpc/v0.8.1-beta' });
   // run test
   var txid = 'a499a51f44f26258c258d40aa6d12da005820df947d103135c3d995a4a3749b4';
-  logger.info('calling (blockchain::walletnotify', coinName, connectId, txid, function() {},')');
-  client.emit('blockchain', 'walletnotify', {coinName: coinName, connectId: connectId, txid: txid}, function (err, tx) {
+  client.emit('blockchain', 'walletnotify', {
+    type: type,
+    connectId: connectId,
+    txid: txid
+  }, function (err, tx) {
     if (err) { throw err; }
     t.error(err, 'no error');
     t.type(tx, 'object', 'tx is object');
@@ -102,6 +102,22 @@ test('blockchain receives walletnotify', function (t) {
     t.equal(tx.source, '0000000000000106a87885b978c14934aa1e04cbb21fd58c625088aeaa020752', 'tx blockhash is correct');
     t.equal(tx.time, 1370172369, 'tx time is correct');
     t.end();
+  });
+});
+
+test('blockchain verifies transactions on confirmed blocks', function(t) {
+  // setup nock
+  // run test
+  var blockhash = '0000000000000106a87885b978c14934aa1e04cbb21fd58c625088aeaa020752';
+  client.emit('blockchain', 'blocknotify', {
+    type: type,
+    connectId: connectId,
+    blockhash: blockhash,
+    confirmations: 0
+  }, function(err, block) {
+    if (err) { throw err; }
+    t.error(err, 'no error');
+    t.type(block, 'object', 'block is object');
   });
 });
 

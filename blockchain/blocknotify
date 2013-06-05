@@ -10,7 +10,7 @@ var io = require('socket.io-client'),
 
 socket.on('connect', function() {
   socket.emit('blockchain', 'blocknotify', {
-    coinName: coin,
+    type: coin,
     connectId: connectId, 
     blockhash: process.argv[2]
     }, function(err, result) {

@@ -14,12 +14,14 @@ block.property('index', {
   type: 'number'
 });
 
-block.property('txs', {
-  description: 'ids of txs in block',
-  type: 'array',
-  items: {
-    type: 'string'
-  }
+block.property('prevBlock', {
+  description: 'id of previous block',
+  type: 'string'
+});
+
+block.property('nextBlock', {
+  description: 'id of next block',
+  type: 'string'
 });
 
 block.property('time', {
