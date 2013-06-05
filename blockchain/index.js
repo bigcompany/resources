@@ -1,5 +1,6 @@
 var resource = require('resource'),
     blockchain = resource.define('blockchain'),
+    block = resource.use('block'),
     transaction = resource.use('transaction'),
     logger = resource.logger;
 
@@ -157,11 +158,11 @@ function blocknotify(options, callback) {
   var coin = resource.use(options.coinName),
       async = require('async');
   coin.start();
-  coin.getBlock(options.connectId, [options.blockhash], function(err, block) {
+  coin.getBlock(options.connectId, [options.blockhash], function(err, coinBlock) {
     if (err) {
       throw err;
     }
-    logger.info('blocknotify block is', JSON.stringify(block));
+    logger.info('blocknotify block is', JSON.stringify(coinBlock));
     blockchain.find({
       coin: options.coinName
     }, function(err, _blockchains) {
@@ -169,17 +170,23 @@ function blocknotify(options, callback) {
         if (_blockchain.servers.indexOf(options.connectId) == -1) {
           // blockchain instance is not connected to server
           // ignore blocknotify tx
+          return callback(null, null);
         } else {
           // blockchain instance is connected to server
-          //blockchain.updatetx(_blockchain.id, tx, callback);
+          logger.info("coinBlock", JSON.stringify(coinBlock));
+          var blockObj = {
+            id: coinBlock.hash,
+            type: options.coinName,
+            index: coinBlock.height
+          };
+          logger.info("about to init block", JSON.stringify(blockObj));
+          return block.init(blockObj, callback);
         }
-        callback(null, block);
       }, function(err) {
         if (err) {
           throw err;
         }
-        logger.info("Asdfasdf");
-        return callback(null, block);
+        return callback(null, coinBlock);
       });
     });
   });

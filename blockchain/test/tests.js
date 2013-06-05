@@ -3,6 +3,7 @@ var test = require('tap').test,
     resource = require('resource'),
     io = require('socket.io-client'),
     blockchain = resource.use('blockchain'),
+    block = resource.use('block'),
     transaction = resource.use('transaction'),
     logger = resource.logger,
     coinName,
@@ -11,6 +12,7 @@ var test = require('tap').test,
 
 blockchain.persist('memory');
 transaction.persist('memory');
+block.persist('memory');
 //nock.recorder.rec();
 
 test('create a socket server', function (t) {
