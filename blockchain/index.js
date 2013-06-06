@@ -2,6 +2,8 @@ var resource = require('resource'),
     blockchain = resource.define('blockchain'),
     block = resource.use('block'),
     transaction = resource.use('transaction'),
+    transfer = resource.use('transfer'),
+    put = resource.use('put'),
     logger = resource.logger;
 
 blockchain.schema.description = 'for monitoring blockchain transactions';
@@ -164,21 +166,93 @@ blockchain.method('walletnotify', walletnotify, {
 });
 
 function walletverify(options, callback) {
-  // initialize libraries
-  var coin = resource.use(options.type),
-      async = require('async');
-  coin.start();
-  coin.getRawTransaction(options.connectId, [options.txid], function(err, coinRawTx) {
+  // if verified, promote transaction to
+  // a full transaction
+  transaction.get(options.txid, function(err, tx) {
     if (err) {
       throw err;
     }
-    logger.info('walletverify coinRawTx is', JSON.stringify(coinRawTx));
-    coin.decodeRawTransaction(options.connectId, [coinRawTx], function(err, coinFullTx) {
+    // initialize libraries
+    var coin = resource.use(options.type),
+        async = require('async');
+        _ = require('underscore');
+    coin.start();
+    coin.getRawTransaction(options.connectId, [options.txid], function(err, coinRawTx) {
       if (err) {
         throw err;
       }
-      logger.info('walletverify coinFullTx is', JSON.stringify(coinFullTx));
-      callback(null, coinFullTx);
+      coin.decodeRawTransaction(options.connectId, [coinRawTx], function(err, coinFullTx) {
+        if (err) {
+          throw err;
+        }
+        logger.info('walletverify coinFullTx is', JSON.stringify(coinFullTx));
+        // transaction is verified, create transfer
+        var transferObj = {
+          tx: options.txid
+        };
+        transfer.create(transferObj, function(err, _transfer) {
+          // populate transfer with inputs from vin
+          async.map(coinFullTx.vin, function(coinInput, callback) {
+            // for each vin
+            coin.getRawTransaction(options.connectId, [coinInput.txid], function(err, prevVinRawTx) {
+              if (err) { throw err; }
+              coin.decodeRawTransaction(options.connectId, [prevVinRawTx], function(err, prevVinFullTx) {
+                if (err) { throw err; }
+                // decode previous transaction of vin
+                async.filter(prevVinFullTx.vout, function(item, callback) {
+                  return callback(item.n === coinInput.vout);
+                }, function(results) {
+                  if (results.length !== 1) {
+                    throw "multiple coin outputs with same number";
+                  }
+                  var vout = results[0];
+                  // TODO: multiaddress if multiple addresses
+                  var inObj = {
+                    address: vout.scriptPubKey.addresses[0],
+                    unit: options.type,
+                    scale: vout.value,
+                    inTransfer: _transfer.id
+                  };
+                  return put.create(inObj, function(err, input) {
+                    if (err) { throw err; }
+                    return callback(null, input.id);
+                  });
+                });
+              });
+            });
+          }, function(err, inputs) {
+            logger.info("inputs", inputs);
+            if (err) { throw err; }
+            // populate transfer with outs from vout
+            async.map(coinFullTx.vout, function(vout, callback) {
+              // for each vout
+              // TODO: multiaddress if multiple addresses
+              var outObj = {
+                address: vout.scriptPubKey.addresses[0],
+                unit: options.type,
+                scale: vout.value,
+                outTransfer: _transfer.id
+              };
+              return put.create(outObj, function(err, output) {
+                if (err) { throw err; }
+                return callback(null, output.id);
+              });
+            }, function(err, outputs) {
+              if (err) { throw err; }
+              logger.info("outputs", outputs);
+              // update transfer with inputs and outputs
+              _transfer.inputs = inputs;
+              _transfer.outputs = outputs;
+              _transfer.save(function(err, _transfer) {
+                // update transaction with transfer
+                if (err) { throw err; }
+                tx.transfers = [_transfer.id];
+                tx.save(callback);
+              });
+            });
+          });
+        });
+      });
     });
   });
 }

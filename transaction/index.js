@@ -20,10 +20,12 @@ transaction.property('index', {
   type: 'number'
 });
 
-transaction.property('transfer', {
+transaction.property('transfers', {
   description: 'list of transfers in transaction',
   type: 'array',
-  items: transfer.schema
+  items: {
+    type: 'string'
+  }
 });
 
 transaction.property('time', {
