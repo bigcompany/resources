@@ -6,43 +6,24 @@ var resource = require('resource'),
 
 package.schema.description = 'for generating package files';
 
-function generate (_resource, callback) {
-  logger.info(".generate(", _resource, callback, ")");
+function npm (_resource, callback) {
+  logger.info(".npm(", _resource, callback, ")");
 
   if(typeof _resource === 'string') {
     _resource = resource.use(_resource);
   }
 
   // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
+  // https://github.com/component/component/wiki/Spec
   var packagejson = {
     name: _resource.name + '-resource',
     version: _resource.version,
     description: _resource.schema.description,
     keywords: _resource.keywords,
-    homepage: _resource.homepage,
-    bugs: _resource.bugs,
     license: _resource.license,
-    author: _resource.author,
-    contributors: _resource.contributors,
-    files: _resource.files,
-    main: _resource.main || './index',
-    bin: _resource.bin,
-    man: _resource.man,
-    directories: _resource.directories,
-    repository: _resource.repository,
-    scripts: _resource.scripts,
-    //config: _resource.config,
+    main: './index.js',
     dependencies: _resource.dependencies,
-    devDependencies: _resource.devDependencies,
-    bundledDependencies: _resource.bundledDependencies,
-    optionalDependencies: _resource.optionalDependencies,
-    engines: _resource.engines,
-    engineStrict: _resource.engineStrict,
-    os: _resource.os,
-    cpu: _resource.cpu,
-    preferGlobal: _resource.preferGlobal,
-    private: _resource.private,
-    publishConfig: _resource.publishConfig
+    devDependencies: _resource.devDependencies || _resource.development,
   };
 
   logger.info("generated package.json for", _resource.name);
@@ -54,7 +35,7 @@ function generate (_resource, callback) {
     return packagejson;
   }
 }
-package.method('generate', generate, {
+package.method('npm', npm, {
   description: 'generates package.json for a single resource',
   properties: {
     resource: {
