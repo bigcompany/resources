@@ -10,30 +10,12 @@ module['exports'] = function (options, callback) {
      inflect = '',
      record = options.data || {},
      entity  = '',
-     _props = r.methods.update.schema.properties.options.properties,
-     shouldGet;
-
-  //
-  // In the case that only the id is defined in options.data, we get the
-  // resource instance instead of trying to do an update. A simpler approach
-  // is to check that Object.keys(options.data) === 1, but this breaks when
-  // properties are keyed but have undefined values.
-  //
-  shouldGet = (typeof options.id !== 'undefined') || Object.keys(_props).every(function (k) {
-    var idAndIsSet = (options.data && (k === 'id' && typeof options.data.id !== 'undefined')),
-        notSet = options.data && typeof options.data[k] === 'undefined';
-
-    return idAndIsSet || notSet;
-  });
+     _props = r.methods.update.schema.properties.options.properties;
 
   $('legend').html(r.methods.update.schema.description);
 
-  if (shouldGet) {
-    r.get(options.id || options.data.id, function(err, record) {
-      showForm(record);
-    });
-  }
-  else if (options.data) {
+
+  if (options.data && options.data.submit) {
     r.update(options.data, function(err, result){
       if (err) {
         err.errors.forEach(function(e){
@@ -47,6 +29,11 @@ module['exports'] = function (options, callback) {
           return callback(null, re);
         });
       }
+    });
+  }
+  else if (options.id) {
+    return r.get(options.id || options.data.id, function(err, record) {
+      showForm(record);
     });
   }
   else {
