@@ -7,8 +7,6 @@ var resource = require('resource'),
 package.schema.description = 'for generating package files';
 
 function generate (_resource, callback) {
-  logger.info(".generate(", _resource, callback, ")");
-
   if(typeof _resource === 'string') {
     _resource = resource.use(_resource);
   }
@@ -19,39 +17,23 @@ function generate (_resource, callback) {
     version: _resource.version,
     description: _resource.schema.description,
     keywords: _resource.keywords,
-    homepage: _resource.homepage,
-    bugs: _resource.bugs,
     license: _resource.license,
     author: _resource.author,
     contributors: _resource.contributors,
-    files: _resource.files,
-    main: _resource.main || './index',
-    bin: _resource.bin,
-    man: _resource.man,
-    directories: _resource.directories,
+    main: './index',
     repository: _resource.repository,
     scripts: _resource.scripts,
-    //config: _resource.config,
-    dependencies: _resource.dependencies,
-    devDependencies: _resource.devDependencies,
-    bundledDependencies: _resource.bundledDependencies,
-    optionalDependencies: _resource.optionalDependencies,
-    engines: _resource.engines,
-    engineStrict: _resource.engineStrict,
-    os: _resource.os,
-    cpu: _resource.cpu,
-    preferGlobal: _resource.preferGlobal,
-    private: _resource.private,
-    publishConfig: _resource.publishConfig
+    dependencies: _resource.dependencies
   };
+  //logger.info("generated package.json for", _resource.name);
 
-  logger.info("generated package.json for", _resource.name);
-  logger.info(JSON.stringify(packagejson));
+  var str = JSON.stringify(packagejson, null, 2);
+  //logger.info(str);
 
   if(callback) {
-    return callback(null, packagejson);
+    return callback(null, str);
   } else {
-    return packagejson;
+    return str;
   }
 }
 package.method('generate', generate, {
@@ -103,19 +85,21 @@ function build () {
           //
           // Generate resource documentation
           //
-          var packagejson = package.generate(_resource, fs.readFileSync(__dirname + '/template.md').toString());
-
-          //
-          // Write resource documentation to disk
-          //
-          var _path = resourcePath + '/package.json';
-
-          fs.writeFileSync(_path, packagejson);
-          logger.info('wrote resource documentation: ' + path.resolve(_path).grey);
+          //logger.info("generating package.json for", JSON.stringify(_resource));
+          package.generate(_resource, function(err, packagejson) {
+            if (err) { throw err; }
+            //
+            // Write resource documentation to disk
+            //
+            var _path = resourcePath + '/package.json';
+            logger.info(_path, packagejson);
+            fs.writeFileSync(_path, packagejson);
+            logger.info('wrote package.json: ' + path.resolve(_path).grey);
+          });
         }
       } catch(err) {
         delete _resources[p];
-        logger.error('could not generate documentation for resource: ' + p);
+        logger.error('could not generate package.json for resource: ' + p);
         console.log(err);
       }
     }
