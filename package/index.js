@@ -6,24 +6,26 @@ var resource = require('resource'),
 
 package.schema.description = 'for generating package files';
 
-function generate (_resource, callback) {
+function npm (_resource, callback) {
+  //logger.info(".npm(", _resource, callback, ")");
+
   if(typeof _resource === 'string') {
     _resource = resource.use(_resource);
   }
 
   // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
+  // https://github.com/component/component/wiki/Spec
   var packagejson = {
-    name: _resource.name + '-resource',
+    name: 'big-' + _resource.name + '-resource',
     version: _resource.version,
     description: _resource.schema.description,
     keywords: _resource.keywords,
     license: _resource.license,
-    author: _resource.author,
-    contributors: _resource.contributors,
-    main: './index',
-    repository: _resource.repository,
-    scripts: _resource.scripts,
+    main: './index.js',
     dependencies: _resource.dependencies
+    // TODO: standardize tests into resource format and
+    // set devDependencies as dependencies of associated test resource
+    //devDependencies: _resource.devDependencies || _resource.development
   };
   //logger.info("generated package.json for", _resource.name);
 
@@ -36,7 +38,7 @@ function generate (_resource, callback) {
     return str;
   }
 }
-package.method('generate', generate, {
+package.method('npm', npm, {
   description: 'generates package.json for a single resource',
   properties: {
     resource: {
@@ -86,13 +88,12 @@ function build () {
           // Generate resource documentation
           //
           //logger.info("generating package.json for", JSON.stringify(_resource));
-          package.generate(_resource, function(err, packagejson) {
+          package.npm(_resource, function(err, packagejson) {
             if (err) { throw err; }
             //
             // Write resource documentation to disk
             //
             var _path = resourcePath + '/package.json';
-            logger.info(_path, packagejson);
             fs.writeFileSync(_path, packagejson);
             logger.info('wrote package.json: ' + path.resolve(_path).grey);
           });
