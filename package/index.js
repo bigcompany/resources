@@ -16,7 +16,7 @@ function npm (_resource, callback) {
   // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
   // https://github.com/component/component/wiki/Spec
   var packagejson = {
-    name: 'big-' + _resource.name + '-resource',
+    name: 'big-' + _resource.name,
     version: _resource.version,
     description: _resource.schema.description,
     keywords: _resource.keywords,
@@ -27,16 +27,13 @@ function npm (_resource, callback) {
     // set devDependencies as dependencies of associated test resource
     //devDependencies: _resource.devDependencies || _resource.development
   };
-  //logger.info("generated package.json for", _resource.name);
 
-  var str = JSON.stringify(packagejson, null, 2);
-  //logger.info(str);
-
-  if(callback) {
-    return callback(null, str);
+  if (callback) {
+    return callback(null, packagejson);
   } else {
-    return str;
+    return packagejson;
   }
+
 }
 package.method('npm', npm, {
   description: 'generates package.json for a single resource',
