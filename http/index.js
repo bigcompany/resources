@@ -51,47 +51,57 @@ function listen (options, callback) {
   var server;
 
   var connect = require('connect'),
-      express = require('express');
+      express = require('express'),
+      app = express();
 
-  var app = express();
+  //
+  // connectr module is used to enable management of Connect middleware stack
+  //
+  var connectr = require('connectr')(app);
 
-  app
-    .use(connect.favicon(__dirname + '/favicon.png'))
-    .use(connect.logger('dev'))
-    .use(connect.cookieParser())
-    .use(connect.session({ secret: 'my secret here' }));
+  //
+  // map the connectr methods for middleware management
+  //
+  app.before = connectr.before;
+  app.after = connectr.after;
+  app.first = connectr.first;
+  app.last = connectr.last;
+
+  connectr.use(connect.favicon(__dirname + '/favicon.png')).as('favicon');
+
+  connectr.use(connect.logger('dev')).as('logger');
+  connectr.use(connect.cookieParser()).as('cookieParser');
+  connectr.use(connect.session({ secret: 'my secret here' })).as('session');
 
   if(options.enableUploads === true) {
-    app
+    connectr
     .use(express.bodyParser({
       uploadDir: __dirname + '/uploads',
       keepExtensions: true
-    }));
+    })).as('bodyParser');
   }
 
-  app
-  .use(mergeParams);
-
+  connectr.use(mergeParams).as('mergeParams');
 
   //
   // Basic virtual host support
   //
-  if(resource.virtualhost) {
-    app.use(resource.virtualhost.middle);
+  if (resource.virtualhost) {
+    connectr.use(resource.virtualhost.middle).as('virtualhost');
   }
 
   //
   // API middleware
   //
-  if(resource.api) {
-    app.use(resource.api.middle);
+  if (resource.api) {
+    connectr.use(resource.api.middle).as('middle');
   }
 
   //
   // Explicitly use the app.router middleware here so that routes take
   // precedence over the view middleware
   //
-  app.use(app.router);
+  connectr.use(app.router).as('router');
 
   //
   // Use view middleware
@@ -105,19 +115,19 @@ function listen (options, callback) {
   finish();
 
   function finish() {
-    if(typeof options.root !== 'undefined') {
+
+    if (typeof options.root !== 'undefined') {
       //
       // Use http root passed in through options
       //
-      app
-        .use(connect.static(options.root));
+      connectr
+        .use(connect.static(options.root)).as("static");;
     }
 
     //
     // Use the default http root that ships with resources
     //
-    app
-      .use(connect.static(__dirname + '/public'));
+    // connectr.use(connect.static(__dirname + '/public')).as("static");
 
     http.server = server = require('http').createServer(app).listen(options.port, options.host, function () {
      callback(null, server);
@@ -128,6 +138,7 @@ function listen (options, callback) {
     //
     http.app = app;
     http.server = server;
+    http.connectr = connectr;
   }
 }
 
@@ -283,7 +294,8 @@ function request (options, callback) {
 http.dependencies = {
   "connect": "2.7.1",
   "express": "3.0.4",
-  "request": "2.12.0"
+  "request": "2.12.0",
+  "connectr": "0.0.3"
 };
 
 exports.http = http;
