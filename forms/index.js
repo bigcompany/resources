@@ -18,6 +18,10 @@ forms.method("generate", generate, {
         "method": {
           "type": "string",
           "required": true
+        },
+        "data": {
+          "type": "object",
+          "required": false
         }
       },
       "callback": {
