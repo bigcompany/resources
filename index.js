@@ -25,10 +25,13 @@ _resources = _resources.filter(function (val) {
 });
 
 //
-// For every resource, attempt to use it
+// Export `resources` on the module scope to store all currently loaded resources
+//
+exports.resources = {};
+
+//
+// For every resource, use it and export it
 //
 _resources.forEach(function (r) {
-  resource.use(r);
+  exports.resources[r] = resource.use(r);
 });
-
-exports.resources = _resources;
