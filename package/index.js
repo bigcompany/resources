@@ -49,60 +49,37 @@ package.method('npm', npm, {
 });
 
 function build () {
-  var _resources = {};
 
-  //
-  // Attempt to load /resources/ folder from current resources directory
-  //
-  var resourcesPath = (path.resolve(require.resolve('resources') + '/../'));
-  var dirs = fs.readdirSync(resourcesPath);
+  var resources = require('resources');
 
-  //
-  // Generate a README file for every resource
-  //
-  dirs.forEach(function(p){
-    var stat,
-        resourcePath,
-        resourceModule;
-
-    resourcePath = resourcesPath + '/' + p;
+  for (var r in resources) {
 
     //
-    // Check if path is actually a resource
+    // ignore 'logger' resource for now
+    // see: https://github.com/bigcompany/resource/issues/16
     //
-    if (resource.isResource(resourcePath)) {
-      //
-      // If file is a resource, then attempt to generate documentation for it
-      //
-      try {
-
-        var _resource = require(resourcesPath + '/' + p);
-        _resources[p] = {};
-        if(typeof _resource[p] !== 'undefined') {
-          _resource = _resource[p];
-
-          //
-          // Generate resource documentation
-          //
-          //logger.info("generating package.json for", JSON.stringify(_resource));
-          package.npm(_resource, function(err, packagejson) {
-            if (err) { throw err; }
-            //
-            // Write resource documentation to disk
-            //
-            var _path = resourcePath + '/package.json';
-            fs.writeFileSync(_path, packagejson);
-            logger.info('wrote package.json: ' + path.resolve(_path).grey);
-          });
-        }
-      } catch(err) {
-        delete _resources[p];
-        logger.error('could not generate package.json for resource: ' + p);
-        console.log(err);
-      }
+    if (r === 'logger') {
+      continue;
     }
-  });
 
+    //
+    // Generate an npm packge.json manifest
+    // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
+    //
+    var pkg = package.npm(resources[r]);
+
+    //
+    // Write the package
+    //
+    var fs = require('fs'),
+    path = require('path'),
+    packagePath = path.normalize(require.resolve('resources') + '/../' + r + '/package.json');
+    fs.writeFileSync(packagePath, JSON.stringify(pkg, true, 2));
+    resource.logger.info('wrote ' + packagePath)
+
+  }
+
+  //
   // TODO:
   // Generate a 'global' package.json file for all resources
   //
