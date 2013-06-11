@@ -243,7 +243,12 @@ function generateFooter() {
 }
 
 function build () {
-  var _resources = {};
+
+  //
+  // TODO: Remove duplicate resource loading code here in favor of require('resources')
+  //
+  var _resources = {},
+      resources = require('resources');
 
   //
   // Attempt to load /resources/ folder from current resources directory
@@ -301,7 +306,7 @@ function build () {
   // Generate a "global" README file for all resources
   //
   var str = '# resources - prerelease \n\n';
-  str += 'resources for any occasion \n\n'
+  str += 'resources for any occasion \n\n';
   Object.keys(_resources).forEach(function(r) {
     str += ' - [' + r + '](https://github.com/bigcompany/resources/tree/master/' + r +') ' + resource.resources[r].schema.description + '\n';
   });
