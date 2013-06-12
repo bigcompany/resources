@@ -16,10 +16,10 @@ function npm (_resource, callback) {
   // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
   // https://github.com/component/component/wiki/Spec
   var packagejson = {
-    name: 'big-' + _resource.name,
-    version: _resource.version,
+    name: 'resource-' + _resource.name,
+    version: _resource.version || resource.version,
     description: _resource.schema.description,
-    keywords: _resource.keywords,
+    keywords: _resource.keywords || [],
     license: _resource.license,
     main: './index.js',
     dependencies: _resource.dependencies
@@ -27,6 +27,14 @@ function npm (_resource, callback) {
     // set devDependencies as dependencies of associated test resource
     //devDependencies: _resource.devDependencies || _resource.development
   };
+
+  // Add global keywords
+  packagejson.keywords.push('big.vc', 'resource', 'resources');
+
+  // Add resource as dependency
+  packagejson.dependencies['resource'] = "0.4.x";
+
+  // TODO: sort dependencies by alphanumeric order
 
   if (callback) {
     return callback(null, packagejson);
@@ -50,7 +58,7 @@ package.method('npm', npm, {
 
 function build () {
 
-  var resources = require('resources');
+  var resources = require('resources').resources;
 
   for (var r in resources) {
 
