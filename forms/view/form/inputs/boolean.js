@@ -1,36 +1,38 @@
 //
-// string.js - input fields for String types
+// boolean.js - input fields for boolean types
 //
 
-module['exports'] = function (input, options, callback) {
+module['exports'] = function (options, callback) {
   //
   // Todo: This load statement should be moved to Viewful
   //
+  var input = options.control;
   var $ = this.$.load(this.template);
-  if(options.error) {
-    options.error.validate.errors.forEach(function(error){
-      if(input.name === error.property){
-        $('.control-group').addClass('error');
-        $('.help-inline').html(error.message);
-      }
-    });
-    for(var v in options.error.value) {
-      if(input.name === v){
-        input.value = options.error.value[v];
-      }
-    }
+  if(typeof input.error !== 'undefined') {
+    $('.control-group').addClass('error');
+    $('.help-inline').html(input.error.message);
   }
+  var label = $('.control-label');
+  label.attr('for', input.name);
+  label.html(input.name);
 
-  $('.control-label').attr('for', input.name);
-  $('.control-label').html(input.name);
-  $('input').attr('id',  input.name);
-  $('input').attr('name', input.name);
+  var hidden = $('input[type=hidden]');
+  hidden.attr('id', input.name);
+  hidden.attr('name', input.name);
 
-  if(input.value.toString() ===  "true") {
-    $('input').attr('checked', 'CHECKED');
+  var checkbox = $('input[type=checkbox]');
+  checkbox.attr('onclick', 
+      'document.getElementById("' + input.name + '").value = this.checked');
+
+  $('input').attr('value', input.value.toString());
+
+  if(input.value.toString() === "true") {
+    checkbox.attr('checked', 'CHECKED');
     //selected = ' SELECTED="SELECTED"'; // Bad string concat man!
   }
+  else {
+    checkbox.removeAttr('checked');
+  }
 
-
-  return $.html();
+  return callback(null, $.html());
 };
