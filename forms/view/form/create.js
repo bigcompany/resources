@@ -4,6 +4,22 @@ module['exports'] = function (options, callback) {
 
  options = options || {};
  var r = resource.resources[options.resource];
+
+ // convert form posted string values into their proper schema types
+ Object.keys(r.schema.properties).forEach(function (prop, i) {
+   if(options.data.hasOwnProperty(prop)) {
+     switch(r.schema.properties[prop].type) {
+       case "boolean":
+         options.data[prop] = options.data[prop] === 'true' ? true : false;
+         break;
+       case "array":
+         // TODO: account for the non-string array (items) types
+         options.data[prop] = options.data[prop].replace(', ', '').split(',');
+         break;
+     }
+   }
+ });
+
  var $ = this.$,
      self = this,
      output = '',
