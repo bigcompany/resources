@@ -1,0 +1,15 @@
+{
+  "name": "resource-socket",
+  "version": "0.4.0",
+  "description": "websockets resource",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "socket.io": "0.9.x",
+    "resource": "0.4.x"
+  }
+}

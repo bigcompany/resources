@@ -1,0 +1,14 @@
+{
+  "name": "resource-permissions",
+  "version": "0.4.0",
+  "description": "for managing permissions",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "resource-irc",
+  "version": "0.4.0",
+  "description": "for managing communication with irc",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "irc": "0.3.4",
+    "optimist": "0.3.5",
+    "resource": "0.4.x"
+  }
+}

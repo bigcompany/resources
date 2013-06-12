@@ -1,0 +1,16 @@
+{
+  "name": "resource-twitter",
+  "version": "0.4.0",
+  "description": "for interacting with the Twitter API",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "ntwitter": "0.5.0",
+    "twitter-text": "1.5.2",
+    "resource": "0.4.x"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "resource-tag",
+  "version": "0.4.0",
+  "description": "a simple hierarchical tagging system",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

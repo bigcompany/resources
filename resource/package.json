@@ -1,0 +1,14 @@
+{
+  "name": "resource-resource",
+  "version": "0.4.0",
+  "description": "meta-resource for describing and creating new resources",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

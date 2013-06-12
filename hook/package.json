@@ -1,0 +1,14 @@
+{
+  "name": "resource-hook",
+  "version": "0.4.0",
+  "description": "for managing event hooks ( IF this THEN that )",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

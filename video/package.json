@@ -1,0 +1,14 @@
+{
+  "name": "resource-video",
+  "version": "0.4.0",
+  "description": "for managing online digital videos",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "resource-admin",
+  "version": "0.4.0",
+  "description": "a web based admin panel",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "connect": "2.7.1",
+    "highlight": "0.2.3",
+    "resource": "0.4.x"
+  }
+}
