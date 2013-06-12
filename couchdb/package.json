@@ -1,0 +1,15 @@
+{
+  "name": "resource-couchdb",
+  "version": "0.4.0",
+  "description": "adds couchdb persistence",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "cradle": "0.6.4",
+    "resource": "0.4.x"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "resource-http",
+  "version": "0.4.0",
+  "description": "provides an HTTP API",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "connect": "2.7.1",
+    "express": "3.0.4",
+    "request": "2.12.0",
+    "resource": "0.4.x"
+  }
+}

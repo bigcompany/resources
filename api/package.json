@@ -1,0 +1,14 @@
+{
+  "name": "resource-api",
+  "version": "0.4.0",
+  "description": "provides a web API for interacting with resources",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

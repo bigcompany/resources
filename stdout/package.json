@@ -1,0 +1,14 @@
+{
+  "name": "resource-stdout",
+  "version": "0.4.0",
+  "description": "outputs all events as new-line delimited JSON fragments to STDOUT",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

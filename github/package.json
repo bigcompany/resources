@@ -1,0 +1,15 @@
+{
+  "name": "resource-github",
+  "version": "0.4.0",
+  "description": "for interacting with the Github.com API",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "github": "*",
+    "resource": "0.4.x"
+  }
+}

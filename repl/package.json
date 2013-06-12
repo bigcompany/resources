@@ -1,0 +1,14 @@
+{
+  "name": "resource-repl",
+  "version": "0.4.0",
+  "description": "enables an interactive Read-Eval-Print-Loop ( REPL )",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

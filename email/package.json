@@ -1,0 +1,14 @@
+{
+  "name": "resource-email",
+  "version": "0.4.0",
+  "description": "for sending emails",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}

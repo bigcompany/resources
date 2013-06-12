@@ -1,0 +1,15 @@
+{
+  "name": "resource-markdown",
+  "version": "0.4.0",
+  "description": "for parsing markdown",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "marked": "*",
+    "resource": "0.4.x"
+  }
+}

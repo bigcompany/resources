@@ -1,0 +1,14 @@
+{
+  "name": "resource-datasource",
+  "version": "0.4.0",
+  "description": "perists resources to data storage engines",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
+}
