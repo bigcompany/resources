@@ -32,7 +32,9 @@ forms.method("generate", generate, {
 });
 
 function generate (options, callback) {
-  options.data = fixDataTypes(options);
+  if (options.data) {
+    options.data = coerceTypes(resource[options.resource].schema, options.data);
+  }
   resource.view.create({ path: __dirname + '/view', input: "html"}, function (err, view) {
     var str = '', form;
     form = view.form[options.method] || view.form['method'];
@@ -45,28 +47,32 @@ function generate (options, callback) {
   });
 };
 
-// form variables are posted as strings, so we use the 
-// resource schema to reset the values to the proper types
-function fixDataTypes(options) {
-  var data = options.data;
-  var r = resource.resources[options.resource];
-  if(Object.keys(data).length === 0)
-    return data; //{}
-  Object.keys(r.schema.properties).forEach(function (prop, i) {
-    if(data.hasOwnProperty(prop)) {
-      var item = r.schema.properties[prop];
-      switch(item['type']) {
-        case 'boolean':
-          data[prop] = data[prop] === 'true' ? true : false;
-          break;
-        case 'array':
-          // TODO: refactor required for different array types
-          data[prop] = data[prop].replace(', ', '').split(',');
-          break;
-        case 'number':
-          data[prop] = Number(data[prop]);
-          break;
-      }
+// incoming data from an interface such as HTTP form submits come in as strings,
+// so we use the resource schema to coerce string values into the proper JavaScript types
+function coerceTypes (schema, data) {
+  if (typeof data === 'object' && Object.keys(data).length === 0) {
+    return data;
+  }
+  Object.keys(schema.properties).forEach(function (prop, i) {
+    var item = schema.properties[prop];
+    switch(item['type']) {
+      case 'boolean':
+        // Remark: the non-existence of a boolean property indicates a false value
+        if (typeof data[prop] === 'undefined') {
+          data[prop] = false;
+        } else {
+          if(data[prop] !== 'false') {
+            data[prop] = true;
+          }
+        }
+        break;
+      case 'array':
+        // TODO: refactor required for different array types
+        data[prop] = data[prop].replace(', ', '').split(',');
+        break;
+      case 'number':
+        data[prop] = Number(data[prop]);
+        break;
     }
   });
   return data;
