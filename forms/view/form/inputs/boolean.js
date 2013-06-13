@@ -16,19 +16,12 @@ module['exports'] = function (options, callback) {
   label.attr('for', input.name);
   label.html(input.name);
 
-  var hidden = $('input[type=hidden]');
-  hidden.attr('id', input.name);
-  hidden.attr('name', input.name);
-
   var checkbox = $('input[type=checkbox]');
-  checkbox.attr('onclick', 
-      'document.getElementById("' + input.name + '").value = this.checked');
 
-  $('input').attr('value', input.value.toString());
+  checkbox.attr('name', input.name);
 
   if(input.value.toString() === "true") {
     checkbox.attr('checked', 'CHECKED');
-    //selected = ' SELECTED="SELECTED"'; // Bad string concat man!
   }
   else {
     checkbox.removeAttr('checked');
