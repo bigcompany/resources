@@ -7,39 +7,62 @@ var resource = require('resource'),
 package.schema.description = 'for generating package files';
 
 function npm (_resource, callback) {
-  //logger.info(".npm(", _resource, callback, ")");
 
   if(typeof _resource === 'string') {
     _resource = resource.use(_resource);
   }
 
-  // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
-  // https://github.com/component/component/wiki/Spec
-  var packagejson = {
-    name: 'resource-' + _resource.name,
-    version: _resource.version || resource.version,
-    description: _resource.schema.description,
-    keywords: _resource.keywords || [],
-    license: _resource.license,
-    main: './index.js',
-    dependencies: _resource.dependencies
-    // TODO: standardize tests into resource format and
-    // set devDependencies as dependencies of associated test resource
-    //devDependencies: _resource.devDependencies || _resource.development
-  };
+  // if resource version not set, since it is required
+  // for packagejson then use the resource module
+  _resource.version = _resource.version || resource.version;
 
+  // default keywords manually
+  _resource.keywords = _resource.keywords || [];
   // Add global keywords
-  packagejson.keywords.push('big.vc', 'resource', 'resources');
+  _resource.keywords.push('big.vc', 'resource', 'resources');
 
+  // default dependencies manually
+  _resource.dependencies = _resource.dependencies || {};
   // Add resource as dependency
-  packagejson.dependencies['resource'] = "0.4.x";
+  _resource.dependencies['resource'] = "0.4.x";
 
-  // TODO: sort dependencies by alphanumeric order
+  if (resource.validator.validate(_resource, resource.resource.schema)) {
+    // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
+    // https://github.com/component/component/wiki/Spec
+    var packagejson = {
+      name: 'resource-' + _resource.name,
+      version: _resource.version,
+      description: _resource.schema.description,
+      keywords: _resource.keywords,
+      license: _resource.license,
+      main: './index.js',
+      dependencies: _resource.dependencies
+      // TODO: standardize tests into resource format and
+      // set devDependencies as dependencies of associated test resource
+      //devDependencies: _resource.devDependencies || _resource.development
+    };
 
-  if (callback) {
-    return callback(null, packagejson);
+    // delete any undefined's
+    for (var prop in packagejson) {
+      if (packagejson[prop] === undefined) {
+        delete packagejson[prop];
+      }
+    }
+
+    // TODO: sort dependencies by alphanumeric order
+
+    if (callback) {
+      return callback(null, packagejson);
+    } else {
+      return packagejson;
+    }
   } else {
-    return packagejson;
+    var err = new Error("invalid resource " + _resource.name);
+    if (callback) {
+      return callback(err);
+    } else {
+      throw err;
+    }
   }
 
 }
@@ -83,7 +106,7 @@ function build () {
     path = require('path'),
     packagePath = path.normalize(require.resolve('resources') + '/../' + r + '/package.json');
     fs.writeFileSync(packagePath, JSON.stringify(pkg, true, 2));
-    resource.logger.info('wrote ' + packagePath)
+    resource.logger.info('wrote ' + packagePath);
 
   }
 
