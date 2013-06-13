@@ -72,7 +72,7 @@ account.before('create', function(_account, next) {
   //
   // Generate a new UUID for the account's access token
   //
-  _account.token = resource.uuid();
+  _account.token = resource.persistence.uuid();
   next(null, _account)
 });
 
@@ -101,7 +101,7 @@ function reset (email, callback) {
     if(_account.length === 0) {
       return callback(new Error('could not find any accounts with email ' + email));
     }
-    _account[0].token = resource.uuid();
+    _account[0].token = resource.persistence.uuid();
     _account[0].save(function(err, result){
       if (err) {
         return callback(err);
