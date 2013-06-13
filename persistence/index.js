@@ -1,6 +1,8 @@
 var resource = require('resource'),
     persistence = resource.define('persistence');
 
+persistence.schema.description = "enables persistence for resources";
+
 persistence.method('enable', enable);
 
 //
