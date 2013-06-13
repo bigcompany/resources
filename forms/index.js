@@ -32,6 +32,7 @@ forms.method("generate", generate, {
 });
 
 function generate (options, callback) {
+  options.data = fixDataTypes(options);
   resource.view.create({ path: __dirname + '/view', input: "html"}, function (err, view) {
     var str = '', form;
     form = view.form[options.method] || view.form['method'];
@@ -43,5 +44,32 @@ function generate (options, callback) {
     });
   });
 };
+
+// form variables are posted as strings, so we use the 
+// resource schema to reset the values to the proper types
+function fixDataTypes(options) {
+  var data = options.data;
+  var r = resource.resources[options.resource];
+  if(Object.keys(data).length === 0)
+    return data; //{}
+  Object.keys(r.schema.properties).forEach(function (prop, i) {
+    if(data.hasOwnProperty(prop)) {
+      var item = r.schema.properties[prop];
+      switch(item['type']) {
+        case 'boolean':
+          data[prop] = data[prop] === 'true' ? true : false;
+          break;
+        case 'array':
+          // TODO: refactor required for different array types
+          data[prop] = data[prop].replace(', ', '').split(',');
+          break;
+        case 'number':
+          data[prop] = Number(data[prop]);
+          break;
+      }
+    }
+  });
+  return data;
+}
 
 exports.forms = forms;

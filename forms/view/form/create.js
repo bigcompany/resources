@@ -4,6 +4,7 @@ module['exports'] = function (options, callback) {
 
  options = options || {};
  var r = resource.resources[options.resource];
+ 
  var $ = this.$,
      self = this,
      output = '',
