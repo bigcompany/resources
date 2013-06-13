@@ -81,6 +81,7 @@ function listen (options, callback) {
   }
 
   function next(err) {
+
     if (err) {
       callback(err);
       return;
@@ -137,44 +138,11 @@ function listen (options, callback) {
 
       resource.http.app.post('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
 
-        var _resource = resource.resources[req.param('_resource')],
-            _method = _resource[req.param('_method')],
-            id = req.param('id'),
-            str,
-            data = req.big.params,
-            props = _method.schema.properties || {};
+        var id = req.param('id'),
+            data = req.big.params;
 
         delete data._resource;
         delete data._method;
-
-        if(typeof _method.schema === 'undefined') {
-          _method.schema = {
-            properties: {}
-          };
-        }
-
-        //
-        // If an options hash is expected in the resource method
-        //
-        if(_method.schema.properties && typeof _method.schema.properties.options !== 'undefined') {
-          props = _method.schema.properties.options.properties;
-        }
-
-        //
-        // If a value is supposed to be a number, attempt to coerce it
-        //
-        // TODO: How should this behave for "any" cases? Keep in mind that
-        // ip addresses will successfully parse as floats.
-        //
-        Object.keys(data).forEach(function (p) {
-          if (props && props[p] && props[p].type === 'number') {
-            var coerced = parseFloat(data[p], 10);
-
-            if (coerced.toString() !== 'NaN') {
-              data[p] = coerced;
-            }
-          }
-        });
 
         view.method.present({
           resource: req.param('_resource'),
@@ -202,34 +170,7 @@ function listen (options, callback) {
 
       resource.http.app.post('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
 
-        var _method = resource.resources[req.param('_resource')].methods[req.param('_method')];
-
-        //
-        // Pull out all the params from the request based on schema
-        //
-        if(typeof _method.schema === 'undefined') {
-          _method.schema = {
-            properties: {}
-          };
-        }
-
-        var props, str, data = req.big.params;
-
-        props = _method.schema.properties || {};
-
-        if(typeof _method.schema.properties !== 'undefined' && typeof _method.schema.properties.options !== 'undefined') {
-          props = _method.schema.properties.options.properties;
-        }
-
-        Object.keys(props).forEach(function(prop) {
-          data[prop] = req.param(prop);
-          if(props[prop].type === "number") {
-            data[prop] = Number(req.param(prop));
-            if(data[prop].toString() === "NaN") {
-              data[prop] = req.param(prop);
-            }
-          }
-        });
+        var data = req.big.params;
 
         view.method.present({
           resource: req.param('_resource'),
@@ -248,7 +189,6 @@ function listen (options, callback) {
       callback(null, resource.http.server);
 
     });
-
 
   }
 }
