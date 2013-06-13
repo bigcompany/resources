@@ -71,7 +71,10 @@ function coerceTypes (schema, data) {
         data[prop] = data[prop].replace(', ', '').split(',');
         break;
       case 'number':
-        data[prop] = Number(data[prop]);
+        var numbery = parseFloat(data[prop], 10);
+        if (numbery.toString() !== 'NaN') {
+          data[prop] = numbery;
+        }
         break;
     }
   });
