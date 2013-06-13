@@ -56,14 +56,14 @@ function fixDataTypes(options) {
     if(data.hasOwnProperty(prop)) {
       var item = r.schema.properties[prop];
       switch(item['type']) {
-        case "boolean":
+        case 'boolean':
           data[prop] = data[prop] === 'true' ? true : false;
           break;
-        case "array":
+        case 'array':
           // TODO: refactor required for different array types
           data[prop] = data[prop].replace(', ', '').split(',');
           break;
-        case "number":
+        case 'number':
           data[prop] = Number(data[prop]);
           break;
       }
