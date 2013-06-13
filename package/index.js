@@ -51,18 +51,11 @@ function npm (_resource, callback) {
 
     // TODO: sort dependencies by alphanumeric order
 
-    if (callback) {
-      return callback(null, packagejson);
-    } else {
-      return packagejson;
-    }
+    return packagejson;
+
   } else {
     var err = new Error("invalid resource " + _resource.name);
-    if (callback) {
-      return callback(err);
-    } else {
-      throw err;
-    }
+    throw err;
   }
 
 }
