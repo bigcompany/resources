@@ -15,13 +15,12 @@ module['exports'] = function(options, callback) {
      entity = options.resource || 'unknown';
 
   if (options.data) {
-
     //
     // Remove all blank values
     //
     var query = {};
     Object.keys(options.data).forEach(function(prop){
-      if(options.data[prop].length > 0) {
+      if(typeof options.data[prop] !== 'undefined' && options.data[prop].length > 0) {
         query[prop] = options.data[prop];
       }
     });
