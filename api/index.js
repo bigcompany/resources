@@ -158,6 +158,9 @@ function handle(options, req, res) {
     ) {
       var props = _method.schema.properties.options.properties;
 
+      //
+      // TODO: do we need to coerce additional types here?
+      //
       Object.keys(data).forEach(function (p) {
         if (props && props[p] && props[p].type === 'number') {
           var coerced = parseFloat(data[p], 10);
