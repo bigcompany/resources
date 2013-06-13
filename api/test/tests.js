@@ -10,6 +10,11 @@ tap.test("start an api server", function (t) {
   resource.use('api');
   resource.use('http');
 
+  creature.property('isAwesome', { type: 'boolean', default: false });
+  creature.property('foo');
+
+  creature.persist('memory');
+
   //
   // Add a method to creature for testing instance-scoped method calls
   //
@@ -18,7 +23,8 @@ tap.test("start an api server", function (t) {
     properties: {
       options: creature.schema,
       callback: {
-        type: 'function'
+        type: 'function',
+        required: true
       }
     }
   });
@@ -26,7 +32,6 @@ tap.test("start an api server", function (t) {
     options.life = options.life + 1;
     callback(null, options);
   }
-
   resource.http.start(function (err, _server) {
     t.error(err, 'no error');
     t.ok(_server, 'server is returned');
@@ -54,6 +59,7 @@ tap.test("strict api tests with creature", function (t) {
     ;
   });
 
+  /*
   t.test("get /api/creature", function (t) {
     supertest(server)
       .get('/api/creature')
@@ -83,12 +89,52 @@ tap.test("strict api tests with creature", function (t) {
       })
     ;
   });
+  */
 
-  //
-  // We should be able to create with either POST or PUT (PUT is explicitly for
-  // creates and updates)
-  //
-  t.test("create a new creature by posting to /api/creature with id", function (t) {
+  t.test("create a new creature by posting to /api/creature/larry", function (t) {
+    supertest(server)
+      .post('/api/creature/larry')
+      .expect(201)
+      .expect('Content-Type', 'application/json')
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        t.equal(body.id, 'larry', 'id is larry');
+
+        t.end();
+      })
+    ;
+  });
+
+  t.test("create a new creature by posting to /api/creature with id in body", function (t) {
+    supertest(server)
+      .post('/api/creature')
+      .send({ id: 'bobby', life: 99, isAwesome: true })
+      .expect(201)
+      .expect('Content-Type', 'application/json')
+      .end(function (err, res) {
+        t.error(err, 'no error');
+
+        var body = {};
+        t.doesNotThrow(function () {
+          body = JSON.parse(res.text);
+        }, 'body is valid JSON');
+
+        t.equal(body.id, 'bobby', 'id is bobby');
+        t.equal(body.life, 99, 'life is 99');
+        t.equal(body.isAwesome, true, 'isAwesome is true');
+
+        t.end();
+      })
+    ;
+  });
+
+  t.test("create a new creature by putting to /api/creature with id", function (t) {
     supertest(server)
       .put('/api/creature/korben')
       .expect(201)
@@ -709,16 +755,13 @@ tap.test("non-strict api tests with creature", function (t) {
       .expect('Content-Type', 'application/json')
       .end(function (err, res) {
         t.error(err, 'no error');
-
         var body = {};
         t.doesNotThrow(function () {
           body = JSON.parse(res.text);
         }, 'body is valid JSON');
-
         t.type(body, 'object', 'creature is object');
         t.equal(body.id, 'leila', 'id is leila');
         t.equal(body.life, 10, 'life is 10');
-
         t.end();
       })
     ;
