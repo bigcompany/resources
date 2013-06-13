@@ -32,7 +32,7 @@ forms.method("generate", generate, {
 });
 
 function generate (options, callback) {
-  this.data = fixDataTypes(options);
+  options.data = fixDataTypes(options);
   resource.view.create({ path: __dirname + '/view', input: "html"}, function (err, view) {
     var str = '', form;
     form = view.form[options.method] || view.form['method'];
