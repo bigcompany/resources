@@ -232,7 +232,7 @@ function handle(options, req, res) {
     }
 
     function reply(err, result, status) {
-      if (typeof status == 'number' || typeof status == 'string') {
+      if (typeof status === 'number' || typeof status === 'string') {
         res.statusCode = status;
       }
 
