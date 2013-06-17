@@ -85,24 +85,24 @@ test("start view from single template at given path", function (t) {
   });
 });
 
-// TODO: should this use case be supported?
-test("start view from single presenter at given path", function (t) {
-  var viewPath = __dirname + "/view20";
-  view.create( { path: viewPath } , function(err, _view) {
-    t.ok(!err, 'no error');
-    t.ok(_view, 'view is returned');
-    t.equal(_view.viewPath, viewPath,
-      'viewPath was correctly set to path: ' + viewPath);
-    _view.index.present({}, function (err, result) {
-      t.ok(!err, 'no error');
-      t.ok(result, 'present returns result');
-      t.equal(result,
-        '<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
-        'present() returns correct result');
-      t.end();
-    });
-  });
-});
+// TODO: should this use case (js but no html) be supported?
+//test("start view from single presenter at given path", function (t) {
+//  var viewPath = __dirname + "/view20";
+//  view.create( { path: viewPath } , function(err, _view) {
+//    t.ok(!err, 'no error');
+//    t.ok(_view, 'view is returned');
+//    t.equal(_view.viewPath, viewPath,
+//      'viewPath was correctly set to path: ' + viewPath);
+//    _view.index.present({}, function (err, result) {
+//      t.ok(!err, 'no error');
+//      t.ok(result, 'present returns result');
+//      t.equal(result,
+//        '<div class="user">\n\t<div class="name">name</div>\n\t<div class="email">email</div>\n</div>\n',
+//        'present() returns correct result');
+//      t.end();
+//    });
+//  });
+//});
 
 test("start view from given path containing single template and presenter", function (t) {
   view.create( { path: __dirname + "/view2" } , function(err, _view) {
@@ -134,7 +134,7 @@ test("start view from given path containing single template and presenter with l
   });
 });
 
-// TODO: is this test valid?
+// TODO: should this use case (layout presenter but no template) be supported?
 test("start view from given path containing single template and presenter with layout presenter", function (t) {
   view.create( { path: __dirname + "/view4" } , function(err, _view) {
     t.ok(!err, 'no error');
