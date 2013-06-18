@@ -2,6 +2,8 @@
 
 {{desc}}
 
+{{parts}}
+
 {{tagline}}
 
 {{toc}}

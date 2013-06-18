@@ -41,6 +41,24 @@ function generate (_resource, template, callback) {
 
   template = fs.readFileSync(__dirname + '/template.md').toString();
 
+  // check to see if /docs are available
+  var docsPath = path.normalize(require.resolve('resources') + "/../" + _resource.name + '/docs'),
+      parts = '',
+      docs;
+
+  try {
+    docs = fs.readdirSync(docsPath);
+  } catch (err) {
+	// no docs folder found, do nothing
+  }
+
+  if (docs) {
+	// iterate through every file looking for markdown
+	docs.forEach(function(doc){
+	  parts += fs.readFileSync(docsPath + '/' + doc).toString() + '\n\n';
+	});
+  }
+
   swig.configure({
       autoescape: false
   });
@@ -48,6 +66,7 @@ function generate (_resource, template, callback) {
   var data = {
     toc: tableOfContents(_resource),
     name: _resource.name + '\n',
+    parts: parts,
     desc: _resource.schema.description,
     usage: resourceUsage(_resource),
     properties: resourceProperties(_resource),
