@@ -2,6 +2,7 @@
 
 for managing and keeping track of replication events
 
+
 ## API
 
 #### [properties](#replication-properties)
@@ -51,7 +52,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Thu May 23 2013 16:58:45 GMT-0700 (PDT)
+  - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
 
 - **source** 
 
@@ -100,7 +101,7 @@ create a new replication
 
       - **type** : string
 
-      - **default** : Thu May 23 2013 16:58:45 GMT-0700 (PDT)
+      - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
 
     - **source** 
 
@@ -246,7 +247,7 @@ updates a replication by id
 
       - **type** : string
 
-      - **default** : Thu May 23 2013 16:58:45 GMT-0700 (PDT)
+      - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
 
     - **source** 
 
@@ -294,7 +295,7 @@ updates a replication by id, and creates if necessary
 
       - **type** : string
 
-      - **default** : Thu May 23 2013 16:58:45 GMT-0700 (PDT)
+      - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
 
     - **source** 
 

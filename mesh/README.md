@@ -2,6 +2,7 @@
 
 provides a distributed p2p event emitter mesh
 
+
 ## API
 
 #### [properties](#mesh-properties)

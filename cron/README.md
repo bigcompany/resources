@@ -2,6 +2,7 @@
 
 for managing cron jobs
 
+
 ## API
 
 #### [properties](#cron-properties)

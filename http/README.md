@@ -2,6 +2,7 @@
 
 provides an HTTP API
 
+
 ## API
 
 #### [properties](#http-properties)
@@ -53,7 +54,7 @@ provides an HTTP API
 
   - **type** : string
 
-  - **default** : /home/josh/dev/bigcompany/big/public
+  - **default** : /Users/macbookpro/dev/big/big/public
 
 
 <a name="http-methods"></a> 
@@ -92,7 +93,7 @@ starts a listening http server
 
       - **type** : string
 
-      - **default** : /home/josh/dev/bigcompany/big/public
+      - **default** : /Users/macbookpro/dev/big/big/public
 
     - **enableUploads** 
 
@@ -140,7 +141,7 @@ starts a listening http server
 
       - **type** : string
 
-      - **default** : /home/josh/dev/bigcompany/big/public
+      - **default** : /Users/macbookpro/dev/big/big/public
 
     - **enableUploads** 
 

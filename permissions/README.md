@@ -2,6 +2,7 @@
 
 for managing permissions
 
+
 ## API
 
 #### [properties](#permissions-properties)

@@ -2,6 +2,7 @@
 
 for sending emails
 
+
 ## API
 
 #### [properties](#email-properties)

@@ -2,6 +2,14 @@
 
 for managing accounts
 
+# Features
+
+ - Signups
+ - Confirmations
+ - Password Resets
+
+
+
 ## API
 
 #### [properties](#account-properties)

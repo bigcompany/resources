@@ -2,6 +2,7 @@
 
 for managing views
 
+
 ## API
 
 #### [properties](#view-properties)

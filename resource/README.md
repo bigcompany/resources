@@ -2,6 +2,7 @@
 
 meta-resource for describing and creating new resources
 
+
 ## API
 
 #### [properties](#resource-properties)

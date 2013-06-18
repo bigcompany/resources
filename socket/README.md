@@ -2,6 +2,7 @@
 
 websockets resource
 
+
 ## API
 
 #### [properties](#socket-properties)

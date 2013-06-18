@@ -18,17 +18,22 @@ resources for any occasion
  - [docs](https://github.com/bigcompany/resources/tree/master/docs) for generating documentation
  - [email](https://github.com/bigcompany/resources/tree/master/email) for sending emails
  - [forms](https://github.com/bigcompany/resources/tree/master/forms) for generating HTML forms
+ - [fs](https://github.com/bigcompany/resources/tree/master/fs) adds file-system persistence
  - [github](https://github.com/bigcompany/resources/tree/master/github) for interacting with the Github.com API
  - [hook](https://github.com/bigcompany/resources/tree/master/hook) for managing event hooks ( IF this THEN that )
  - [html](https://github.com/bigcompany/resources/tree/master/html) for rendering html
  - [http](https://github.com/bigcompany/resources/tree/master/http) provides an HTTP API
  - [irc](https://github.com/bigcompany/resources/tree/master/irc) for managing communication with irc
  - [markdown](https://github.com/bigcompany/resources/tree/master/markdown) for parsing markdown
+ - [memory](https://github.com/bigcompany/resources/tree/master/memory) adds memory persistence
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) provides a distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes
+ - [npm](https://github.com/bigcompany/resources/tree/master/npm) for interacting with the Node Package Manager api
  - [oauth](https://github.com/bigcompany/resources/tree/master/oauth) for managing oauth providers and sessions
+ - [package](https://github.com/bigcompany/resources/tree/master/package) for generating package files
  - [page](https://github.com/bigcompany/resources/tree/master/page) for representing HTML pages
  - [permissions](https://github.com/bigcompany/resources/tree/master/permissions) for managing permissions
+ - [persistence](https://github.com/bigcompany/resources/tree/master/persistence) enables persistence for resources
  - [queue](https://github.com/bigcompany/resources/tree/master/queue) a queue for resource events
  - [repl](https://github.com/bigcompany/resources/tree/master/repl) enables an interactive Read-Eval-Print-Loop ( REPL )
  - [replication](https://github.com/bigcompany/resources/tree/master/replication) for managing and keeping track of replication events

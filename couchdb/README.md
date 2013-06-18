@@ -2,6 +2,7 @@
 
 adds couchdb persistence
 
+
 ## API
 
 #### [properties](#couchdb-properties)
@@ -10,6 +11,8 @@ adds couchdb persistence
 
 
 #### [methods](#couchdb-methods)
+
+  - [start](#couchdb-methods-start) ()
 
 
 adds couchdb persistence
@@ -22,6 +25,12 @@ adds couchdb persistence
 <a name="couchdb-methods"></a> 
 
 ## methods 
+
+<a name="couchdb-methods-start"></a> 
+
+### couchdb.start()
+
+
 
 
 ## dependencies 

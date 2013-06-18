@@ -2,6 +2,7 @@
 
 provides virtual hosts
 
+
 ## API
 
 #### [properties](#virtualhost-properties)

@@ -2,6 +2,7 @@
 
 a basic calculator
 
+
 ## API
 
 #### [properties](#calculator-properties)

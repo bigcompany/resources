@@ -2,6 +2,7 @@
 
 configuration management for resources
 
+
 ## API
 
 #### [properties](#config-properties)

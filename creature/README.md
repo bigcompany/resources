@@ -2,6 +2,7 @@
 
 example resource for creatures like dragons, unicorns, and ponies
 
+
 ## API
 
 #### [properties](#creature-properties)
@@ -11,6 +12,8 @@ example resource for creatures like dragons, unicorns, and ponies
   - [type](#creature-properties-type)
 
   - [life](#creature-properties-life)
+
+  - [isAwesome](#creature-properties-isAwesome)
 
 
 #### [methods](#creature-methods)
@@ -65,6 +68,12 @@ example resource for creatures like dragons, unicorns, and ponies
 
   - **default** : 10
 
+- **isAwesome** 
+
+  - **type** : boolean
+
+  - **default** : true
+
 
 <a name="creature-methods"></a> 
 
@@ -105,6 +114,12 @@ create a new creature
       - **type** : number
 
       - **default** : 10
+
+    - **isAwesome** 
+
+      - **type** : boolean
+
+      - **default** : true
 
 - **callback** 
 
@@ -164,6 +179,14 @@ search for instances of creature
 
       - **required** : false
 
+    - **isAwesome** 
+
+      - **type** : any
+
+      - **default** : 
+
+      - **required** : false
+
 - **callback** 
 
   - **type** : function
@@ -214,6 +237,12 @@ updates a creature by id
 
       - **default** : 10
 
+    - **isAwesome** 
+
+      - **type** : boolean
+
+      - **default** : true
+
 - **callback** 
 
   - **type** : function
@@ -253,6 +282,12 @@ updates a creature by id, and creates if necessary
       - **type** : number
 
       - **default** : 10
+
+    - **isAwesome** 
+
+      - **type** : boolean
+
+      - **default** : true
 
 - **callback** 
 

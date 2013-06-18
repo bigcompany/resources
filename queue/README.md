@@ -2,6 +2,7 @@
 
 a queue for resource events
 
+
 ## API
 
 #### [properties](#queue-properties)

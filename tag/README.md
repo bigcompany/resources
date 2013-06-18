@@ -2,6 +2,7 @@
 
 a simple hierarchical tagging system
 
+
 ## API
 
 #### [properties](#tag-properties)

@@ -2,6 +2,7 @@
 
 for managing communication with irc
 
+
 ## API
 
 #### [properties](#irc-properties)

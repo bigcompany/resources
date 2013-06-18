@@ -2,6 +2,7 @@
 
 allows application to listen for input from STDIN
 
+
 ## API
 
 #### [properties](#stdin-properties)

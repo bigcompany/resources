@@ -2,6 +2,7 @@
 
 provides an application replication API for resource based apps
 
+
 ## API
 
 #### [properties](#replicator-properties)

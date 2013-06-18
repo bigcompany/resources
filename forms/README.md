@@ -2,6 +2,7 @@
 
 for generating HTML forms
 
+
 ## API
 
 #### [properties](#forms-properties)
@@ -46,6 +47,12 @@ generates a new form based on a resource schema
       - **type** : string
 
       - **required** : true
+
+    - **data** 
+
+      - **type** : object
+
+      - **required** : false
 
   - **callback**
 

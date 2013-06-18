@@ -2,6 +2,7 @@
 
 outputs all events as new-line delimited JSON fragments to STDOUT
 
+
 ## API
 
 #### [properties](#stdout-properties)
