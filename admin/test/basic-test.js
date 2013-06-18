@@ -1,5 +1,7 @@
 var wd = require('wd')
   , assert = require('assert')
+  , resource = require('resource')
+  , server
   , browser = wd.remote();
 
 /*
@@ -14,6 +16,22 @@ browser.on('command', function(meth, path, data) {
 */
 
 var tap = require("tap");
+
+
+tap.test('start the admin resource', function (t) {
+
+  var admin = resource.use('admin');
+  resource.use('account');
+  resource.use('creature');
+  admin.start(function(err, _server) {
+	console.log('ss', server)
+	server = _server;
+	t.ok(true, 'admin server started');
+    t.end();
+  });
+
+});
+
 
 tap.test('start the webdriver client', function (t) {
 
@@ -114,5 +132,10 @@ tap.test("submiting the form at /resources/creature/create", function (t) {
 
 tap.test('clean up and shut down browser', function (t) {
   browser.quit();
+  t.end();
+});
+
+tap.test('clean up and shut down server', function (t) {
+  server.close();
   t.end();
 });
