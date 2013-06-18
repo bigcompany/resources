@@ -2,13 +2,14 @@
 
 a web based admin panel
 
-# Features
+## Features
 
  - Web administration interface for [resources](http://github.com/bigcompany/resources)
  - Forms
+ - Suite of browser integration tests
 
 
-# Running the tests
+## Running the tests
 
  - Install `wd` package from npm
  - Install [Selenium Stand-alone Server](http://docs.seleniumhq.org/download/) [Download](http://selenium.googlecode.com/files/selenium-server-standalone-2.33.0.jar) 

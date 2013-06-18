@@ -2,7 +2,7 @@
 
 for managing accounts
 
-# Features
+## Features
 
  - Signups
  - Confirmations
