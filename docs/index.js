@@ -55,7 +55,7 @@ function generate (_resource, template, callback) {
   if (docs) {
 	// iterate through every file looking for markdown
 	docs.forEach(function(doc){
-	  parts += fs.readFileSync(docsPath + '/' + doc).toString() + '\n\n';
+	  parts += '\n' + fs.readFileSync(docsPath + '/' + doc).toString() + '\n\n';
 	});
   }
 
