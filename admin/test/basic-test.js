@@ -24,7 +24,6 @@ tap.test('start the admin resource', function (t) {
   resource.use('account');
   resource.use('creature');
   admin.start(function(err, _server) {
-	console.log('ss', server)
 	server = _server;
 	t.ok(true, 'admin server started');
     t.end();
