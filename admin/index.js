@@ -139,7 +139,7 @@ function listen (options, callback) {
       resource.http.app.post('/admin/resources/:_resource/:_method', auth, function (req, res, next) {
 
         var id = req.param('id'),
-            data = req.big.params;
+            data = req.resource.params;
 
         delete data._resource;
         delete data._method;
@@ -170,7 +170,7 @@ function listen (options, callback) {
 
       resource.http.app.post('/admin/resources/:_resource/:_method/:id', auth, function (req, res, next) {
 
-        var data = req.big.params;
+        var data = req.resource.params;
 
         view.method.present({
           resource: req.param('_resource'),
