@@ -79,7 +79,7 @@ function handle(options, req, res) {
       isCrudMethod = false,
       status;
 
-  var data = req.big.params;
+  var data = req.resource.params;
 
   if (options.id) {
     data.id = options.id;
