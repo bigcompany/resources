@@ -150,28 +150,6 @@ function handle(options, req, res) {
   }
   else {
 
-    if (
-      _method.schema &&
-      _method.schema.properties &&
-      _method.schema.properties.options &&
-      _method.schema.properties.options.properties
-    ) {
-      var props = _method.schema.properties.options.properties;
-
-      //
-      // TODO: do we need to coerce additional types here?
-      //
-      Object.keys(data).forEach(function (p) {
-        if (props && props[p] && props[p].type === 'number') {
-          var coerced = parseFloat(data[p], 10);
-
-          if (coerced.toString() !== 'NaN') {
-            data[p] = coerced;
-          }
-        }
-      });
-    }
-
     if (typeof options.id !== 'undefined' && !isCrudMethod) {
       _resource.methods.get(options.id, function (err, inst) {
         if (err) {
@@ -196,7 +174,6 @@ function handle(options, req, res) {
             _method(data, finish);
           });
         }
-
 
         //
         // Use resource.invoke to ensure resource method gets invoked with correct signature
