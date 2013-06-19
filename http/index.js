@@ -143,12 +143,12 @@ function listen (options, callback) {
 
 //
 // Middleware for merging all querystring / request.body and route parameters,
-// into a common scope bound to req.big.params
+// into a common scope bound to req.resource.params
 //
 function mergeParams (req, res, next) {
 
-  req.big = req.big || {};
-  req.big.params = {};
+  req.resource = req.resource || {};
+  req.resource.params = {};
 
   //
   // Iterate through all the querystring and request.body values and
@@ -156,18 +156,18 @@ function mergeParams (req, res, next) {
   //
   if (typeof req.params === 'object') {
     Object.keys(req.params).forEach(function (p) {
-      req.big.params[p] = req.param(p);
+      req.resource.params[p] = req.param(p);
     });
   }
 
   if (typeof req.query === 'object') {
     Object.keys(req.query).forEach(function (p) {
-      req.big.params[p] = req.query[p];
+      req.resource.params[p] = req.query[p];
     });
   }
 
   Object.keys(req.body).forEach(function (p) {
-    req.big.params[p] = req.body[p];
+    req.resource.params[p] = req.body[p];
   });
 
   next();
