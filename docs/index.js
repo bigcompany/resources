@@ -3,8 +3,6 @@ var resource = require('resource'),
     path = require('path'),
     fs = require('fs');
 
-var swig = resource.use('swig');
-
 docs.schema.description = "for generating documentation";
 
 docs.method('generate', generate, {
@@ -49,19 +47,15 @@ function generate (_resource, template, callback) {
   try {
     docs = fs.readdirSync(docsPath);
   } catch (err) {
-	// no docs folder found, do nothing
+  // no docs folder found, do nothing
   }
 
   if (docs) {
-	// iterate through every file looking for markdown
-	docs.forEach(function(doc){
-	  parts += '\n' + fs.readFileSync(docsPath + '/' + doc).toString() + '\n\n';
-	});
-  }
-
-  swig.configure({
-      autoescape: false
+  // iterate through every file looking for markdown
+  docs.forEach(function(doc){
+    parts += '\n' + fs.readFileSync(docsPath + '/' + doc).toString() + '\n\n';
   });
+  }
 
   var data = {
     toc: tableOfContents(_resource),
@@ -75,12 +69,14 @@ function generate (_resource, template, callback) {
     footer: generateFooter()
   };
 
-  var str = swig.render(template, data);
+  for (var p in data) {
+    template = template.replace("{{" + p + "}}", data[p]);
+  }
 
   if(callback) {
-    return callback(null, str);
+    return callback(null, template);
   } else {
-    return str;
+    return template;
   }
 
 };
