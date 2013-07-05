@@ -11,5 +11,9 @@
   "dependencies": {
     "socket.io": "0.9.x",
     "resource": "0.4.x"
+  },
+  "devDependencies": {
+    "sockjs-client": "0.1.x",
+    "socket.io-client": "0.9.x"
   }
 }
