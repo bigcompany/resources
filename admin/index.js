@@ -42,11 +42,6 @@ resource.use('hook', { datasource: "fs"});
 resource.use('forms');
 
 //
-// Meta-resource used for using and creating resources at run-time through resource interfaces
-//
-resource.use('resource');
-
-//
 // The standard http resource for creating http servers
 //
 resource.use('http');
