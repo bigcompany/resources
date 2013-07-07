@@ -4,8 +4,6 @@
 
 {{parts}}
 
-{{tagline}}
-
 {{toc}}
 
 {{properties}}
