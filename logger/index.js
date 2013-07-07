@@ -65,35 +65,18 @@ function put (input, callback) {
   //
   // TODO: Print arrays of homogeneous objects in tabular form
   //
-  /*
   if (Array.isArray(input)) {
-    //
-    // headers
-    //
-    var headers = [];
-    Object.keys(input[0]).forEach(function(prop){
-      headers.push(prop);
-    })
-    logger.data(headers.join(' '));
-    //
-    // rows
-    //
+    var keys = Object.keys(input[0]);
     input.forEach(function(item){
-      logger.put(item);
+      logger.data(JSON.stringify(item))
     });
     return callback(null, input);
   }
-  */
-
-  // input, showHidden, depth, colors
-  util.inspect(input, false, 1, true).split('\n').forEach(function (l) {
-    logger.data(l);
-  });
+  logger.data(JSON.stringify(input))
   return callback(null, input);
 };
 
 hoistLevels(levels);
-
 
 //
 // Create logger resource
@@ -112,5 +95,7 @@ logger.method("log", log, {
     }
   }
 });
+
+logger.method('put', put);
 
 exports.logger = logger;
