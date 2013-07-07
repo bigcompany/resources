@@ -61,8 +61,8 @@ controller.create = function (id, data, resource) {
     logger.info('about to create ' + resource.name.magenta);
     logger.put(result);
     resource.create(result, function(err, r){
-      if(err) {
-        logger.error(JSON.stringify(err))
+      if (err) {
+        logger.error(err.message)
         return;
       }
       logger.info('created new ' + resource.name.magenta + ' ' + r.id.grey)
