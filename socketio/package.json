@@ -1,7 +1,7 @@
 {
-  "name": "resource-socket",
-  "version": "0.4.0",
-  "description": "websockets resource",
+  "name": "resource-socket.io",
+  "version": "0.0.1",
+  "description": "socket.io resource",
   "keywords": [
     "big.vc",
     "resource",
@@ -9,10 +9,10 @@
   ],
   "main": "./index.js",
   "dependencies": {
-    "resource": "0.4.x"
+    "resource": "0.4.x",
+    "socket.io": "0.9.x"
   },
   "devDependencies": {
-    "sockjs-client": "0.1.x",
     "socket.io-client": "0.9.x"
   }
 }

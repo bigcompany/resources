@@ -1,15 +1,16 @@
 var tap = require("tap"),
     resource = require('resource'),
-    io = require('sockjs-client');
+    ioclient = require('sockjs-client');
 
-  resource.use('http');
-  resource.use('creature');
-  require('../index.js'); //Require resource instead of .use as we specifically want to use development resource
+  require('../index.js');
 
 tap.test('create a socket server with the sockjs engine', function (t) {
+  resource.use('creature');
+  resource.use('http');
+
   resource.http.listen(function (err, server) {
     t.error(err, 'http resource listened');
-    resource.socket.start({engine: 'sock.js'}, function (err) {
+    resource.sockjs.start(server, function (err) {
       t.error(err, 'socket resource listened');
       t.end();
     });
@@ -19,7 +20,7 @@ tap.test('create a socket server with the sockjs engine', function (t) {
 var client;
 tap.test('connect to socket server', function (t) {
   t.doesNotThrow(function () {
-    client = io.create('http://localhost:8888');
+    client = ioclient.create('http://localhost:8888');
   }, 'client created successfully');
 
   t.type(client, 'object', 'client is defined');

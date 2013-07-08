@@ -1,13 +1,32 @@
-var engine = exports;
+var resource  = require('resource'),
+    sockjs = resource.define('sockjs');
 
-engine.createServer = function (resources, options, callback) {
+sockjs.schema.description = "sock.js resource";
 
-  var sockjs = require('sockjs').createServer()
-  sockjs.installHandlers(options.server);
+sockjs.method('start', start, {
+  "description": "starts a websocket server",
+  "properties": {
+    "server": {
+      "description": "The server that the socket should hook on to",
+      "type": "object"
+    },
+    "callback": {
+      "description": "the callback executed after server listen",
+      "type": "function",
+      "required": false
+    }
+  }
+});
 
-  callback(null, sockjs);
+function start (server, callback){
+  var sockjsio = require('sockjs').createServer();
+  sockjsio.installHandlers(server);
 
-  sockjs.on('connection', function (socket) {
+  callback(null, sockjsio);
+
+  var resources = resource.resources;
+
+  sockjsio.on('connection', function (socket) {
     Object.keys(resources).forEach(function(name) {
       var resource = resources[name];
       //
@@ -35,7 +54,7 @@ engine.createServer = function (resources, options, callback) {
         // Resource methods
         //
         if(typeof resource[message[1]] === 'function') {
-          return engine.request(resource, message[1], message[2], message[3]);
+          return request(resource, message[1], message[2], message[3]);
         }
 
         return callback(new Error(message[1] + ' is not a valid action.'));
@@ -45,10 +64,10 @@ engine.createServer = function (resources, options, callback) {
       // console.log('got a disconnect');
     });
   });
-  return sockjs;
+  return sockjsio;
 };
 
-engine.request = function(resource, action, payload, callback) {
+function request(resource, action, payload, callback) {
   if (!callback && typeof payload == 'function') {
     callback = payload;
     payload = null;
@@ -59,6 +78,7 @@ engine.request = function(resource, action, payload, callback) {
   }
   else {
     resource[action](callback);
-  }  
+  } 
 }
 
+exports.sockjs = sockjs;

@@ -10,7 +10,8 @@ socket.method('start', start, {
       "description": "Options to configure socket resource",
       "type": "object",
       "properties": {
-        "engine": "string"
+        "engine": "string",
+        "server": "object"
       }
     },
     "callback": {
@@ -21,14 +22,6 @@ socket.method('start', start, {
   }
 });
 
-//
-// Available websocket engines
-// see: /lib/engines/ for more
-exports.engines = {
-  "socket.io": require('./lib/engines/socketio'),
-  "sock.js": require('./lib/engines/sock.js')
-};
-
 function start (options, callback) {
 
   if (!callback && typeof options == 'function') {
@@ -36,25 +29,13 @@ function start (options, callback) {
     options = {};
   }
 
+  //Uncomment the below and comment out the line below that if the engine resources that you want to test aren't published on npm yet.
+  //resource[options.engine] = require('../' + options.engine + '/index.js')[options.engine];
+  resource.use(options.engine || 'socketio');
+
   options.server = options.server || resource.http.server;
 
-  var sockets = require('./lib/sockets');
-  socket.server = sockets.createServer(
-    resource.resources,
-    options,
-    function (err, io) {
-      if (err) {
-        return callback(err);
-      }
-      socket.io = io;
-      callback(err, io);
-    }
-  );
+  return resource[options.engine].start(options.server, callback);
 }
-
-socket.dependencies = {
-  "socket.io": "0.9.x",
-  "sockjs": "0.3.x"
-};
 
 exports.socket = socket;

@@ -1,9 +1,32 @@
-var engine = exports;
+var resource  = require('resource'),
+    socketio = resource.define('socketio');
 
-engine.createServer = function (resources, options, callback) {
+socketio.schema.description = "socket.io resource";
 
-  var io = require('socket.io').listen(options.server);
+socketio.method('start', start, {
+  "description": "starts a websocket server",
+  "properties": {
+    "server": {
+      "description": "The server that the socket should hook on to",
+      "type": "object"
+    },
+    "callback": {
+      "description": "the callback executed after server listen",
+      "type": "function",
+      "required": false
+    }
+  }
+});
+
+function start (server, callback){
+
+  var io = require('socket.io').listen(server);
+
+  socketio.io = io;
+
   callback(null, io);
+
+  var resources = resource.resources;
 
   io.sockets.on('connection', function (socket) {
     Object.keys(resources).forEach(function(name) {
@@ -20,7 +43,7 @@ engine.createServer = function (resources, options, callback) {
         // Resource methods
         //
         if(typeof resource[action] === 'function') {
-          return engine.request(resource, action, payload, callback);
+          return request(resource, action, payload, callback);
         }
 
         return callback(new Error(action + ' is not a valid action.'));
@@ -30,10 +53,9 @@ engine.createServer = function (resources, options, callback) {
       // console.log('got a disconnect');
     });
   });
-  return io;
 };
 
-engine.request = function(resource, action, payload, callback) {
+function request(resource, action, payload, callback) {
   if (!callback && typeof payload == 'function') {
     callback = payload;
     payload = null;
@@ -44,5 +66,7 @@ engine.request = function(resource, action, payload, callback) {
   }
   else {
     resource[action](callback);
-  }  
+  } 
 }
+
+exports.socketio = socketio;

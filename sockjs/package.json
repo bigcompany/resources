@@ -1,0 +1,18 @@
+{
+  "name": "resource-sockjs",
+  "version": "0.0.1",
+  "description": "sockjs resource",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x",
+    "sockjs": "0.3.x"
+  },
+  "devDependencies": {
+    "sockjs-client": "0.1.x"
+  }
+}
