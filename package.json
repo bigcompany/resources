@@ -1,7 +1,11 @@
 {
     "name": "resources",
     "description": "resources for any occasion",
-    "version": "0.4.1",
+    "version": "0.4.2",
+    "repository" : {
+      "type" : "git",
+      "url" : "http://github.com/bigcompany/resources.git"
+    },
     "dependencies": {
       "resource": "0.4.x"
     },
