@@ -16,6 +16,12 @@ module['exports'] = function (options) {
       var _view = options.view;
       var parts = require('url').parse(req.url).pathname.replace(options.prefix, '').split('/');
       parts.shift();
+
+      // Remark: special case for root with no index, should be refactored
+      if (parts.length === 1 && parts[0] === "" && !_view['index']) {
+        return next();
+      }
+
       parts.forEach(function(part) {
         if(part.length > 0 && typeof _view !== 'undefined') {
           _view = _view[part];
@@ -27,10 +33,13 @@ module['exports'] = function (options) {
       if(typeof _view === "undefined") {
         return next();
       }
+      if (typeof _view.present !== 'function') {
+        return next();
+      }
       _view.present({
         request: req,
         response: res,
-        data: req.big.params
+        data: req.resource.params
         }, function (err, rendered) {
         res.end(rendered);
       });
