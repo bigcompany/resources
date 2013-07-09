@@ -7,7 +7,7 @@
       "url" : "http://github.com/bigcompany/resources.git"
     },
     "dependencies": {
-      "resource": "0.4.x"
+      "resource": "0.4.2"
     },
     "devDependencies": {
       "tap": "*",
