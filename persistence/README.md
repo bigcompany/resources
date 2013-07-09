@@ -1,6 +1,8 @@
 # persistence
 
+
 enables persistence for resources
+
 
 
 ## API
@@ -15,11 +17,13 @@ enables persistence for resources
   - [enable](#persistence-methods-enable) ()
 
 
+
 enables persistence for resources
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="persistence-methods"></a> 
@@ -33,8 +37,10 @@ enables persistence for resources
 
 
 
+
 ## dependencies 
 - [node-uuid](http://npmjs.org/package/node-uuid)
 - [async](http://npmjs.org/package/async)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

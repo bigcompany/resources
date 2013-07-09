@@ -1,7 +1,7 @@
 {
-  "name": "resource-twitter",
+  "name": "resource-memory",
   "version": "0.4.2",
-  "description": "for interacting with the Twitter API",
+  "description": "adds memory persistence",
   "keywords": [
     "big.vc",
     "resource",
@@ -9,8 +9,6 @@
   ],
   "main": "./index.js",
   "dependencies": {
-    "ntwitter": "0.5.0",
-    "twitter-text": "1.5.2",
     "resource": "0.4.x"
   }
 }

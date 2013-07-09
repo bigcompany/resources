@@ -1,6 +1,8 @@
 # mesh
 
+
 provides a distributed p2p event emitter mesh
+
 
 
 ## API
@@ -21,11 +23,13 @@ provides a distributed p2p event emitter mesh
   - [uplink](#mesh-methods-uplink) (options, callback)
 
 
+
 provides a distributed p2p event emitter mesh
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="mesh-methods"></a> 
@@ -141,9 +145,11 @@ when an outgoing node connection has been made
   - **required** : false
 
 
+
 ## dependencies 
 - [engine.io](http://npmjs.org/package/engine.io) v0.3.9
 - [engine.io-client](http://npmjs.org/package/engine.io-client) v0.3.9
 - [eventemitter2](http://npmjs.org/package/eventemitter2)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

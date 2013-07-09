@@ -1,6 +1,8 @@
 # cron
 
+
 for managing cron jobs
+
 
 
 ## API
@@ -37,6 +39,7 @@ for managing cron jobs
   - [start](#cron-methods-start) ()
 
 
+
 <a name="cron-properties"></a>
 
 ## properties 
@@ -67,6 +70,7 @@ for managing cron jobs
   - **type** : object
 
   - **description** : metadata to execute the cron with
+
 
 
 <a name="cron-methods"></a> 
@@ -312,7 +316,9 @@ runs / starts a cron job
 starts the cron resource ( which will run all cron jobs )
 
 
+
 ## dependencies 
 - [cron](http://npmjs.org/package/cron) v1.0.1
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

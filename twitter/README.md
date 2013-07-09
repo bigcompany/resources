@@ -1,6 +1,8 @@
 # twitter
 
+
 for interacting with the Twitter API
+
 
 
 ## API
@@ -49,6 +51,7 @@ for interacting with the Twitter API
   - [showUser](#twitter-methods-showUser) (options, callback)
 
   - [tweetLength](#twitter-methods-tweetLength) (options, callback)
+
 
 
 <a name="twitter-properties"></a>
@@ -151,6 +154,7 @@ for interacting with the Twitter API
       - **type** : string
 
       - **required** : false
+
 
 
 <a name="twitter-methods"></a> 
@@ -728,8 +732,10 @@ gets the length of a tweet
   - **required** : false
 
 
+
 ## dependencies 
 - [ntwitter](http://npmjs.org/package/ntwitter) v0.5.0
 - [twitter-text](http://npmjs.org/package/twitter-text) v1.5.2
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

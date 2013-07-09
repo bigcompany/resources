@@ -1,6 +1,8 @@
 # fs
 
+
 adds file-system persistence
+
 
 
 ## API
@@ -15,11 +17,13 @@ adds file-system persistence
   - [start](#fs-methods-start) ()
 
 
+
 adds file-system persistence
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="fs-methods"></a> 
@@ -33,7 +37,9 @@ adds file-system persistence
 
 
 
+
 ## dependencies 
 - [mkdirp](http://npmjs.org/package/mkdirp)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

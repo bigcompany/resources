@@ -1,6 +1,8 @@
 # memory
 
+
 adds memory persistence
+
 
 
 ## API
@@ -15,11 +17,13 @@ adds memory persistence
   - [start](#memory-methods-start) ()
 
 
+
 adds memory persistence
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="memory-methods"></a> 
@@ -29,6 +33,8 @@ adds memory persistence
 <a name="memory-methods-start"></a> 
 
 ### memory.start()
+
+
 
 
 

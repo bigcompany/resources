@@ -1,6 +1,6 @@
 {
   "name": "resource-replicator",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "provides an application replication API for resource based apps",
   "keywords": [
     "big.vc",

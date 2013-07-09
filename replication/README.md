@@ -1,6 +1,8 @@
 # replication
 
+
 for managing and keeping track of replication events
+
 
 
 ## API
@@ -37,6 +39,7 @@ for managing and keeping track of replication events
   - [destroy](#replication-methods-destroy) (id, callback)
 
 
+
 <a name="replication-properties"></a>
 
 ## properties 
@@ -52,7 +55,7 @@ for managing and keeping track of replication events
 
   - **type** : string
 
-  - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
+  - **default** : Tue Jul 09 2013 02:04:18 GMT-0700 (PDT)
 
 - **source** 
 
@@ -73,6 +76,7 @@ for managing and keeping track of replication events
 - **branch** 
 
   - **type** : string
+
 
 
 <a name="replication-methods"></a> 
@@ -101,7 +105,7 @@ create a new replication
 
       - **type** : string
 
-      - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
+      - **default** : Tue Jul 09 2013 02:04:18 GMT-0700 (PDT)
 
     - **source** 
 
@@ -247,7 +251,7 @@ updates a replication by id
 
       - **type** : string
 
-      - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
+      - **default** : Tue Jul 09 2013 02:04:18 GMT-0700 (PDT)
 
     - **source** 
 
@@ -295,7 +299,7 @@ updates a replication by id, and creates if necessary
 
       - **type** : string
 
-      - **default** : Tue Jun 18 2013 16:09:51 GMT-0700 (PDT)
+      - **default** : Tue Jul 09 2013 02:04:18 GMT-0700 (PDT)
 
     - **source** 
 
@@ -338,6 +342,8 @@ destroys a replication by id
 - **callback** 
 
   - **type** : function
+
+
 
 
 

@@ -1,6 +1,8 @@
 # calculator
 
+
 a basic calculator
+
 
 
 ## API
@@ -35,11 +37,13 @@ a basic calculator
   - [isOdd](#calculator-methods-isOdd) (options, callback)
 
 
+
 a basic calculator
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="calculator-methods"></a> 
@@ -311,6 +315,8 @@ returns the result of number as odd
   - **type** : function
 
   - **required** : false
+
+
 
 
 

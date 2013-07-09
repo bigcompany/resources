@@ -1,6 +1,8 @@
 # api
 
+
 provides a web API for interacting with resources
+
 
 
 ## API
@@ -13,6 +15,7 @@ provides a web API for interacting with resources
 
 
 #### [methods](#api-methods)
+
 
 
 <a name="api-properties"></a>
@@ -33,9 +36,12 @@ provides a web API for interacting with resources
   - **default** : v0.0.1
 
 
+
 <a name="api-methods"></a> 
 
 ## methods 
+
+
 
 
 

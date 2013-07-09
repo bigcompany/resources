@@ -1,8 +1,14 @@
 {
-  "name": "big-ssh",
-  "bin": {
-    "big-sh": "./bin/big-sh",
-    "big-help": "./bin/big-help"
-  },
-  "version": "0.0.0"
+  "name": "resource-ssh",
+  "version": "0.4.2",
+  "description": "ssh interface resource",
+  "keywords": [
+    "big.vc",
+    "resource",
+    "resources"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "resource": "0.4.x"
+  }
 }

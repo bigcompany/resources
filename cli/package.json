@@ -1,6 +1,6 @@
 {
   "name": "resource-cli",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "provides a command line interface",
   "keywords": [
     "big.vc",

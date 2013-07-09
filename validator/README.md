@@ -14,7 +14,7 @@ adds JSON-validator to resources
 
 #### [methods](#validator-methods)
 
-  - [validate](#validator-methods-validate) ()
+  - [validate](#validator-methods-validate) (data, schema)
 
 
 
@@ -32,9 +32,17 @@ adds JSON-validator to resources
 
 <a name="validator-methods-validate"></a> 
 
-### validator.validate()
+### validator.validate(data, schema)
 
+hi
 
+- **data** 
+
+  - **type** : object
+
+- **schema** 
+
+  - **type** : object
 
 
 

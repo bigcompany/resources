@@ -1,6 +1,8 @@
 # html
 
+
 for rendering html
+
 
 
 ## API
@@ -15,11 +17,13 @@ for rendering html
   - [render](#html-methods-render) ()
 
 
+
 for rendering html
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="html-methods"></a> 
@@ -33,7 +37,9 @@ for rendering html
 
 
 
+
 ## dependencies 
 - [html-lang](http://npmjs.org/package/html-lang)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

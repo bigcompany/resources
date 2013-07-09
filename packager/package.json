@@ -1,7 +1,7 @@
 {
   "name": "resource-packager",
-  "version": "0.4.1",
-  "description": "for generating package files",
+  "version": "0.4.2",
+  "description": "for generating packager files",
   "keywords": [
     "big.vc",
     "resource",

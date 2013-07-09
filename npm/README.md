@@ -1,6 +1,8 @@
 # npm
 
+
 for interacting with the Node Package Manager api
+
 
 
 ## API
@@ -15,11 +17,13 @@ for interacting with the Node Package Manager api
   - [publish](#npm-methods-publish) (path, callback)
 
 
+
 for interacting with the Node Package Manager api
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="npm-methods"></a> 
@@ -45,7 +49,9 @@ publishes a package to npm based on path
   - **required** : true
 
 
+
 ## dependencies 
 - [npm](http://npmjs.org/package/npm)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -16,6 +16,8 @@ a simple STDOUT based logger
 
   - [log](#logger-methods-log) (level, message)
 
+  - [put](#logger-methods-put) ()
+
 
 
 a simple STDOUT based logger
@@ -45,6 +47,12 @@ logs data to STDOUT
 - **message** 
 
   - **type** : any
+
+<a name="logger-methods-put"></a> 
+
+### logger.put()
+
+
 
 
 

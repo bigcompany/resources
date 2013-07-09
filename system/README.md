@@ -1,6 +1,8 @@
 # system
 
+
 for interacting with the operating system
+
 
 
 ## API
@@ -27,11 +29,13 @@ for interacting with the operating system
   - [kill](#system-methods-kill) ()
 
 
+
 for interacting with the operating system
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="system-methods"></a> 
@@ -193,6 +197,8 @@ lists members of a group
 <a name="system-methods-kill"></a> 
 
 ### system.kill()
+
+
 
 
 

@@ -1,6 +1,8 @@
 # creature
 
+
 example resource for creatures like dragons, unicorns, and ponies
+
 
 
 ## API
@@ -39,6 +41,7 @@ example resource for creatures like dragons, unicorns, and ponies
   - [talk](#creature-methods-talk) (text)
 
 
+
 <a name="creature-properties"></a>
 
 ## properties 
@@ -73,6 +76,7 @@ example resource for creatures like dragons, unicorns, and ponies
   - **type** : boolean
 
   - **default** : true
+
 
 
 <a name="creature-methods"></a> 
@@ -374,6 +378,8 @@ echos back a string
   - **default** : hello!
 
   - **required** : true
+
+
 
 
 

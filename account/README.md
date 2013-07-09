@@ -1,6 +1,8 @@
 # account
 
+
 for managing accounts
+
 
 ## Features
 
@@ -46,6 +48,7 @@ for managing accounts
   - [reset](#account-methods-reset) (email)
 
   - [auth](#account-methods-auth) (id, password)
+
 
 
 <a name="account-properties"></a>
@@ -100,6 +103,7 @@ for managing accounts
   - **private** : true
 
   - **default** : 
+
 
 
 <a name="account-methods"></a> 
@@ -453,6 +457,8 @@ checks id and password for an account ( auth check )
   - **type** : string
 
   - **required** : true
+
+
 
 
 

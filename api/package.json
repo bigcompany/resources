@@ -1,6 +1,6 @@
 {
   "name": "resource-api",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "provides a web API for interacting with resources",
   "keywords": [
     "big.vc",

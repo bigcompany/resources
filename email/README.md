@@ -1,6 +1,8 @@
 # email
 
+
 for sending emails
+
 
 
 ## API
@@ -25,6 +27,7 @@ for sending emails
 #### [methods](#email-methods)
 
   - [send](#email-methods-send) (options, callback)
+
 
 
 <a name="email-properties"></a>
@@ -71,6 +74,7 @@ for sending emails
   - **type** : string
 
   - **description** : the content of the email
+
 
 
 <a name="email-methods"></a> 
@@ -132,6 +136,8 @@ sends an email
 - **callback** 
 
   - **type** : function
+
+
 
 
 

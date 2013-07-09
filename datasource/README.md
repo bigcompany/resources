@@ -1,6 +1,8 @@
 # datasource
 
+
 perists resources to data storage engines
+
 
 
 ## API
@@ -41,6 +43,7 @@ perists resources to data storage engines
   - [destroy](#datasource-methods-destroy) (id, callback)
 
   - [test](#datasource-methods-test) (datasource)
+
 
 
 <a name="datasource-properties"></a>
@@ -139,6 +142,7 @@ perists resources to data storage engines
   - **description** : the password used to connect to the datasource
 
   - **format** : password
+
 
 
 <a name="datasource-methods"></a> 
@@ -634,6 +638,8 @@ tests the status of a datasource by attempting to connect to it
   - **key** : datasource
 
   - **required** : true
+
+
 
 
 

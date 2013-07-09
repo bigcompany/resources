@@ -1,6 +1,8 @@
 # oauth
 
+
 for managing oauth providers and sessions
+
 
 
 ## API
@@ -21,6 +23,7 @@ for managing oauth providers and sessions
   - [requestToken](#oauth-methods-requestToken) (options, callback)
 
   - [accessToken](#oauth-methods-accessToken) (options, callback)
+
 
 
 <a name="oauth-properties"></a>
@@ -85,6 +88,7 @@ for managing oauth providers and sessions
       - **type** : string
 
       - **required** : true
+
 
 
 <a name="oauth-methods"></a> 
@@ -268,7 +272,9 @@ get oauth access token
       }
 
 
+
 ## dependencies 
 - [oauth](http://npmjs.org/package/oauth) v~0.9.8
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -1,6 +1,8 @@
 # stdout
 
+
 outputs all events as new-line delimited JSON fragments to STDOUT
+
 
 
 ## API
@@ -13,6 +15,7 @@ outputs all events as new-line delimited JSON fragments to STDOUT
 #### [methods](#stdout-methods)
 
 
+
 outputs all events as new-line delimited JSON fragments to STDOUT
 
 - **id** 
@@ -20,9 +23,12 @@ outputs all events as new-line delimited JSON fragments to STDOUT
   - **type** : any
 
 
+
 <a name="stdout-methods"></a> 
 
 ## methods 
+
+
 
 
 

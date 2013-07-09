@@ -1,6 +1,6 @@
 {
   "name": "resource-http",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "provides an HTTP API",
   "keywords": [
     "big.vc",

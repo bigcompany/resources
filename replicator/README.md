@@ -1,6 +1,8 @@
 # replicator
 
+
 provides an application replication API for resource based apps
+
 
 
 ## API
@@ -23,11 +25,13 @@ provides an application replication API for resource based apps
   - [start](#replicator-methods-start) (callback)
 
 
+
 provides an application replication API for resource based apps
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="replicator-methods"></a> 
@@ -129,7 +133,9 @@ starts a listening replicator service capable of recieving push requests
   - **type** : function
 
 
+
 ## dependencies 
 - [pushover](http://npmjs.org/package/pushover) v1.1.0
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

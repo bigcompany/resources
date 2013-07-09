@@ -1,6 +1,8 @@
 # video
 
+
 for managing online digital videos
+
 
 
 ## API
@@ -23,6 +25,7 @@ for managing online digital videos
   - [play](#video-methods-play) ()
 
   - [stop](#video-methods-stop) ()
+
 
 
 <a name="video-properties"></a>
@@ -65,6 +68,7 @@ for managing online digital videos
   - **description** : the tag id of the video
 
 
+
 <a name="video-methods"></a> 
 
 ## methods 
@@ -78,6 +82,8 @@ for managing online digital videos
 <a name="video-methods-stop"></a> 
 
 ### video.stop()
+
+
 
 
 

@@ -1,6 +1,8 @@
 # virtualhost
 
+
 provides virtual hosts
+
 
 
 ## API
@@ -31,6 +33,7 @@ provides virtual hosts
   - [destroy](#virtualhost-methods-destroy) (id, callback)
 
 
+
 <a name="virtualhost-properties"></a>
 
 ## properties 
@@ -47,6 +50,7 @@ provides virtual hosts
 - **path** 
 
   - **type** : string
+
 
 
 <a name="virtualhost-methods"></a> 
@@ -224,7 +228,9 @@ destroys a virtualhost by id
   - **type** : function
 
 
+
 ## dependencies 
 - [connect](http://npmjs.org/package/connect) v2.7.1
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

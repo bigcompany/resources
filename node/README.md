@@ -1,6 +1,8 @@
 # node
 
+
 for managing nodes
+
 
 
 ## API
@@ -47,6 +49,7 @@ for managing nodes
   - [destroy](#node-methods-destroy) (id, callback)
 
   - [sh](#node-methods-sh) (options, callback)
+
 
 
 <a name="node-properties"></a>
@@ -143,6 +146,7 @@ for managing nodes
   - **description** : the last date/time the node was seen
 
   - **type** : string
+
 
 
 <a name="node-methods"></a> 
@@ -666,6 +670,8 @@ execute shell scripts on a node via SSH
 - **callback** 
 
   - **type** : function
+
+
 
 
 

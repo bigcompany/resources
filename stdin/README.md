@@ -1,6 +1,8 @@
 # stdin
 
+
 allows application to listen for input from STDIN
+
 
 
 ## API
@@ -15,11 +17,13 @@ allows application to listen for input from STDIN
   - [start](#stdin-methods-start) ()
 
 
+
 allows application to listen for input from STDIN
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="stdin-methods"></a> 
@@ -31,6 +35,8 @@ allows application to listen for input from STDIN
 ### stdin.start()
 
 listens for STDIN on the process and attempts to eval it as JavaScript
+
+
 
 
 

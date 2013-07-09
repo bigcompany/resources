@@ -1,6 +1,6 @@
 {
   "name": "resource-github",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "for interacting with the Github.com API",
   "keywords": [
     "big.vc",

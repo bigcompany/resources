@@ -1,6 +1,6 @@
 {
   "name": "resource-stdin",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "allows application to listen for input from STDIN",
   "keywords": [
     "big.vc",

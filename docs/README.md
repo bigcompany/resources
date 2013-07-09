@@ -1,6 +1,8 @@
 # docs
 
+
 for generating documentation
+
 
 
 ## API
@@ -17,11 +19,13 @@ for generating documentation
   - [build](#docs-methods-build) ()
 
 
+
 for generating documentation
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="docs-methods"></a> 
@@ -51,6 +55,8 @@ generates markdown documentation for a single resource
 ### docs.build()
 
 builds README.md files for all resources
+
+
 
 
 

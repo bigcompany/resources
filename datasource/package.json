@@ -1,6 +1,6 @@
 {
   "name": "resource-datasource",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "perists resources to data storage engines",
   "keywords": [
     "big.vc",

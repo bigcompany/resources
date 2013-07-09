@@ -1,6 +1,8 @@
 # github
 
+
 for interacting with the Github.com API
+
 
 
 ## API
@@ -15,11 +17,13 @@ for interacting with the Github.com API
   - [activity](#github-methods-activity) (options, callback)
 
 
+
 for interacting with the Github.com API
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="github-methods"></a> 
@@ -49,7 +53,9 @@ gets event activity for a user or organization
   - **type** : function
 
 
+
 ## dependencies 
 - [github](http://npmjs.org/package/github)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

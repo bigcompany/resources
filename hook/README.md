@@ -1,6 +1,8 @@
 # hook
 
+
 for managing event hooks ( IF this THEN that )
+
 
 
 ## API
@@ -37,6 +39,7 @@ for managing event hooks ( IF this THEN that )
   - [bind](#hook-methods-bind) ()
 
 
+
 <a name="hook-properties"></a>
 
 ## properties 
@@ -67,6 +70,7 @@ for managing event hooks ( IF this THEN that )
   - **type** : object
 
   - **description** : additional data supplied to `then`
+
 
 
 <a name="hook-methods"></a> 
@@ -308,6 +312,8 @@ loads all hooks into memory
 <a name="hook-methods-bind"></a> 
 
 ### hook.bind()
+
+
 
 
 

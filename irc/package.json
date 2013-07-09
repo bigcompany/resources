@@ -1,6 +1,6 @@
 {
   "name": "resource-irc",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "for managing communication with irc",
   "keywords": [
     "big.vc",

@@ -1,6 +1,8 @@
 # http
 
+
 provides an HTTP API
+
 
 
 ## API
@@ -23,6 +25,7 @@ provides an HTTP API
   - [start](#http-methods-start) (options, callback)
 
   - [request](#http-methods-request) (options)
+
 
 
 <a name="http-properties"></a>
@@ -55,6 +58,7 @@ provides an HTTP API
   - **type** : string
 
   - **default** : /Users/macbookpro/dev/big/big/public
+
 
 
 <a name="http-methods"></a> 
@@ -276,9 +280,11 @@ makes outgoing http client requests
       - **required** : false
 
 
+
 ## dependencies 
 - [connect](http://npmjs.org/package/connect) v2.7.1
 - [express](http://npmjs.org/package/express) v3.0.4
 - [request](http://npmjs.org/package/request) v2.12.0
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

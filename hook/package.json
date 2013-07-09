@@ -1,6 +1,6 @@
 {
   "name": "resource-hook",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "for managing event hooks ( IF this THEN that )",
   "keywords": [
     "big.vc",

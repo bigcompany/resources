@@ -1,6 +1,8 @@
 # socket
 
+
 websockets resource
+
 
 
 ## API
@@ -15,11 +17,13 @@ websockets resource
   - [start](#socket-methods-start) (callback)
 
 
+
 websockets resource
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="socket-methods"></a> 
@@ -41,7 +45,9 @@ starts a websocket server
   - **required** : false
 
 
+
 ## dependencies 
 - [socket.io](http://npmjs.org/package/socket.io) v0.9.x
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

@@ -1,6 +1,8 @@
 # tag
 
+
 a simple hierarchical tagging system
+
 
 
 ## API
@@ -35,6 +37,7 @@ a simple hierarchical tagging system
   - [getTag](#tag-methods-getTag) (options)
 
 
+
 <a name="tag-properties"></a>
 
 ## properties 
@@ -61,6 +64,7 @@ a simple hierarchical tagging system
   - **key** : tag
 
   - **default** : 
+
 
 
 <a name="tag-methods"></a> 
@@ -322,6 +326,8 @@ destroys a tag by id
       - **description** : the name of the tag
 
       - **required** : true
+
+
 
 
 

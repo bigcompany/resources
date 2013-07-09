@@ -1,6 +1,8 @@
 # queue
 
+
 a queue for resource events
+
 
 
 ## API
@@ -57,6 +59,7 @@ a queue for resource events
   - [start](#queue-methods-start) (id, callback)
 
   - [stop](#queue-methods-stop) (id, callback)
+
 
 
 <a name="queue-properties"></a>
@@ -123,6 +126,7 @@ a queue for resource events
   - **type** : array
 
   - **default**
+
 
 
 <a name="queue-methods"></a> 
@@ -710,6 +714,8 @@ start processing a queue
           queue.emit('error', err);
         }
       }
+
+
 
 
 

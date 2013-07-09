@@ -1,7 +1,7 @@
 {
-  "name": "resource-permissions",
-  "version": "0.4.0",
-  "description": "for managing permissions",
+  "name": "resource-npm",
+  "version": "0.4.2",
+  "description": "for interacting with the Node Package Manager api",
   "keywords": [
     "big.vc",
     "resource",
@@ -9,6 +9,7 @@
   ],
   "main": "./index.js",
   "dependencies": {
+    "npm": "*",
     "resource": "0.4.x"
   }
 }

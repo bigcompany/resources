@@ -24,13 +24,14 @@ resources for any occasion
  - [html](https://github.com/bigcompany/resources/tree/master/html) for rendering html
  - [http](https://github.com/bigcompany/resources/tree/master/http) provides an HTTP API
  - [irc](https://github.com/bigcompany/resources/tree/master/irc) for managing communication with irc
+ - [logger](https://github.com/bigcompany/resources/tree/master/logger) a simple STDOUT based logger
  - [markdown](https://github.com/bigcompany/resources/tree/master/markdown) for parsing markdown
  - [memory](https://github.com/bigcompany/resources/tree/master/memory) adds memory persistence
  - [mesh](https://github.com/bigcompany/resources/tree/master/mesh) provides a distributed p2p event emitter mesh
  - [node](https://github.com/bigcompany/resources/tree/master/node) for managing nodes
  - [npm](https://github.com/bigcompany/resources/tree/master/npm) for interacting with the Node Package Manager api
  - [oauth](https://github.com/bigcompany/resources/tree/master/oauth) for managing oauth providers and sessions
- - [package](https://github.com/bigcompany/resources/tree/master/package) for generating package files
+ - [packager](https://github.com/bigcompany/resources/tree/master/packager) for generating packager files
  - [page](https://github.com/bigcompany/resources/tree/master/page) for representing HTML pages
  - [permissions](https://github.com/bigcompany/resources/tree/master/permissions) for managing permissions
  - [persistence](https://github.com/bigcompany/resources/tree/master/persistence) enables persistence for resources
@@ -38,7 +39,6 @@ resources for any occasion
  - [repl](https://github.com/bigcompany/resources/tree/master/repl) enables an interactive Read-Eval-Print-Loop ( REPL )
  - [replication](https://github.com/bigcompany/resources/tree/master/replication) for managing and keeping track of replication events
  - [replicator](https://github.com/bigcompany/resources/tree/master/replicator) provides an application replication API for resource based apps
- - [resource](https://github.com/bigcompany/resources/tree/master/resource) meta-resource for describing and creating new resources
  - [socket](https://github.com/bigcompany/resources/tree/master/socket) websockets resource
  - [ssh](https://github.com/bigcompany/resources/tree/master/ssh) ssh interface resource
  - [stdin](https://github.com/bigcompany/resources/tree/master/stdin) allows application to listen for input from STDIN
@@ -47,6 +47,7 @@ resources for any occasion
  - [system](https://github.com/bigcompany/resources/tree/master/system) for interacting with the operating system
  - [tag](https://github.com/bigcompany/resources/tree/master/tag) a simple hierarchical tagging system
  - [twitter](https://github.com/bigcompany/resources/tree/master/twitter) for interacting with the Twitter API
+ - [validator](https://github.com/bigcompany/resources/tree/master/validator) adds JSON-validator to resources
  - [video](https://github.com/bigcompany/resources/tree/master/video) for managing online digital videos
  - [view](https://github.com/bigcompany/resources/tree/master/view) for managing views
  - [virtualhost](https://github.com/bigcompany/resources/tree/master/virtualhost) provides virtual hosts

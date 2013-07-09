@@ -1,6 +1,8 @@
 # swig
 
+
 for parsing swig
+
 
 
 ## API
@@ -17,11 +19,13 @@ for parsing swig
   - [configure](#swig-methods-configure) ()
 
 
+
 for parsing swig
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="swig-methods"></a> 
@@ -41,7 +45,9 @@ for parsing swig
 
 
 
+
 ## dependencies 
 - [swig](http://npmjs.org/package/swig)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

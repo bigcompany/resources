@@ -1,6 +1,8 @@
 # page
 
+
 for representing HTML pages
+
 
 
 ## API
@@ -25,6 +27,7 @@ for representing HTML pages
 
 
 #### [methods](#page-methods)
+
 
 
 <a name="page-properties"></a>
@@ -71,9 +74,12 @@ for representing HTML pages
   - **type** : number
 
 
+
 <a name="page-methods"></a> 
 
 ## methods 
+
+
 
 
 

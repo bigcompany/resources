@@ -1,6 +1,8 @@
 # datetime
 
+
 date and time helper
+
 
 
 ## API
@@ -15,11 +17,13 @@ date and time helper
   - [format](#datetime-methods-format) (date, mask)
 
 
+
 date and time helper
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="datetime-methods"></a> 
@@ -47,7 +51,9 @@ formats a date by mask
   - **required** : true
 
 
+
 ## dependencies 
 - [dateformat](http://npmjs.org/package/dateformat)
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

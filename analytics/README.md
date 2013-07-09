@@ -1,6 +1,8 @@
 # analytics
 
+
 real-time analytics by google
+
 
 
 ## API
@@ -15,11 +17,13 @@ real-time analytics by google
   - [inject](#analytics-methods-inject) (accountID)
 
 
+
 real-time analytics by google
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="analytics-methods"></a> 
@@ -39,6 +43,8 @@ returns templatizaed google adsense javascript embed based on account id
   - **required** : true
 
   - **default** : UA-XXXXX-Y
+
+
 
 
 

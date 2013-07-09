@@ -1,6 +1,8 @@
 # admin
 
+
 a web based admin panel
+
 
 ## Features
 
@@ -34,11 +36,13 @@ Note: The basic tests use the `firefox` browser, so you will need to have that i
   - [start](#admin-methods-start) (options, callback)
 
 
+
 a web based admin panel
 
 - **id** 
 
   - **type** : any
+
 
 
 <a name="admin-methods"></a> 
@@ -110,8 +114,10 @@ start a listening admin web server
   - **type** : function
 
 
+
 ## dependencies 
 - [connect](http://npmjs.org/package/connect) v2.7.1
 - [highlight](http://npmjs.org/package/highlight) v0.2.3
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*

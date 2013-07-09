@@ -1,6 +1,8 @@
 # irc
 
+
 for managing communication with irc
+
 
 
 ## API
@@ -53,6 +55,7 @@ for managing communication with irc
   - [ban](#irc-methods-ban) (options)
 
   - [unban](#irc-methods-unban) (options)
+
 
 
 <a name="irc-properties"></a>
@@ -171,6 +174,7 @@ for managing communication with irc
         - **command** 
 
           - **type** : string
+
 
 
 <a name="irc-methods"></a> 
@@ -774,8 +778,10 @@ unbans a user from an irc channel
       - **required** : true
 
 
+
 ## dependencies 
 - [irc](http://npmjs.org/package/irc) v0.3.4
 - [optimist](http://npmjs.org/package/optimist) v0.3.5
+
 
 *README auto-generated with [docs](https://github.com/bigcompany/resources/tree/master/docs)*
