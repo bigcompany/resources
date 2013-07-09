@@ -77,7 +77,7 @@ function build () {
     //
     var fs = require('fs'),
     path = require('path'),
-    packagerPath = path.normalize(require.resolve('resources') + '/../' + r + '/packager.json');
+    packagerPath = path.normalize(require.resolve('resources') + '/../' + r + '/package.json');
     fs.writeFileSync(packagerPath, JSON.stringify(pkg, true, 2));
     resource.logger.info('wrote ' + packagerPath)
 
