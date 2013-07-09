@@ -1,12 +1,12 @@
 var resource = require('resource'),
     logger = resource.logger,
-    package = resource.define('package'),
+    packager = resource.define('packager'),
     path = require('path'),
     fs = require('fs');
 
-package.schema.description = 'for generating package files';
+packager.schema.description = 'for generating packager files';
 
-function npm (_resource, callback) {
+function npm (_resource) {
   //logger.info(".npm(", _resource, callback, ")");
 
   if(typeof _resource === 'string') {
@@ -15,7 +15,7 @@ function npm (_resource, callback) {
 
   // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
   // https://github.com/component/component/wiki/Spec
-  var packagejson = {
+  var packagerjson = {
     name: 'resource-' + _resource.name,
     version: _resource.version || resource.version,
     description: _resource.schema.description,
@@ -29,25 +29,21 @@ function npm (_resource, callback) {
   };
 
   // Add global keywords
-  packagejson.keywords.push('big.vc', 'resource', 'resources');
+  packagerjson.keywords.push('big.vc', 'resource', 'resources');
 
   // Add resource as dependency
-  packagejson.dependencies['resource'] = "0.4.x";
+  packagerjson.dependencies = packagerjson.dependencies || {};
+  packagerjson.dependencies['resource'] = "0.4.x";
 
   // TODO: sort dependencies by alphanumeric order
-
-  if (callback) {
-    return callback(null, packagejson);
-  } else {
-    return packagejson;
-  }
+  return packagerjson;
 
 }
-package.method('npm', npm, {
-  description: 'generates package.json for a single resource',
+packager.method('npm', npm, {
+  description: 'generates packager.json for a single resource',
   properties: {
     resource: {
-      description: 'the resource to generate package.json for',
+      description: 'the resource to generate packager.json for',
       type: 'any'
     },
     callback: {
@@ -74,26 +70,26 @@ function build () {
     // Generate an npm packge.json manifest
     // https://github.com/isaacs/npm/blob/master/doc/cli/json.md
     //
-    var pkg = package.npm(resources[r]);
+    var pkg = packager.npm(resources[r]);
 
     //
-    // Write the package
+    // Write the packager
     //
     var fs = require('fs'),
     path = require('path'),
-    packagePath = path.normalize(require.resolve('resources') + '/../' + r + '/package.json');
-    fs.writeFileSync(packagePath, JSON.stringify(pkg, true, 2));
-    resource.logger.info('wrote ' + packagePath)
+    packagerPath = path.normalize(require.resolve('resources') + '/../' + r + '/packager.json');
+    fs.writeFileSync(packagerPath, JSON.stringify(pkg, true, 2));
+    resource.logger.info('wrote ' + packagerPath)
 
   }
 
   //
   // TODO:
-  // Generate a 'global' package.json file for all resources
+  // Generate a 'global' packager.json file for all resources
   //
 }
-package.method('build', build, {
-  description: 'builds package.json files for all resources'
+packager.method('build', build, {
+  description: 'builds packager.json files for all resources'
 });
 
-exports.package = package;
+exports.packager = packager;
