@@ -90,7 +90,7 @@ var router = {
 
 }
 
-var createRouter = function (resources, options) {
+var createRouter = function (resources, options, callback) {
 
   var prompt      = require('prompt-lite'),
       _resource   = require('resource'),
@@ -224,7 +224,11 @@ var createRouter = function (resources, options) {
     }
   });
 
-  return router;
+  if (typeof callback === 'function') {
+    return callback(null, router);
+  } else {
+    return router;
+  }
 
 };
 
