@@ -30,13 +30,12 @@ function enable (r, options) {
     // Map uuid library to persistence resource
     //
     persistence.uuid = uuid;
-
     //
     // Create new JugglingDB schema, based on incoming datasource type
     //
     var _type = mappings[options.type] || options.type || 'fs';
-    resource.use(options.type)
-    resource[options.type].start(function(){
+    resource.use(_type);
+    resource[_type].start(function(){
       var schema = new Schema(_type, {
         database: options.name || "big",
         host: options.host,
