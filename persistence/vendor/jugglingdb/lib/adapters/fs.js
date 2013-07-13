@@ -4,13 +4,12 @@ var nosqlite = require('../nosqlite');
 var mkdirp = safeRequire('mkdirp');
 
 exports.initialize = function initializeSchema(schema, callback) {
-    schema.adapter = new Fs();
+    schema.adapter = new Fs(schema.settings);
     process.nextTick(callback);
 };
 
 function Fs (options) {
     options = options || {};
-
     //
     // Choose a sane default for options.path
     //
