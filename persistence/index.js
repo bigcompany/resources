@@ -13,12 +13,19 @@ function enable (r, options) {
     };
   }
 
+  //
+  // Map uuid library to persistence resource
+  //
+  persistence.uuid = require('node-uuid');
+
   resource.use(options.type);
   resource.resources[options.type].start(function() {
     return resource.resources[options.type].enable(r, options);
   });
 }
 
-persistence.dependencies = {};
+persistence.dependencies = {
+  "node-uuid": "*"
+};
 
 exports.persistence = persistence;
