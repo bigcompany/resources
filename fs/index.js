@@ -9,6 +9,8 @@ fs.method('start', function (cb) {
   cb(null, true);
 });
 
+fs.method('enable', resource.use('jugglingdb').enable);
+
 fs.dependencies = {
   "mkdirp": "*"
 };

@@ -7,4 +7,6 @@ memory.method('start', function (cb){
   cb(null, true);
 });
 
+memory.method('enable', resource.use('jugglingdb').enable);
+
 exports.memory = memory;
