@@ -42,7 +42,7 @@ function start(id, callback) {
     }
     config.attach(conf, callback);
   });
-};
+}
 
 config.method('attach', attach);
 
@@ -57,7 +57,7 @@ function attach(conf, callback) {
     // If so, assign that value to resource.config.value
     //
     if (typeof conf.data[k] === 'object') {
-      if(typeof resource.resources[k] === 'object') {
+      if (typeof resource.resources[k] === 'object') {
         for (var v in conf.data[k]) {
           resource.resources[k].config = resource.resources[k].config || {};
           resource.resources[k].config[v] = conf.data[k][v];
