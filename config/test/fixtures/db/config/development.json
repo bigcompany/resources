@@ -1,0 +1,9 @@
+{
+ "id": "development",
+ "data": {
+    "foo": "bar",
+    "creature": {
+      "style": "scary"
+    }
+  }
+}
