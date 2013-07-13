@@ -7,6 +7,7 @@ persistence.method('enable', enable);
 
 function enable (r, options) {
 
+<<<<<<< HEAD
   if(typeof options === "string") {
     options = {
       type: options
@@ -18,9 +19,11 @@ function enable (r, options) {
   //
   persistence.uuid = require('node-uuid');
 
-  resource.use(options.type);
-  resource.resources[options.type].start(function() {
-    return resource.resources[options.type].enable(r, options);
+  var _type = options.type || 'fs';
+
+  resource.use(_type);
+  resource.resources[_type].start(function() {
+    return resource.resources[_type].enable(r, options);
   });
 }
 

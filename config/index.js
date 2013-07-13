@@ -6,6 +6,8 @@ var _persist = config.persist,
 
 config.schema.description = "configuration management for resources";
 
+config.property('data', { type: 'object' });
+
 config.persist = function (opts) {
   if (typeof opts === 'string') {
     engine = opts;
@@ -34,62 +36,36 @@ function start(id, callback) {
     callback = id;
     id = resource.env;
   }
-
   config.get(id, function (err, conf) {
-    if (err) {
-      if (err.message.match(/not found/) && id !== 'development') {
-        resource.logger.warn('Could not find `' + id + '` configuration');
-        resource.logger.warn('Falling back to `development `configuration');
-        return config.get('development', finish);
-      }
-      return callback(err);
-    }
-    finish(null, conf);
-  });
-
-  function finish(err, conf) {
     if (err) {
       return callback(err);
     }
     config.attach(conf, callback);
-  }
-};
+  });
+}
 
-//
-// Attach properties from a conf object to the config resource
-// This is written with after hooks in mind
-//
-config.method('attach', attach, {
-  "description": "Attach configuration options to the config resource",
-  "properties": {
-    "options": {
-      "type": "object"
-    },
-    "callback": {
-      "type": "function"
-    }
-  }
-});
+config.method('attach', attach);
+
 function attach(conf, callback) {
-  var path = require('path');
-
-  var err = null;
-  try {
+  Object.keys(conf.data).forEach(function (k) {
     //
-    // Hack to get the full config
+    // Attach config.data properties to config resource scope
     //
-    if (engine === 'fs') {
-      conf = require(path.join(resource.helper.appDir, 'db', 'config', conf.id + '.json'));
+    config[k] = conf.data[k];
+    //
+    // If an object value is detected, check to see if the key is a resource exists with that property name,
+    // If so, assign that value to resource.config.value
+    //
+    if (typeof conf.data[k] === 'object') {
+      if (typeof resource.resources[k] === 'object') {
+        for (var v in conf.data[k]) {
+          resource.resources[k].config = resource.resources[k].config || {};
+          resource.resources[k].config[v] = conf.data[k][v];
+        }
+      }
     }
-
-    Object.keys(conf).forEach(function (k) {
-      config[k] = conf[k];
-    });
-  }
-  catch (e) {
-    err = e;
-  }
-  callback(err, conf);
+  });
+  callback(null, conf);
 }
 
 exports.config = config;
