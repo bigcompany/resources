@@ -10,7 +10,8 @@ fs.method('start', function (cb) {
 });
 
 fs.dependencies = {
-  "mkdirp": "*"
+  "mkdirp": "*",
+  "async": "*"
 };
 
 exports.fs = fs;
