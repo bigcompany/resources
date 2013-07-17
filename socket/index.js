@@ -10,8 +10,12 @@ socket.method('start', start, {
       "description": "Options to configure socket resource",
       "type": "object",
       "properties": {
-        "engine": "string",
-        "server": "object"
+        "engine": {
+          "type": "string"
+        },
+        "server": {
+          "type": "object"
+        }
       }
     },
     "callback": {

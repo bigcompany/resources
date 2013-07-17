@@ -32,7 +32,7 @@ tap.test('connect to sockjs socket with sockjs client', function(t){
   }, 'sockjs server listening for connection');
 
   client = sockjs_client.create('http://localhost:8888');
-  client.on('connection', function (msg) { 
+  client.on('connection', function (msg) {
     t.pass('sockjs client connected');
     t.end();
   });
@@ -48,7 +48,7 @@ tap.test('close sockjs socket', function(t){
       }, 'closing http server');
       t.end();
     });
-  }, 'setting listener on close event')
+  }, 'setting listener on close event');
 
   client.on('close', function(){
     t.pass('client closing');
