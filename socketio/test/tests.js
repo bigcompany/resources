@@ -84,14 +84,14 @@ tap.test('try to get destroyed creature', function (t) {
 
 tap.test("stop everything", function (t) {
 
-  t.plan(2);
-
   client.on('disconnect', function () {
     t.pass('client disconnected');
+    resource.http.server.close(function () {
+      t.pass('server disconnected');
+      t.end();
+    });
   });
-  client.disconnect();
-
-  resource.http.server.close(function () {
-    t.pass('server disconnected');
-  });
+  t.doesNotThrow(function() {
+    client.disconnect();
+  }, 'socket client closing');
 });

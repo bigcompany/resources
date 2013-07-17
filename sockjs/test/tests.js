@@ -25,9 +25,9 @@ tap.test('connect to socket server', function (t) {
 
   t.type(client, 'object', 'client is defined');
 
-  client.on('connection', function () {
+  client.on('connection', function (conn) {
     t.pass('client connected');
-    t.end()
+    t.end();
   });
 });
 
@@ -41,4 +41,19 @@ tap.test('create a creature', function (t) {
     t.pass('creature created');
     t.end();
   });
+});
+
+tap.test('close sockjs socket', function (t){
+
+  t.doesNotThrow(function(){
+    client.on('close', function(){
+      t.pass('client closing');
+      t.doesNotThrow(function(){
+        resource.http.server.close();
+        t.end();
+      }, 'closing http server');
+    });
+  }, 'setting listener on close event');
+
+  client.close();
 });

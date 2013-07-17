@@ -49,11 +49,11 @@ function start (server, callback){
         return callback(new Error(action + ' is not a valid action.'));
       });
     });
-    socket.on('disconnect', function () { 
+    socket.on('disconnect', function () {
       // console.log('got a disconnect');
     });
   });
-};
+}
 
 function request(resource, action, payload, callback) {
   if (!callback && typeof payload == 'function') {
@@ -66,7 +66,11 @@ function request(resource, action, payload, callback) {
   }
   else {
     resource[action](callback);
-  } 
+  }
 }
+
+socketio.dependencies = {
+  "socket.io": "*"
+};
 
 exports.socketio = socketio;

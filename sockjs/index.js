@@ -60,12 +60,12 @@ function start (server, callback){
         return callback(new Error(message[1] + ' is not a valid action.'));
       });
     });
-    socket.on('disconnect', function () { 
+    socket.on('disconnect', function () {
       // console.log('got a disconnect');
     });
   });
   return sockjsio;
-};
+}
 
 function request(resource, action, payload, callback) {
   if (!callback && typeof payload == 'function') {
@@ -78,7 +78,11 @@ function request(resource, action, payload, callback) {
   }
   else {
     resource[action](callback);
-  } 
+  }
 }
+
+sockjs.dependencies = {
+  "sockjs": "*"
+};
 
 exports.sockjs = sockjs;
