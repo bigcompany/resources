@@ -1,3 +1,6 @@
+  var resource = require('resource'),
+      uuid = resource.resources.persistence.uuid;
+
 module['exports'] = function (r) {
   //
   // Attach the CRUD methods to the resource
@@ -257,5 +260,5 @@ module['exports'] = function (r) {
     }
   });
   return r;
-}
+};
 

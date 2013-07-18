@@ -3,6 +3,15 @@ var resource = require('resource'),
 
 persistence.schema.description = "enables persistence for resources";
 
+var init = function (callback) {
+  //
+  // map uuid library to persistence resource
+  //
+  persistence.uuid = require('node-uuid');
+  return callback(null, true);
+};
+persistence.method('init', init);
+
 var enable = function (r, options) {
 
   if(typeof options === "string") {
@@ -10,11 +19,6 @@ var enable = function (r, options) {
       type: options
     };
   }
-
-  //
-  // map uuid library to persistence resource
-  //
-  persistence.uuid = require('node-uuid');
 
   //
   // get persistence resource from type
@@ -32,7 +36,7 @@ var enable = function (r, options) {
 //
 // enable is not a resource method ( as we don't want to defer binding of CRUD methods while waiting for node-uuid dep )
 //
-persistence.enable = enable;
+persistence.method('enable', enable);
 
 persistence.dependencies = {
   "node-uuid": "*"

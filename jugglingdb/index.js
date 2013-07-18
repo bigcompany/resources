@@ -29,11 +29,6 @@ function enable (r, options) {
   var _type = options.type || 'fs';
   resource.use(options.type);
   crud(r);
-  //
-  // Map uuid library to jugglingdb resource
-  //
-  var uuid = require('node-uuid');
-  jugglingdb.uuid = uuid;
   var schema = new Schema(_type, {
     database: options.name || "big",
     host: options.host,
@@ -86,8 +81,6 @@ function enable (r, options) {
 //
 jugglingdb.enable = enable;
 
-jugglingdb.dependencies = {
-  "node-uuid": "*"
-};
+jugglingdb.dependencies = {};
 
 exports.jugglingdb = jugglingdb;
