@@ -3,11 +3,9 @@ var resource = require('resource'),
 
 couchdb.schema.description = "adds couchdb persistence";
 
-couchdb.method('start', function (cb) {
+couchdb.method('init', function (cb) {
   cb(null, true);
 });
-
-couchdb.method('enable', resource.use('jugglingdb').enable);
 
 couchdb.dependencies = {
   "cradle": "0.6.4"

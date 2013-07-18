@@ -3,11 +3,9 @@ var resource = require('resource'),
 
 fs.schema.description = "adds file-system persistence";
 
-fs.method('start', function (cb) {
+fs.method('init', function (cb) {
   cb(null, true);
 });
-
-fs.method('enable', resource.use('jugglingdb').enable);
 
 fs.dependencies = {
   "mkdirp": "*",

@@ -26,7 +26,7 @@ function enable (r, options) {
   //
   // Create new JugglingDB schema, based on incoming datasource type
   //
-  var _type = options.type || 'fs';
+  var _type = mappings[options.type] || options.type || 'fs';
   resource.use(options.type);
   crud(r);
   var schema = new Schema(_type, {
@@ -75,6 +75,11 @@ function enable (r, options) {
   // assign model to resource
   r.model = Model;
 }
+
+var mappings = {
+  "couchdb": "cradle",
+  "couch": "cradle"
+};
 
 //
 // enable is not a resource method ( as we don't want to defer binding of CRUD methods while waiting for node-uuid dep )
