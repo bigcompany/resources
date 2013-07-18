@@ -1,6 +1,6 @@
 var resource = require("resource"),
-analytics = resource.define("analytics")
-fs = require('fs');
+    analytics = resource.define("analytics"),
+    fs = require('fs');
 
 analytics.schema.description = "real-time analytics by google";
 
