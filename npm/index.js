@@ -1,64 +1,99 @@
 var resource = require('resource'),
     npm = resource.define('npm');
 
-npm.schema.description = "for interacting with the Node Package Manager api";
+npm.schema.description = "for interacting with the Node Package Manager";
 
+function publish (options, callback) {
+  var _npm = require('npm'),
+      path = options.path;
+  // remove path from options so it doesn't affect load
+  delete options.path;
+  // load npm config
+  _npm.load(options, function (err) {
+    if (err) { return callback(err); }
+    // run npm publish of path
+    _npm.commands.publish([path], callback);
+  });
+}
 npm.method('publish', publish, {
-  "description": "publishes a package to npm based on path",
-  "properties": {
-    "path": {
-      "type": "string",
-      "required": true
+  description: "publishes a package to npm based on path",
+  properties: {
+    options: {
+      path: {
+        type: "string",
+        required: true
+      },
+      force: {
+        description: "clobber previously published versions",
+        type: "boolean"
+      }
     },
-    "callback": {
-      "type": "function",
-      "required": true
+    callback: {
+      type: "function",
+      required: true
     }
   }
 });
 
-function publish (path, callback) {
-  var npmModule = require('npm');
-  npmModule.load({ exit: false }, function (err) {
-    // TODO: how to add flags such as --force ?
-    npmModule.commands.publish([path], function (err, result) {
-      callback(err, result);
-    });
+function install (options, callback) {
+  var _npm = require('npm'),
+      packages = options.packages;
+  // remove packages from options so it doesn't affect load
+  delete options.packages;
+  // load npm config
+  _npm.load(options, function (err) {
+    if (err) { return callback(err); }
+    // run npm publish of path
+    _npm.commands.install(packages, callback);
   });
-};
-
-npm.dependencies = {
-  "npm": "*"
-};
-
-exports.npm = npm;
+}
+npm.method('install', install, {
+  description: "installs a package",
+  properties: {
+    options: {
+      packages: {
+        type: "array",
+        items: {
+          type: "string"
+        },
+        required: true
+      },
+      prefix: {
+        description: "the location to install global items. forces non-global commands to run in the specified folder.",
+        type: "string"
+      }
+    },
+    callback: {
+      type: "function",
+      required: true
+    }
+  }
+});
 
 /*
 
 TODO: 
 
-npm.install = function (hook, callback) {
-  npmModule.load({exit:false}, function (err) {
-    npmModule.install(package, function (err, result) {
-      callback(err, result);
-    });
-  });
-}
-
 npm.link = function (hook, callback) {
-  npmModule.load({exit:false}, function (err) {
-    npmModule.link(hook, function (err, result) {
+  _npm.load({exit:false}, function (err) {
+    _npm.link(hook, function (err, result) {
       callback(err, result);
     });
   });
 }
 
 npm.search = function (keywords, callback) {
-  npmModule.load({exit:false}, function (err) {
-    npmModule.commands.search(keywords, function (err, result) {
+  _npm.load({exit:false}, function (err) {
+    _npm.commands.search(keywords, function (err, result) {
       callback(err, result);
     });
   });
 }
 
 */
+
+npm.dependencies = {
+  "npm": "*"
+};
+
+exports.npm = npm;

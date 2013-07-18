@@ -3,8 +3,6 @@ var resource = require('resource'),
 
 fs.schema.description = "adds file-system persistence";
 
-resource.use('persistence');
-
 fs.method('start', function (cb) {
   cb(null, true);
 });
@@ -12,7 +10,8 @@ fs.method('start', function (cb) {
 fs.method('enable', resource.use('jugglingdb').enable);
 
 fs.dependencies = {
-  "mkdirp": "*"
+  "mkdirp": "*",
+  "async": "*"
 };
 
 exports.fs = fs;
