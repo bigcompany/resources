@@ -11,8 +11,6 @@ var enable = function (r, options) {
     };
   }
 
-  console.log(__dirname);
-
   //
   // map uuid library to persistence resource
   //
