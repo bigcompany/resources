@@ -22,7 +22,15 @@ tap.test('connect to socket server', function (t) {
   t.doesNotThrow(function () {
     client = ioclient.connect('http://localhost:8888');
   }, 'client created successfully');
+
+  t.doesNotThrow(function(){
+    resource.socketio.io.sockets.on('connection', function(socket){
+      t.ok(socket.manager, 'server acknowledges connection and gets socket passed in callback');
+    });
+  }, 'Server listens to connect event');
+
   t.type(client, 'object', 'client is defined');
+
   client.on('connect', function () {
     t.pass('client connected');
     t.end();
