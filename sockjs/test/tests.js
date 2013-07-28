@@ -19,6 +19,12 @@ tap.test('create a socket server with the sockjs engine', function (t) {
 
 var client;
 tap.test('connect to socket server', function (t) {
+  t.doesNotThrow(function(){
+    resource.sockjs.socketServer.on('connection', function(socket){
+      t.ok(socket.id, 'socket connected and socket object passed to server');
+    });
+  }, 'socketServer listens to connection event');
+
   t.doesNotThrow(function () {
     client = ioclient.create('http://localhost:8888');
   }, 'client created successfully');
@@ -27,7 +33,7 @@ tap.test('connect to socket server', function (t) {
 
   client.on('connection', function () {
     t.pass('client connected');
-    t.end()
+    t.end();
   });
 });
 
@@ -41,4 +47,14 @@ tap.test('create a creature', function (t) {
     t.pass('creature created');
     t.end();
   });
+});
+
+tap.test('broadcast message from server to client', function(t){
+  client.on('data', function(message){
+    t.equal(message, 'hello from sockjs', 'Correct message arrived from server');
+    t.end();
+  });
+  t.doesNotThrow(function(){
+    resource.sockjs.send('hello from sockjs');
+  }, 'send method doesn\'t throw error');
 });
