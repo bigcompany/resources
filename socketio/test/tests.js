@@ -82,6 +82,16 @@ tap.test('try to get destroyed creature', function (t) {
   });
 });
 
+tap.test('send a message to client', function(t){
+  client.on('message', function(message){
+    t.equal(message, 'hello', 'Correct message received');
+    t.end();
+  });
+  t.doesNotThrow(function(){
+    resource.socketio.send('message', 'hello');
+  }, 'Socketio resource doesn\'t throw error when message sent');
+});
+
 tap.test("stop everything", function (t) {
 
   t.plan(2);

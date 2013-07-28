@@ -18,6 +18,15 @@ socketio.method('start', start, {
   }
 });
 
+socketio.method('send', send, {
+  "description": "sends a message to all open connections",
+  "properties": {
+    "message": {
+      "required": true
+    }
+  }
+});
+
 function start (server, callback){
 
   var io = require('socket.io').listen(server);
@@ -53,7 +62,15 @@ function start (server, callback){
       // console.log('got a disconnect');
     });
   });
-};
+}
+
+function send(){
+  if(!socketio.io) throw('run the start method before sending messages');
+  //
+  // emit expects io.sockets to be `this`
+  //
+  socketio.io.sockets.emit.apply(socketio.io.sockets, arguments);
+}
 
 function request(resource, action, payload, callback) {
   if (!callback && typeof payload == 'function') {
