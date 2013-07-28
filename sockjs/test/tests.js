@@ -31,7 +31,7 @@ tap.test('connect to socket server', function (t) {
 
   t.type(client, 'object', 'client is defined');
 
-  client.on('connection', function () {
+  client.on('connection', function (conn) {
     t.pass('client connected');
     t.end();
   });
@@ -57,4 +57,18 @@ tap.test('broadcast message from server to client', function(t){
   t.doesNotThrow(function(){
     resource.sockjs.send('hello from sockjs');
   }, 'send method doesn\'t throw error');
+});
+
+tap.test('close sockjs socket', function (t){
+  t.doesNotThrow(function(){
+    client.on('close', function(){
+      t.pass('client closing');
+      t.doesNotThrow(function(){
+        resource.http.server.close();
+        t.end();
+      }, 'closing http server');
+    });
+  }, 'setting listener on close event');
+
+  client.close();
 });

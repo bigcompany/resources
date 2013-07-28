@@ -81,6 +81,7 @@ function start (server, callback){
         return callback(new Error(message[1] + ' is not a valid action.'));
       });
     });
+
     connection.on('disconnect', function (connection) { 
       //
       // Remove socket from cache
@@ -117,7 +118,11 @@ function request(resource, action, payload, callback) {
   }
   else {
     resource[action](callback);
-  } 
+  }
 }
+
+sockjs.dependencies = {
+  "sockjs": "*"
+};
 
 exports.sockjs = sockjs;
