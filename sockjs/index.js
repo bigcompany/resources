@@ -82,7 +82,7 @@ function start (server, callback){
       });
     });
 
-    connection.on('disconnect', function (connection) { 
+    connection.on('close', function () { 
       //
       // Remove socket from cache
       //
