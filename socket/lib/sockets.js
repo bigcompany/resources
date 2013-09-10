@@ -1,7 +1,8 @@
 var sockets = exports;
 
 exports.engines = {
-  "socket.io": require('../lib/engines/socketio')
+  "socket.io": require('../lib/engines/socketio'),
+  "sock.js": require('../lib/engines/sock.js')
 };
 
 exports.createServer = function (resources, options, callback) {
