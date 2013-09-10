@@ -26,6 +26,15 @@ socket.method('start', start, {
   }
 });
 
+sockjs.method('send', send, {
+  "description": "sends a message to all open connections",
+  "properties": {
+    "message": {
+      "required": true
+    }
+  }
+});
+
 function start (options, callback) {
 
   if (!callback && typeof options == 'function') {
@@ -40,6 +49,10 @@ function start (options, callback) {
   options.server = options.server || resource.http.server;
 
   return resource[options.engine].start(options.server, callback);
+}
+
+function send (message, callback){
+  
 }
 
 exports.socket = socket;
