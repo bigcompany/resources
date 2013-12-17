@@ -61,6 +61,10 @@ function ossBoilerplate(resourceName, done) {
   });
 }
 
+function gitAddAndCommit(resourceName, done) {
+  runCommand('git add .;git commit -a -m "OSS Boilerplate"', done);
+}
+
 // the callback of death
 function go() {
   var resourceName = process.argv[2];
@@ -78,8 +82,12 @@ function go() {
           if (err) {return console.log('Error:', err);}
           console.log('Applying OSS boilerplate...');
           ossBoilerplate(resourceName, function() {
-            console.log('All done!\nResource "resource-' + resourceName +
-              '" has been created!');
+            console.log('Adding OSS to git and commiting...');
+            gitAddAndCommit(resourceName, function(err) {
+              if (err) {return console.log('Error:', err);}
+              console.log('All done!\nResource "resource-' + resourceName +
+                '" has been created!');
+            });
           });
         });
       });
