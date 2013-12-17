@@ -55,8 +55,8 @@ function gitpull(resourceName, done) {
 }
 
 function ossBoilerplate(resourceName, done) {
-  runCommand('cp ../resource-template/.* ./', function(err) {
-    if (err) { return done(err); }
+  runCommand('cp ../resource-template/.* ./', function() {
+    // ignore error, we expect them
     runCommand('cp ../resource-template/* ./', done);
   });
 }
@@ -64,16 +64,20 @@ function ossBoilerplate(resourceName, done) {
 // the callback of death
 function go() {
   var resourceName = process.argv[2];
+  console.log('git subtree...');
   gitSubtree(resourceName, function(err) {
     if (err) {return console.log('Error:', err);}
+    console.log('creating new resource directory...');
     mkdir(resourceName, function(err) {
       if (err) {return console.log('Error:', err);}
+      console.log('Entering new directory and initializing git...');
       gitInit(resourceName, function(err) {
         if (err) {return console.log('Error:', err);}
+        console.log('Fetching subtree\'d branch from resources...');
         gitpull(resourceName, function(err) {
           if (err) {return console.log('Error:', err);}
-          ossBoilerplate(resourceName, function(err) {
-            if (err) {return console.log('Error:', err);}
+          console.log('Applying OSS boilerplate...');
+          ossBoilerplate(resourceName, function() {
             console.log('All done!\nResource "resource-' + resourceName +
               '" has been created!');
           });
